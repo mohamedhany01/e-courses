@@ -137,8 +137,27 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+		
+        // Task #1: Fill in this function.
+        final int boardSize = b.size();
+        final boolean emptyTile = true;
+		
+        /*
+         * The board is scanned from bottom left
+         * side using columns then rows one by one
+         * */
+
+        // Loop over the whole grid and search for an empty space
+        for (int col = 0; col < boardSize; col++) {
+            for (int row = 0; row < boardSize; row++) {
+                if (b.tile(col, row) == null) {
+                    return emptyTile;
+                }
+            }
+        }
+
+        // Else all grid is full
+        return !emptyTile;
     }
 
     /**
