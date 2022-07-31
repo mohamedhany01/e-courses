@@ -191,7 +191,62 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        // Task #3: Fill in this function.
+        final int boardSize = b.size();
+        final boolean emptyTile = true;
+        final boolean equalTiles = true;
+
+        // Kernels for the four directions UP, RIGHT, DOWN, LEFT
+        final int[] xKernel = {
+			0,
+			1,
+			0,
+			-1
+        };
+        final int[] yKernel = {
+			1,
+			0,
+			-1,
+			0
+        };
+
+        // Loop over the whole grid and search for an empty space
+        if (emptySpaceExists(b)) {
+            return emptyTile;
+        }
+
+        /*
+         * Loop over the whole grid and check the
+         * four neighbors (UP, DOWN, LEFT, RIGHT)
+         * for each tile in the grid/board
+         * */
+        for (int col = 0; col < boardSize; col++) {
+            for (int row = 0; row < boardSize; row++) {
+
+                int currentTileValue = b.tile(col, row).value();
+
+                // Check the boundaries for each tile in the board
+                for (int fourDirectionsIndex = 0; fourDirectionsIndex < boardSize; fourDirectionsIndex++) {
+                    int currentXOffset = col + xKernel[fourDirectionsIndex];
+                    int currentYOffset = row + yKernel[fourDirectionsIndex];
+
+                    // Skip board boundaries overflow by ignoring invalid offsets
+                    if (currentXOffset < 0 || currentYOffset < 0 || currentXOffset > boardSize - 1 || currentYOffset > boardSize - 1) {
+                        continue;
+                    }
+
+                    int currentNeighbourTileValue = b.tile(currentXOffset, currentYOffset).value();
+                    if (currentTileValue == currentNeighbourTileValue) {
+                        // Debugging
+                        /*System.out.print("Found a valid move [" + currentTileValue + ", " + currentNeighbourTileValue + "]" + " in the indexes: ");
+                        System.out.print("(" + col + ", " + row + ")" + "(" + currentXOffset + ", " + currentYOffset + ")");*/
+                        return equalTiles;
+                    }
+                }
+            }
+        }
+
+        // No valid moves
         return false;
     }
 
