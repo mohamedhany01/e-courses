@@ -110,10 +110,140 @@ public class Model extends Observable {
         boolean changed;
         changed = false;
 
-        // TODO: Modify this.board (and perhaps this.score) to account
+        /*
+        * Game logic "Moving/Merging"
+
+        - Start scanning the whole grid/board top-left to bottom "Loop"
+		   0,3 | 1,3 | 2,3 | 3,3
+		   0,2 | 1,2 | 2,2 | 3,2
+		   0,1 | 1,1 | 2,1 | 3,1
+		   0,0 | 1,0 | 2,0 | 3,0
+
+
+		Moving Task: "First Loop"
+
+		- Process only the "tile" with value
+
+			- Get the "Row Indicator" which is "3" (Look at the indexed above).
+
+			- Get the "Current Row Indicator" which is changeable
+
+			- Scan each "tile" column by column from top-left to bottom "Loop"
+
+				- Scan negative boundaries using "Row Indicator and Current Row Indicator" and skip them
+
+				- Get the valid tile "inside the boundaries" and check if not "null" tile.
+
+				- Go to the next tile from top-left to bottom
+
+			- When out of the loop check the boundaries again for "Row Indicator" to move the current "tile" up to its above tile with "null" value.
+
+		Merging Task: "Second Loop"
+
+		- Get current "tile" from top-left to bottom in the board "We will check it against nulls later "
+
+		- Check current row boundaries against negatives
+
+		- Get the next "tile" below the previous "tile"
+
+		- Check both of them against "nulls" before merging
+
+		- Get both value from them "upper tile and below tile"
+
+		- Merge if they are equal "Merging Process"
+
+			- Move the below tile to the one in the top
+
+			- Increase the score
+
+			Merging The Remain "tiles" Up Process "Loop"
+
+			- Start looping from the "tile" below
+
+			- Get the current "tile"
+
+			- Check it against "nulls" and skip if any
+
+			- Check the row of current "tile" from it goes out of boundaries
+
+			- Move current "tile" to up
+        * */
+
+        // Task #4: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+        final int BORDER_SIZE = board.size();
+        for (int column = 0; column < BORDER_SIZE; column++) {
+            for (int row = BORDER_SIZE - 1; row >= 0; row--) {
+                Tile tile = board.tile(column, row);
 
+                // Just process tile with value
+                if (tile != null) {
+                    int tempRowIndicator = BORDER_SIZE - 1;
+                    int currentRow = row;
+
+                    while (true) {
+
+                        // Check if tempRowIndicator or currentRow out of boundaries
+                        if (tempRowIndicator < 0 || currentRow < 0) {
+                            break;
+                        }
+
+                        Tile tileInTheUpper = board.tile(column, tempRowIndicator);
+
+                        // Break if the the row got negative or found a null tile on the top while go throw
+                        if (tileInTheUpper == null) {
+                            break;
+                        }
+
+                        // Move to the next row from top to down
+                        tempRowIndicator--;
+                    }
+
+                    // Just in case row indicator went out of the valid board boundaries
+                    if (tempRowIndicator >= row && tempRowIndicator < BORDER_SIZE && tempRowIndicator >= 0) {
+                        board.move(column, tempRowIndicator, tile);
+                        changed = true;
+                    }
+                }
+            }
+
+            for (int row = BORDER_SIZE - 1; row >= 0; row--) {
+                Tile currentValidTile = board.tile(column, row);
+
+                if (row - 1 < 0) {
+                    break;
+                }
+
+                Tile nextValidTile = board.tile(column, row - 1);
+                if (currentValidTile != null && nextValidTile != null) {
+                    int currentTileValue = currentValidTile.value();
+                    int nextTileValue = nextValidTile.value();
+
+                    if (currentTileValue == nextTileValue) {
+
+                        // Move bottom next tile and merge it with the upper one
+                        board.move(column, row, nextValidTile);
+                        score += currentValidTile.value() * 2;
+                        for (int i = (nextValidTile.row() - 1); i >= 0; i--) {
+                            Tile currentRestTile = board.tile(column, i);
+
+                            if (currentRestTile == null) {
+                                break;
+                            }
+
+                            if (i < BORDER_SIZE) {
+                                board.move(column, i + 1, currentRestTile);
+                            }
+                        }
+                        changed = true;
+                    }
+
+                }
+            }
+        }
+        board.setViewingPerspective(side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
