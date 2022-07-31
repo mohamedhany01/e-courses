@@ -166,8 +166,22 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        
+		// Task #2: Fill in this function.
+        final int boardSize = b.size();
+        final boolean maxTile = true;
+
+        // Loop over the whole grid and search for the max value
+        for (int col = 0; col < boardSize; col++) {
+            for (int row = 0; row < boardSize; row++) {
+                if (b.tile(col, row) != null && b.tile(col, row).value() == MAX_PIECE) {
+                    return maxTile;
+                }
+            }
+        }
+
+        // Else no max value in the board
+        return !maxTile;
     }
 
     /**
