@@ -156,13 +156,13 @@ public class Model extends Observable {
 
 			- Increase the score
 
-			Merging The Remain "tiles" Up Process "Loop"
+			Merging remain "tiles" Up Process "Loop"
 
 			- Start looping from the "tile" below
 
 			- Get the current "tile"
 
-			- Check it against "nulls" and skip if any
+			- Check it against "nulls" and skip them and move to the next tile in the same row
 
 			- Check the row of current "tile" from it goes out of boundaries
 
@@ -170,7 +170,7 @@ public class Model extends Observable {
         * */
 
         // Task #4: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
+        // for the tilt to the SIDE. If the board changed, set the
         // changed local variable to true.
         board.setViewingPerspective(side);
         final int BORDER_SIZE = board.size();
@@ -192,7 +192,7 @@ public class Model extends Observable {
 
                         Tile tileInTheUpper = board.tile(column, tempRowIndicator);
 
-                        // Break if the the row got negative or found a null tile on the top while go throw
+                        // Break if the row got negative or found a null tile on the top while go throw
                         if (tileInTheUpper == null) {
                             break;
                         }
@@ -220,17 +220,19 @@ public class Model extends Observable {
                 if (currentValidTile != null && nextValidTile != null) {
                     int currentTileValue = currentValidTile.value();
                     int nextTileValue = nextValidTile.value();
+                    int nextRow = row - 1;
 
                     if (currentTileValue == nextTileValue) {
 
                         // Move bottom next tile and merge it with the upper one
                         board.move(column, row, nextValidTile);
                         score += currentValidTile.value() * 2;
-                        for (int i = (nextValidTile.row() - 1); i >= 0; i--) {
+                        for (int i = nextRow; i >= 0; i--) {
                             Tile currentRestTile = board.tile(column, i);
 
+                            // Don't move null tile, but move to next one to do the same process
                             if (currentRestTile == null) {
-                                break;
+                                continue;
                             }
 
                             if (i < BORDER_SIZE) {
