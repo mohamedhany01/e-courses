@@ -1,13 +1,7 @@
-package deque;
+package deque.extra;
 
-/*
- * TODO
- *   - Add circular topology.
- *   - Add ArrayDeque implementation
- *   - Add "public Iterator<T> iterator()"
- *   - Add "public boolean equals(Object o)"
- *   - Add extra tests
- * */
+import deque.Deque;
+
 public class SinglyLinkedList<T> implements Deque<T> {
     private Node head;
     private Node tail;

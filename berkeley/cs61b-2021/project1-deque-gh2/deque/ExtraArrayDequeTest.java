@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ArrayDequeTest {
+public class ExtraArrayDequeTest {
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
@@ -100,7 +100,7 @@ public class ArrayDequeTest {
 
     }
 
-//    @Ignore
+    @Ignore
     @Test
     /* Add large number of elements to deque; check if order is correct. */
     public void bigLLDequeTest() {
@@ -163,20 +163,20 @@ public class ArrayDequeTest {
 
     @Test
     public void addAndRemoveOneItemFromEndAndMakeListEmpty() {
-         Deque<Integer> lld1 = new ArrayDeque<>();
-         lld1.addLast(3);
-         lld1.addLast(50);
-         lld1.addLast(70);
-         lld1.removeLast();
-         int result = lld1.removeFirst();
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addLast(3);
+        lld1.addLast(50);
+        lld1.addLast(70);
+        lld1.removeLast();
+        int result = lld1.removeFirst();
         assertEquals(1, lld1.size());
         assertEquals(3, result);
     }
-@Test
+    @Test
     public void addAndRemoveOneItemFromFrontAndMakeListEmpty() {
-         Deque<Integer> lld1 = new ArrayDeque<>();
-         lld1.addFirst(3);
-         int result = lld1.removeFirst();
+        Deque<Integer> lld1 = new ArrayDeque<>();
+        lld1.addFirst(3);
+        int result = lld1.removeFirst();
         assertEquals(0, lld1.size());
         assertEquals(3, result);
     }

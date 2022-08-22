@@ -1,4 +1,6 @@
-package deque;
+package deque.extra;
+
+import deque.Deque;
 
 public class DoublyLinkedList<T> implements Deque<T> {
     private Node head;

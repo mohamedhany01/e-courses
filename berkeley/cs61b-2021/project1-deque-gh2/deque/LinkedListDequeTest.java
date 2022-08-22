@@ -2,9 +2,9 @@ package deque;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class CircularTest {
+public class LinkedListDequeTest {
 
     @Test
     public void removeLastFromListHasTwoNodes() {

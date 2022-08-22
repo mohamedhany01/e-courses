@@ -1,4 +1,4 @@
-package deque;
+package deque.extra;
 
 import org.junit.Test;
 
@@ -8,7 +8,7 @@ public class DoublyTest {
 
     @Test
     public void removeLastFromListHasTwoNodes() {
-        LinkedListDeque<String> lld1 = new LinkedListDeque<>();
+        DoublyLinkedList<String> lld1 = new DoublyLinkedList<>();
         lld1.addFirst("bar");
         lld1.addFirst("buz");
         lld1.addFirst("zuo");
@@ -18,9 +18,9 @@ public class DoublyTest {
 
         assertEquals(5, lld1.size());
     }
-      @Test
+    @Test
     public void printNode() {
-        LinkedListDeque<String> lld1 = new LinkedListDeque<>();
+        DoublyLinkedList<String> lld1 = new DoublyLinkedList<>();
         lld1.addFirst("bar");
         lld1.addFirst("buz");
         lld1.addFirst("zuo");
@@ -31,7 +31,7 @@ public class DoublyTest {
     }
     @Test
     public void reversNode() {
-        LinkedListDeque<String> lld1 = new LinkedListDeque<>();
+        DoublyLinkedList<String> lld1 = new DoublyLinkedList<>();
         lld1.addFirst("bar");
         lld1.addFirst("buz");
         lld1.addFirst("zuo");
@@ -43,7 +43,7 @@ public class DoublyTest {
 
     @Test
     public void addToLast() {
-        LinkedListDeque<String> lld1 = new LinkedListDeque<>();
+        DoublyLinkedList<String> lld1 = new DoublyLinkedList<>();
         lld1.addFirst("bar");
         lld1.addFirst("buz");
         lld1.addFirst("zuo");

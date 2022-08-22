@@ -1,11 +1,11 @@
 package deque;
 
-public class CircularLinkedList<T> implements Deque<T> {
+public class LinkedListDeque<T> implements Deque<T> {
     private Node head;
     private Node tail;
     private int size;
 
-    public CircularLinkedList() {
+    public LinkedListDeque() {
         size = 0;
     }
 
