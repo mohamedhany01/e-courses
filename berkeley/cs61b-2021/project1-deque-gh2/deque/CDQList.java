@@ -75,29 +75,49 @@ public class CDQList<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
+        if(front == -1) {
+            return null;
+        }
         T value = list[front];
         list[front] = null;
-
+        front--;
         size--;
         return value;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (back == -1) {
+            return null;
+        }
+        T value = list[back];
+        list[back] = null;
+        back++;
+        size--;
+        return value;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index > size) {
+            return null;
+        }
+        T value = list[index];
+        return value;
     }
 
     @Override
     public T getLast() {
+        if (back == -1) {
+            return null;
+        }
         return list[back];
     }
 
     public T getFirst() {
+        if (front == -1) {
+            return null;
+        }
         return list[front];
     }
 
