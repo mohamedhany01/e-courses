@@ -1,91 +1,184 @@
 package deque;
 
 public class ArrayDeque<T> implements Deque<T> {
-    static final int LIST_SIZE = 8;
-    private T[] list = (T[]) new Object[8];
-    private int size = 0;
+    private T[] list;
+    private int front, back;
+    private int size;
+    private static final int INT_SIZE = 8;
+    private final int FACTOR = 2;
 
     public ArrayDeque() {
+        list = (T[]) new Object[INT_SIZE];
+        front = back = -1;
+        size = 0;
     }
 
+    public ArrayDeque(int size) {
+        list = (T[]) new Object[size];
+        front = back = -1;
+        this.size = 0;
+    }
+
+    public boolean isFull() {
+//        return (((back + 1) % list.length) == front);
+          return (size == list.length);
+    }
+
+    @Override
     public void addFirst(T item) {
-        T[] newList = (T[]) new Object[this.size + 1];
-        newList[0] = item;
-        if (this.size > 0) {
-            System.arraycopy(this.list, 0, newList, 1, this.size);
+        if (isFull()) {
+            resize(size * FACTOR);
         }
 
-        this.list = newList;
-        ++this.size;
+        if (isEmpty()) {
+            front = back = 0;
+        } else if (front == 0) {
+            front = list.length - 1;
+        } else {
+            if (front < back) {
+                front = (front - 1) % list.length;
+            } else {
+                front--;
+            }
+        }
+        list[front] = item;
+        size++;
     }
 
+    @Override
     public void addLast(T item) {
-        if (this.size == 0) {
-            this.addFirst(item);
-        } else {
-            if (this.size == this.list.length) {
-                int FACTOR = 2;
-                T[] newList = (T[]) new Object[this.size * FACTOR];
-                System.arraycopy(this.list, 0, newList, 0, this.size);
-                this.list = newList;
-            }
-
-            this.list[this.size] = item;
-            ++this.size;
+        if (isFull()) {
+            resize(size * FACTOR);
         }
+
+        if (isEmpty()) {
+            addFirst(item);
+            return;
+        } else if (back == list.length - 1) {
+            back = 0;
+        } else {
+            back = (back + 1) % list.length;
+        }
+        list[back] = item;
+        size++;
     }
 
+    @Override
     public int size() {
-        return this.size;
+        return size;
     }
 
+    @Override
     public void printDeque() {
-        for(int i = 0; i < this.size; ++i) {
-            if (i < this.size - 1) {
-                Object var10001 = this.list[i];
-                System.out.print("" + var10001 + ", ");
+        int temp = front;
+        do {
+            System.out.print(list[temp] + ", ");
+            temp = (temp + 1) % list.length;
+        } while (temp != back);
+        System.out.print(list[temp]); // Prevent off-by-one bug
+        System.out.println();
+    }
+
+    @Override
+    public T removeFirst() {
+        if (isEmpty()) {
+            return null;
+        }
+        T value = list[front];
+        if (front == list.length - 1) {
+            list[front] = null;
+            front = (front + 1) % list.length;
+        } else if (size == 1) {
+            list[front] = null;
+            back = front = -1;
+        } else {
+            list[front] = null;
+            front++;
+        }
+
+        size--;
+
+        if (needShrinking()) {
+            resize(list.length/2);
+        }
+
+        return value;
+    }
+
+    @Override
+    public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        }
+        T value = list[back];
+        if (size == 1) {
+            list[back] = null;
+            back = front = -1;
+
+        } else {
+            if (back == 0) {
+                list[back] = null;
+                back = list.length - 1;
+            } else {
+                list[back] = null;
+                back--;
             }
         }
 
-        System.out.println(this.list[this.size - 1]);
-    }
+        size--;
 
-    public T removeFirst() {
-        if (this.size == 0) {
-            return null;
-        } else {
-            T value = this.list[0];
-            this.list[0] = null;
-            --this.size;
-//            int FACTOR = true;
-            T[] newList = (T[]) new Object[this.size];
-            System.arraycopy(this.list, 1, newList, 0, this.size);
-            this.list = newList;
-            return value;
+        if (needShrinking()) {
+            resize(list.length/2);
         }
+
+        return value;
     }
 
-    public T removeLast() {
-        if (this.size == 1) {
-            return this.removeFirst();
-        } else if (this.size > 1) {
-            T value = this.list[this.size - 1];
-            this.list[this.size - 1] = null;
-            --this.size;
-            return value;
-        } else {
-            return null;
-        }
-    }
-
+    @Override
     public T get(int index) {
-        return index >= 0 && index < this.size ? this.list[index] : null;
+        if (index >= list.length) {
+            return null;
+        }
+        return list[index];
     }
 
+    @Override
     public T getLast() {
-        return this.list[this.size];
+        if (!isEmpty()) {
+            return list[back];
+        }
+        return null;
+    }
+
+    public T getFirst() {
+        if (!isEmpty()) {
+            return list[front];
+        }
+        return null;
     }
 
     private void resize(int newSize) {
+        T[] newList = (T[]) new Object[newSize];
+
+        /*
+        * Resizing is a little tricky here, in shrinking we can't just copy (from 0 to size),
+        * there is corner case where (back > front) and therefore the copying with be (from front to back)
+        * */
+        if (back > front) {
+            System.arraycopy(list, front, newList, 0, size);
+        }
+        else {
+            System.arraycopy(list, 0, newList, 0, size);
+        }
+        list = newList;
+        front = 0;
+        back = size - 1;
+    }
+    private boolean needShrinking() {
+        return ((double) size) / list.length < 0.25 && list.length >= 16;
+    }
+
+    public int getLength() {
+        return list.length;
     }
 }
