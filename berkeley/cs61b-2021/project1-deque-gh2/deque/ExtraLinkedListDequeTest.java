@@ -4,10 +4,21 @@ import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ExtraLinkedListDequeTest {
-    public ExtraLinkedListDequeTest() {
-    }
+import java.util.Iterator;
 
+public class ExtraLinkedListDequeTest {
+    @Test
+    public void displayUsingIterator() {
+        LinkedListDeque<Integer> list = new LinkedListDeque<>();
+        for (int i = 0; i < 20; i++) {
+            list.addFirst(i);
+        }
+
+        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()) {
+            System.out.print(it.next() + ", ");
+        }
+    }
     @Test
     public void getFirstItemFromList() {
         LinkedListDeque<Integer> lld1 = new LinkedListDeque();

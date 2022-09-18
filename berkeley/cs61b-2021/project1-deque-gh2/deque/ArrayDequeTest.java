@@ -19,6 +19,19 @@ public class ArrayDequeTest {
     final int INPUT = 16;
 
     @Test
+    public void displayUsingIterator() {
+        deque.ArrayDeque<Integer> list = new deque.ArrayDeque<>();
+        for (int i = 0; i < INPUT; i++) {
+            list.addFirst(i);
+        }
+
+        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()) {
+            System.out.print(it.next() + ", ");
+        }
+    }
+
+    @Test
     public void addToListAndMakeItFullFront() {
         deque.ArrayDeque<Integer> list = new deque.ArrayDeque<>();
         for (int i = 0; i < INPUT; i++) {

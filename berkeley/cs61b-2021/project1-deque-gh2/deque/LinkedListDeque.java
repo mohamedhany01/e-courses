@@ -1,12 +1,34 @@
 package deque;
 
-public class LinkedListDeque<T> implements Deque<T> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private Node head;
     private Node tail;
     private int size;
 
     public LinkedListDeque() {
         size = 0;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int position = 0;
+            @Override
+            public boolean hasNext() {
+                return position < size;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return get(position++);
+            }
+        };
     }
 
     public class Node {
