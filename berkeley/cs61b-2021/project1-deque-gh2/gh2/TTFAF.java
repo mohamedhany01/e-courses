@@ -23,7 +23,7 @@ public class TTFAF {
             e.printStackTrace();
         }
 
-        // You can also do this:
+        // You can also do this "Play .mid custom file":
         // GuitarPlayer player = new GuitarPlayer(new java.io.File("path/to/music.mid"));
         // player.play();
     }
