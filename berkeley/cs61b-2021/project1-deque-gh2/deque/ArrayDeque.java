@@ -188,17 +188,14 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            private int position = 0;
+            private int position = 0; // Starting from "front" to "back" will produce off-by-one bug
             @Override
             public boolean hasNext() {
-                return position < list.length;
+                return position < size;
             }
 
             @Override
             public T next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
                 return list[position++];
             }
         };
