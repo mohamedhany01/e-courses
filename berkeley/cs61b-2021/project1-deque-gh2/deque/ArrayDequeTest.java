@@ -7,16 +7,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 
-// Fixing bug
-// https://sp21.datastructur.es/materials/lab/lab3/lab3#fixing-the-bug-and-execution-breakpoints
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.*;
 
 
 public class ArrayDequeTest {
     final int INPUT = 16;
+    // Extra tests
+    final int INPUT_SIZE = 100000;
 
     @Test
     public void displayUsingIterator() {
@@ -25,10 +22,12 @@ public class ArrayDequeTest {
             list.addFirst(i);
         }
 
-        Iterator<Integer> it = list.iterator();
-        while (it.hasNext()) {
-            System.out.print(it.next() + ", ");
-        }
+//        Iterator<Integer> it = list.iterator();
+//        while (it.hasNext()) {
+//            System.out.print(it.next() + ", ");
+//        }
+
+        System.out.println(list);
     }
 
     @Test
@@ -97,9 +96,9 @@ public class ArrayDequeTest {
         for (int i = 0; i < INPUT; i++) {
             list.removeLast();
         }
-        assertEquals(INPUT - INPUT, list.size());
-        assertEquals(null, list.getLast());
-        assertEquals(null, list.getFirst());
+        assertEquals(0, list.size());
+        assertNull(list.getLast());
+        assertNull(list.getFirst());
     }
 
     @Test
@@ -111,9 +110,9 @@ public class ArrayDequeTest {
         for (int i = 0; i < INPUT; i++) {
             list.removeFirst();
         }
-        assertEquals(INPUT - INPUT, list.size());
-        assertEquals(null, list.getLast());
-        assertEquals(null, list.getFirst());
+        assertEquals(0, list.size());
+        assertNull(list.getLast());
+        assertNull(list.getFirst());
     }
 
     @Test
@@ -131,8 +130,8 @@ public class ArrayDequeTest {
         for (int i = 0; i < 4; i++) {
             list.removeFirst();
         }
-        assertEquals(null, list.get(0));
-        assertEquals(null, list.get(INPUT - 1));
+        assertNull(list.get(0));
+        assertNull(list.get(INPUT - 1));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class ArrayDequeTest {
         assertEquals(0, list.get(0).intValue());
         assertEquals(INPUT - 1, list.get(INPUT - 1).intValue());
 
-        assertEquals(null, list.get(INPUT * 2));
+        assertNull(list.get(INPUT * 2));
     }
 
     @Test
@@ -226,8 +225,8 @@ public class ArrayDequeTest {
         assertEquals(4, list.removeLast().intValue());
         assertEquals(7, list.getLast().intValue());
         assertEquals(7, list.removeLast().intValue());
-        assertEquals(null, list.getLast());
-        assertEquals(null, list.getFirst());
+        assertNull(list.getLast());
+        assertNull(list.getFirst());
         assertEquals(0, list.size());
     }
 
@@ -358,8 +357,8 @@ public class ArrayDequeTest {
     @Test
     public void listIsEmptyNoItemInside() {
         deque.ArrayDeque<Integer> list = new deque.ArrayDeque<>();
-        assertEquals(null, list.getFirst());
-        assertEquals(null, list.getLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
         assertEquals(0, list.size());
     }
 
@@ -404,8 +403,8 @@ public class ArrayDequeTest {
         list.addFirst(5);
         assertEquals(5, list.removeFirst().intValue());
         assertEquals(0, list.size());
-        assertEquals(null, list.getFirst());
-        assertEquals(null, list.getLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
     }
 
     @Test
@@ -468,8 +467,7 @@ public class ArrayDequeTest {
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
      *
-     * && is the "and" operation. */
-    public void addIsEmptySizeTest() {
+     * && is the "and" operation. */ public void addIsEmptySizeTest() {
 
         deque.ArrayDeque<String> lld1 = new deque.ArrayDeque<String>();
 
@@ -492,8 +490,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
-    public void addRemoveTest() {
+    /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */ public void addRemoveTest() {
 
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<Integer>();
         // should be empty
@@ -509,8 +506,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    /* Tests removing from an empty deque */
-    public void removeEmptyTest() {
+    /* Tests removing from an empty deque */ public void removeEmptyTest() {
 
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<>();
         lld1.addFirst(3);
@@ -529,8 +525,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    /* Check if you can create deque.ArrayDeques with different parameterized types*/
-    public void multipleParamTest() {
+    /* Check if you can create deque.ArrayDeques with different parameterized types*/ public void multipleParamTest() {
 
         deque.ArrayDeque<String> lld1 = new deque.ArrayDeque<String>();
         deque.ArrayDeque<Double> lld2 = new deque.ArrayDeque<Double>();
@@ -546,23 +541,21 @@ public class ArrayDequeTest {
     }
 
     @Test
-    /* check if null is return when removing from an empty deque.ArrayDeque. */
-    public void emptyNullReturnTest() {
+    /* check if null is return when removing from an empty deque.ArrayDeque. */ public void emptyNullReturnTest() {
 
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<Integer>();
 
         boolean passed1 = false;
         boolean passed2 = false;
-        assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
-        assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
+        assertNull("Should return null when removeFirst is called on an empty Deque,", lld1.removeFirst());
+        assertNull("Should return null when removeLast is called on an empty Deque,", lld1.removeLast());
 
     }
 
     @Test
     @Ignore
     // Only Enable it when you need to check the performance
-    /* Add large number of elements to deque; check if order is correct. */
-    public void bigLLDequeTest() {
+    /* Add large number of elements to deque; check if order is correct. */ public void bigLLDequeTest() {
 
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<Integer>();
         for (int i = 0; i < 1000000; i++) {
@@ -581,8 +574,7 @@ public class ArrayDequeTest {
         }
 
     }
-    // Extra tests
-    final int INPUT_SIZE = 100000;
+
     @Test
     public void emptyList() {
 
@@ -631,6 +623,7 @@ public class ArrayDequeTest {
         assertEquals(1, lld1.size());
         assertEquals(3, result);
     }
+
     @Test
     public void addAndRemoveOneItemFromFrontAndMakeListEmpty() {
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<>();
@@ -639,6 +632,7 @@ public class ArrayDequeTest {
         assertEquals(0, lld1.size());
         assertEquals(3, result);
     }
+
     @Test
     public void removeFromFrontAndEnd() {
         deque.ArrayDeque<Integer> lld1 = new deque.ArrayDeque<>();
@@ -648,7 +642,7 @@ public class ArrayDequeTest {
         for (int i = 0; i < INPUT_SIZE; i++) {
             lld1.addLast(i);
         }
-        for (int i = 0; i < 10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             lld1.removeFirst();
         }
         for (int i = 0; i < 20; i++) {

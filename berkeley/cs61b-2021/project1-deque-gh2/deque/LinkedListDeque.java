@@ -16,6 +16,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int position = 0;
+
             @Override
             public boolean hasNext() {
                 return position < size;
@@ -29,28 +30,6 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
                 return get(position++);
             }
         };
-    }
-
-    public class Node {
-        public Node(T value) {
-            this.value = value;
-        }
-
-        private T value;
-        private Node next;
-        private Node previous;
-
-        public T getValue() {
-            return value;
-        }
-
-        public Node getNext() {
-            return next;
-        }
-
-        public Node getPrevious() {
-            return previous;
-        }
     }
 
     public int size() {
@@ -183,7 +162,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         for (int i = 0; i < index; i++) {
             temp = temp.next;
         }
-        return (T) temp.value;
+        return temp.value;
     }
 
     // Extra methods
@@ -303,5 +282,26 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     public Node getTail() {
         return tail;
+    }
+
+    public class Node {
+        private final T value;
+        private Node next;
+        private Node previous;
+        public Node(T value) {
+            this.value = value;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public Node getPrevious() {
+            return previous;
+        }
     }
 }

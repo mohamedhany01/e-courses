@@ -3,6 +3,7 @@ package deque;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class LinkedListDequeTest {
 
@@ -21,8 +22,8 @@ public class LinkedListDequeTest {
     @Test
     public void listIsEmptyNoItemInside() {
         LinkedListDeque<Integer> list = new LinkedListDeque<>();
-        assertEquals(null, list.getFirst());
-        assertEquals(null, list.getLast());
+        assertNull(list.getFirst());
+        assertNull(list.getLast());
         assertEquals(0, list.size());
     }
 
@@ -88,7 +89,7 @@ public class LinkedListDequeTest {
         assertEquals(0, list.get(0).intValue());
         assertEquals(VALUES_SIZE - 1, list.get(VALUES_SIZE - 1).intValue());
         assertEquals(0, list.get(VALUES_SIZE).intValue());
-        assertEquals(null, list.get(-1));
+        assertNull(list.get(-1));
     }
 
     @Test
@@ -97,8 +98,8 @@ public class LinkedListDequeTest {
         list.addFirst(5);
         assertEquals(5, list.removeFirst().intValue());
         assertEquals(0, list.size());
-        assertEquals(null, list.getHead());
-        assertEquals(null, list.getTail());
+        assertNull(list.getHead());
+        assertNull(list.getTail());
     }
 
     @Test
