@@ -199,5 +199,15 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
                 return list[position++];
             }
         };
+
+    }
+
+    @Override
+    public String toString() {
+        ArrayDeque<String> tempList = new ArrayDeque<>();
+        for (T item : this) {
+            tempList.addFirst(item.toString());
+        }
+        return "{" + String.join(", ", tempList) + "}";
     }
 }
