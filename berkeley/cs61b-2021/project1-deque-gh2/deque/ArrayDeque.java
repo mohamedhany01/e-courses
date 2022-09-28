@@ -210,4 +210,29 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
         return "{" + String.join(", ", tempList) + "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        // Performance wise
+        if (o == this) {
+            return true;
+        }
+
+        if (o instanceof ArrayDeque arrayDequeObj) {
+            if (this.size != arrayDequeObj.size) {
+                return false;
+            }
+
+            for (int i = 0; i < this.getLength(); i++) {
+                String value1 = this.get(i) == null ? "Null" : this.get(i).toString();
+                String value2 = ((ArrayDeque<?>) o).get(i) == null ? "Null" : ((ArrayDeque<?>) o).get(i).toString();
+                if (!value1.equals(value2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

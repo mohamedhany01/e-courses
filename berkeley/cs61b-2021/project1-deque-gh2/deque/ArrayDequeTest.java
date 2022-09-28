@@ -16,6 +16,58 @@ public class ArrayDequeTest {
     final int INPUT_SIZE = 100000;
 
     @Test
+    public void testEqualsMethod() {
+        deque.ArrayDeque<Integer> list1 = new deque.ArrayDeque<>();
+        deque.ArrayDeque<Integer> list2 = new deque.ArrayDeque<>();
+
+        for (int i = 0; i < 5; i++) {
+            list1.addFirst(i);
+            list2.addFirst(i);
+        }
+
+        // Self test
+        assertTrue(list1.equals(list1));
+        assertTrue(list2.equals(list2));
+
+        // Each other test
+        assertTrue(list1.equals(list2));
+        assertTrue(list2.equals(list1));
+
+        list1 = new deque.ArrayDeque<>();
+        list2 = new deque.ArrayDeque<>();
+
+        for (int i = 0; i < 5; i++) {
+            list1.addFirst(i);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            list2.addFirst(i);
+        }
+
+        // Each other test
+        assertFalse(list1.equals(list2));
+        assertFalse(list2.equals(list1));
+
+        list1 = new deque.ArrayDeque<>();
+        list2 = new deque.ArrayDeque<>();
+
+        for (int i = 0; i < 5; i++) {
+            list1.addFirst(i);
+
+            if (i == 2) {
+                list2.addFirst(10);
+            } else {
+                list2.addFirst(i);
+            }
+        }
+
+        // Each other test
+        assertFalse(list1.equals(list2));
+        assertFalse(list2.equals(list1));
+
+    }
+
+    @Test
     public void displayUsingIterator() {
         deque.ArrayDeque<Integer> list = new deque.ArrayDeque<>();
         for (int i = 0; i < INPUT; i++) {
