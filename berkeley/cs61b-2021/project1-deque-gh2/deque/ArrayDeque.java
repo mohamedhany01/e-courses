@@ -235,4 +235,19 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
         return false;
     }
+
+    /*
+    * "..." called the variable arguments "varargs",
+    * this is same as "arguments" object in JavaScript!
+    *
+    * Using <Generic> after static keyword converts this method
+    * to a generic method, odd right? It's a must to make this method works
+    * */
+    public static <I> ArrayDeque<I> of(I... items) {
+        ArrayDeque<I> newItems = new ArrayDeque<>();
+        for(I item: items) {
+            newItems.addFirst(item);
+        }
+        return newItems;
+    }
 }

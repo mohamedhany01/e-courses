@@ -702,4 +702,13 @@ public class ArrayDequeTest {
         }
         assertEquals(INPUT_SIZE + INPUT_SIZE - 30, lld1.size());
     }
+
+    @Test public void testOfMethod() {
+        deque.ArrayDeque<Integer> integers = deque.ArrayDeque.of(1, 3, 4, 6, 10, 8);
+        integers.printDeque();
+
+        assertEquals(6, integers.size());
+        assertEquals(1, integers.getLast().intValue());
+        assertEquals(8, integers.getFirst().intValue());
+    }
 }
