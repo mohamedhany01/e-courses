@@ -1,5 +1,7 @@
-package deque;
+package test;
 
+import deque.Deque;
+import deque.LinkedListDeque;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
 import org.junit.Test;

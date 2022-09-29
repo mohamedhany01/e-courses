@@ -1,6 +1,8 @@
-package deque;
+package test;
 
 import java.util.Comparator;
+
+import deque.MaxArrayDeque;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
