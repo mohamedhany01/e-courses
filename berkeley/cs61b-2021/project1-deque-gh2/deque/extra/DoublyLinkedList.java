@@ -81,7 +81,7 @@ public class DoublyLinkedList<T> implements Deque<T> {
     public void printDeque() {
         Node temp = head;
         while (temp != null) {
-            System.out.print(temp.value + ",");
+            System.out.print(temp.value + " ");
             temp = temp.next;
         }
         System.out.println();
@@ -90,7 +90,7 @@ public class DoublyLinkedList<T> implements Deque<T> {
     public void printListReversed() {
         Node temp = tail;
         while (temp != null) {
-            System.out.print(temp.value + ",");
+            System.out.print(temp.value + " ");
             temp = temp.previous;
         }
         System.out.println();

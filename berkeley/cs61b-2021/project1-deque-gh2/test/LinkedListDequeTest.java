@@ -140,4 +140,25 @@ public class LinkedListDequeTest {
         assertEquals(8, list.getFirst().intValue());
         assertEquals(8, list.getLast().intValue());
     }
+
+    @Test
+    public void getItemsRecursive() {
+        LinkedListDeque<String> lld1 = new LinkedListDeque<>();
+        lld1.addFirst("bar");
+        lld1.addFirst("buz");
+        lld1.addFirst("zuo");
+        lld1.addFirst("abo");
+        lld1.addFirst("bee");
+
+        assertEquals("bee", lld1.getRecursive(0).toString());
+        assertEquals("abo", lld1.getRecursive(1).toString());
+        assertEquals("zuo", lld1.getRecursive(2).toString());
+        assertEquals("buz", lld1.getRecursive(3).toString());
+        assertEquals("bar", lld1.getRecursive(4).toString());
+
+        assertEquals(null, lld1.getRecursive(5));
+        assertEquals(null, lld1.getRecursive(-1));
+
+        assertEquals(5, lld1.size());
+    }
 }

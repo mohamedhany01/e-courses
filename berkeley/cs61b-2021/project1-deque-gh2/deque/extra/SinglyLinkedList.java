@@ -6,25 +6,15 @@ public class SinglyLinkedList<T> implements Deque<T> {
     private Node head;
     private Node tail;
     private int size;
+
     public SinglyLinkedList() {
         size = 0;
     }
-    public class Node {
-        public Node(T value) {
-            this.value = value;
-        }
 
-        private T value;
-        private Node next;
-
-        public T getValue() {
-            return value;
-        }
-        public Node getNode() {return next; }
-    }
     public int size() {
         return size;
     }
+
     /*
      * Edge Cases
      * - If head is "null", the new node will make it its "next" which is "null".
@@ -39,6 +29,7 @@ public class SinglyLinkedList<T> implements Deque<T> {
         }
         size++;
     }
+
     /*
      * Edge Cases
      * - If tail is "null", make it do the same code in addFirst()
@@ -54,17 +45,20 @@ public class SinglyLinkedList<T> implements Deque<T> {
         tail = node;
         size++;
     }
+
     public boolean isEmpty() {
         return size() == 0;
     }
+
     public void printDeque() {
         Node temp = head;
         while (temp != null) {
-            System.out.print(temp.value + ",");
+            System.out.print(temp.value + " ");
             temp = temp.next;
         }
         System.out.println();
     }
+
     /*
      * Edge Cases
      * - If head is "null", then tail must be "null", as well
@@ -82,6 +76,7 @@ public class SinglyLinkedList<T> implements Deque<T> {
 
         return value;
     }
+
     /*
      * Edge Cases
      * - If there is one node or "null" then "removeFirst()":
@@ -103,6 +98,7 @@ public class SinglyLinkedList<T> implements Deque<T> {
 
         return value;
     }
+
     public T get(int index) {
         Node temp = head;
         for (int i = 0; i < index; i++) {
@@ -115,9 +111,11 @@ public class SinglyLinkedList<T> implements Deque<T> {
     public T getFirst() {
         return head.value;
     }
+
     public T getLast() {
         return tail.value;
     }
+
     public Node find(T value) {
         Node temp = head;
         while (temp != null) {
@@ -128,6 +126,7 @@ public class SinglyLinkedList<T> implements Deque<T> {
         }
         return null;
     }
+
     /*
      * Edge Cases
      * - If index is "0" means that we just have one node, then we can call "removeFirst()"
@@ -146,8 +145,9 @@ public class SinglyLinkedList<T> implements Deque<T> {
         T value = prevNode.getNode().value;
         prevNode.next = prevNode.next.next;
         size--;
-        return  value;
+        return value;
     }
+
     /*
      * Edge Cases
      * - If index is "0" means that we just have one node, then we can call "addFirst()"
@@ -198,5 +198,61 @@ public class SinglyLinkedList<T> implements Deque<T> {
         node.next = temp.next;
         temp.next = node;
         size++;
+    }
+
+    public void reverseIteratively() {
+        Node previous = null;
+        Node current = head;
+        Node next = null;
+        tail = head;
+
+        while (current != null) {
+            next = current.next; // Save next node
+            current.next = previous; // Flip the pointer direction
+            previous = current; // Make previous to point the new reversed node
+            current = next; // Update current to point first node in the second list "old list"
+        }
+
+        head = previous;
+    }
+
+    public void reverseRecursively() {
+        head = getReversedList(head);
+    }
+
+    private Node getReversedList(Node start) {
+        /*
+        * See:
+        * https://www.youtube.com/watch?v=O0By4Zq0OFc
+        * https://www.youtube.com/watch?v=Ip4y7Inx7QY
+        * */
+        if (start == null) {
+            return null;
+        } else if (start.next == null) {
+            tail = head; // Flip the tail to be the head
+            return start;
+        } else {
+            Node nextNode = start.next;
+            start.next = null;
+            Node restList = getReversedList(nextNode);
+            nextNode.next = start;
+            return restList;
+        }
+    }
+
+    public class Node {
+        private T value;
+        private Node next;
+        public Node(T value) {
+            this.value = value;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public Node getNode() {
+            return next;
+        }
     }
 }

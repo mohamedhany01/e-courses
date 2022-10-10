@@ -14,8 +14,7 @@ public class SinglyLinkedListTest {
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
      *
-     * && is the "and" operation. */
-    public void addIsEmptySizeTest() {
+     * && is the "and" operation. */ public void addIsEmptySizeTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         SinglyLinkedList<String> lld1 = new SinglyLinkedList<String>();
@@ -39,8 +38,7 @@ public class SinglyLinkedListTest {
     }
 
     @Test
-    /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
-    public void addRemoveTest() {
+    /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */ public void addRemoveTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<Integer>();
@@ -57,8 +55,7 @@ public class SinglyLinkedListTest {
     }
 
     @Test
-    /* Tests removing from an empty deque */
-    public void removeEmptyTest() {
+    /* Tests removing from an empty deque */ public void removeEmptyTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<>();
@@ -78,8 +75,7 @@ public class SinglyLinkedListTest {
     }
 
     @Test
-    /* Check if you can create LinkedListDeques with different parameterized types*/
-    public void multipleParamTest() {
+    /* Check if you can create LinkedListDeques with different parameterized types*/ public void multipleParamTest() {
 
         SinglyLinkedList<String> lld1 = new SinglyLinkedList<String>();
         SinglyLinkedList<Double> lld2 = new SinglyLinkedList<Double>();
@@ -95,23 +91,21 @@ public class SinglyLinkedListTest {
     }
 
     @Test
-    /* check if null is return when removing from an empty SinglyLinkedList. */
-    public void emptyNullReturnTest() {
+    /* check if null is return when removing from an empty SinglyLinkedList. */ public void emptyNullReturnTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<Integer>();
 
         boolean passed1 = false;
         boolean passed2 = false;
-        assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
-        assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
+        assertNull("Should return null when removeFirst is called on an empty Deque,", lld1.removeFirst());
+        assertNull("Should return null when removeLast is called on an empty Deque,", lld1.removeLast());
 
     }
 
     @Test
     @Ignore
-    /* Add large number of elements to deque; check if order is correct. */
-    public void bigLLDequeTest() {
+    /* Add large number of elements to deque; check if order is correct. */ public void bigLLDequeTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<Integer>();
@@ -225,5 +219,81 @@ public class SinglyLinkedListTest {
         lld1.insertInto(100, 2);
 
 //        assertEquals(7, lld1.size());
+    }
+
+    @Test
+    public void reverseListIteratively() {
+        SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<>();
+        lld1.addFirst(0);
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.addFirst(4);
+        lld1.addFirst(5);
+        System.out.println("Before reversing:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(5, lld1.getFirst().intValue());
+        assertEquals(0, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
+
+        lld1.reverseIteratively();
+
+        System.out.println("\nAfter reversing 1:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(0, lld1.getFirst().intValue());
+        assertEquals(5, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
+
+        lld1.reverseIteratively();
+
+        System.out.println("\nAfter reversing 2:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(5, lld1.getFirst().intValue());
+        assertEquals(0, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
+    }
+
+    @Test
+    public void reverseListRecursive() {
+        SinglyLinkedList<Integer> lld1 = new SinglyLinkedList<>();
+        lld1.addFirst(0);
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.addFirst(4);
+        lld1.addFirst(5);
+        System.out.println("Before reversing:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(5, lld1.getFirst().intValue());
+        assertEquals(0, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
+
+        lld1.reverseRecursively();
+
+        System.out.println("\nAfter reversing 1:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(0, lld1.getFirst().intValue());
+        assertEquals(5, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
+
+        lld1.reverseRecursively();
+
+        System.out.println("\nAfter reversing 2:");
+        lld1.printDeque();
+        System.out.println("Head:" + lld1.getFirst().intValue() + ", " + " Back:" + lld1.getLast().intValue());
+
+        assertEquals(5, lld1.getFirst().intValue());
+        assertEquals(0, lld1.getLast().intValue());
+        assertEquals(6, lld1.size());
     }
 }

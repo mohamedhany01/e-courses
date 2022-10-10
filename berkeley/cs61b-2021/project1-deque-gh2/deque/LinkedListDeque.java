@@ -284,10 +284,26 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return tail;
     }
 
+    public T getRecursive(int index) {
+        int startPoint = 0;
+        return traverseRecursively(startPoint, index, head);
+    }
+
+    private T traverseRecursively(int start, int end, Node n) {
+        if (end > size - 1 || end < 0) {
+            return null;
+        } else if (start == end) {
+            return n.getValue();
+        } else {
+            return traverseRecursively(start + 1, end, n.next);
+        }
+    }
+
     public class Node {
         private final T value;
         private Node next;
         private Node previous;
+
         public Node(T value) {
             this.value = value;
         }
