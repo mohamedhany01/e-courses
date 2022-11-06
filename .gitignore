@@ -23,3 +23,9 @@ hs_err_pid*
 
 # IntelliJ configure files
 .idea/
+
+# Output Capers "Rerun CLI commands to regnerate them again"
+.capers/
+
+# VScode cache
+.vscode/
