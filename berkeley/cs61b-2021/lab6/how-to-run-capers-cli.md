@@ -83,10 +83,12 @@ To run test cases use `make check`
 See the CS61B 2021 - [lab6 guide](https://sp21.datastructur.es/materials/lab/lab6/lab6#mandatory-epilogue-debugging)
 
 NOTES:
+- Download [`make` binaries](https://gist.github.com/evanwill/0207876c3243bbb6863e65ec5dc3f058) for windows "if you are using it"
 - Init `$REPO_DIR` env variable with absolute path:
     - In windows "powershell", `$env:REPO_DIR = "path\to\cs61b-main"` with `javalib` and `lab6` directory
     - In linux "shell", `REPO_DIR="path/to/cs61b-main"` with `javalib` and `lab6` directory
 - Run IDEA -> Run -> Edit configurations... -> Add new -> Remote JVM Debug -> Set a name -> Apply
+- Set a breakpoint
 - Run `runner.py`
     - In windows "powershell", `cd .\lab6\testing` and run `python.exe .\runner.py --debug .\our\<test-name>.in`
     - In linux "shell", `cd ./lab6/testing` and run `python.exe ./runner.py --debug ./our/<test-name>.in`
