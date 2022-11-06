@@ -442,7 +442,7 @@ if __name__ == "__main__":
                 TIMEOUT = 100000
         if lib_dir is None:
             lib_dir = join(abspath(environ['REPO_DIR']),
-                           "library-sp21/javalib")
+                           "javalib")
         else:
             lib_dir = join(abspath(getcwd()), abspath(lib_dir))
     except GetoptError:
