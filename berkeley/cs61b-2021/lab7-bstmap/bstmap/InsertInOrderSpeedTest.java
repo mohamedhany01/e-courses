@@ -1,11 +1,11 @@
 package bstmap;
 
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.io.IOException;
-import java.util.Scanner;
-
 import edu.princeton.cs.algs4.Stopwatch;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  * Performs a timing test on three different set implementations.
@@ -30,7 +30,7 @@ public class InsertInOrderSpeedTest {
         String repeat = "y";
         do {
             System.out.print("\nEnter # strings to insert into the maps: ");
-            int N = i.waitForPositiveInt(input);
+            int N = InsertRandomSpeedTest.waitForPositiveInt(input);
             timeInOrderMap61B(new ULLMap<>(), N);
             timeInOrderMap61B(new BSTMap<>(), N);
             timeInOrderTreeMap(new TreeMap<>(), N);
@@ -51,7 +51,7 @@ public class InsertInOrderSpeedTest {
         String s = "cat";
         for (int i = 0; i < N; i++) {
             s = StringUtils.nextString(s);
-            map61B.put(s, new Integer(i));
+            map61B.put(s, Integer.valueOf(i));
         }
         return sw.elapsedTime();
     }
@@ -64,7 +64,7 @@ public class InsertInOrderSpeedTest {
         String s = "cat";
         for (int i = 0; i < N; i++) {
             s = StringUtils.nextString(s);
-            ts.put(s, new Integer(i));
+            ts.put(s, Integer.valueOf(i));
         }
         return sw.elapsedTime();
     }
@@ -74,7 +74,7 @@ public class InsertInOrderSpeedTest {
         String s = "cat";
         for (int i = 0; i < N; i++) {
             s = StringUtils.nextString(s);
-            ts.put(s, new Integer(i));
+            ts.put(s, Integer.valueOf(i));
         }
         return sw.elapsedTime();
     }
