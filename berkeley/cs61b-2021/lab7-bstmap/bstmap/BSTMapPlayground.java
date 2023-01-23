@@ -7,6 +7,6 @@ public class BSTMapPlayground {
         map.put(55, "Buz");
         map.put(22, "gggg");
         map.put(22, "DDDD");
-        System.out.println(map.get(44));
+        System.out.println(map.containsKey(22));
     }
 }
