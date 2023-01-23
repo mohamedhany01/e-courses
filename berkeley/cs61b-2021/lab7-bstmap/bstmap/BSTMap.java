@@ -24,7 +24,21 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     @Override
     public V get(K key) {
-        return null;
+        return getRecursively(this.root, key);
+    }
+
+    private V getRecursively(Node node, K key) {
+        if (node == null) {
+            return null;
+        } else if (key.compareTo(node.key) == 0) {
+            return node.value;
+        } else if (key.compareTo(node.key) > 0) {
+            return getRecursively(node.right, key);
+        } else if (key.compareTo(node.key) < 0) {
+            return getRecursively(node.left, key);
+        } else {
+            return null;
+        }
     }
 
 
