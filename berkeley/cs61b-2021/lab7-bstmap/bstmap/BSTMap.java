@@ -1,8 +1,6 @@
 package bstmap;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
@@ -93,16 +91,68 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         throw new UnsupportedOperationException();
     }
 
-    // Unsupported API
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V value = get(key);
+
+        // Delete and restructure the tree
+        this.root = getNewStructure(root, key);
+        return value;
     }
 
-    // Unsupported API
+    private Node getMaxNode(Node node) {
+        if (node == null) {
+            return null;
+        } else if (node.right == null) {
+            return node;
+        } else {
+            return getMaxNode(node.right);
+        }
+    }
+
+    private Node getNewStructure(Node node, K key) {
+        if (node == null) {
+            return null;
+        } else if (key.compareTo(node.key) > 0) {
+            // Search in right side
+            node.right = getNewStructure(node.right, key);
+        } else if (key.compareTo(node.key) < 0) {
+            // Search in left side
+            node.left = getNewStructure(node.left, key);
+        } else {
+            // We found the target node, so we have 3 cases
+            if (node.left == null) {
+                /*
+                 * Return child node of target node:
+                 *   - in case one is null in right side
+                 *   - in case two, it has a node will be relinked
+                 * */
+                size--;
+                return node.right;
+            } else if (node.right == null) {
+                /*
+                 * Return child node of target node:
+                 *   - in case one is null in left side
+                 *   - in case two, it has a node will be relinked
+                 * */
+                size--;
+                return node.left;
+            } else {
+                Node maxOfTarget = getMaxNode(node.left);
+                node.key = maxOfTarget.key;
+                node.left = getNewStructure(maxOfTarget, maxOfTarget.key);
+            }
+        }
+        return node;
+    }
+
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        V nodeValue = get(key);
+
+        // Delete and restructure the tree
+        this.root = getNewStructure(root, key);
+        return nodeValue;
     }
 
     // Unsupported API
@@ -112,7 +162,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     private class Node {
-        private final K key;
+        private K key;
         private V value;
         private Node left;
         private Node right;
