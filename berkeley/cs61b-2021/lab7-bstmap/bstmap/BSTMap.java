@@ -46,8 +46,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (key.compareTo(node.key) < 0) {
             node.left = addRecursively(node.left, key, value);
         } else {
-            // The keys are equal @TODO
-            return null;
+            // If the key exists, just overwrite its value
+            node.value = value;
+            return node;
         }
         return node;
     }
@@ -84,7 +85,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     private class Node {
         private final K key;
-        private final V value;
+        private V value;
         private Node left;
         private Node right;
 
