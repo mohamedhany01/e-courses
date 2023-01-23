@@ -100,8 +100,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return value;
     }
 
+    /*
+    * It's important to note that this method
+    * can only be used to get the max key if the keys are unique,
+    * if the keys are not unique the method will return the rightmost key,
+    * which is not necessary the max key.
+    * */
     private Node getMaxNode(Node node) {
-        if (node == null) {
+        if (node == null || this.size == 0) {
             return null;
         } else if (node.right == null) {
             return node;
