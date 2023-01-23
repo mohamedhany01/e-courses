@@ -1,6 +1,8 @@
 package bstmap;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
@@ -71,6 +73,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         Node newNode = new Node(key, value);
         size++;
         return newNode;
+    }
+
+    public void printInOrder() {
+        traverseInorderRecursively(this.root);
+    }
+
+    private void traverseInorderRecursively(Node node) {
+        if (node != null) {
+            traverseInorderRecursively(node.left);
+            System.out.print(node.key + " ");
+            traverseInorderRecursively(node.right);
+        }
     }
 
     // Unsupported API
