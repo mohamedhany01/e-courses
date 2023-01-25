@@ -3,6 +3,7 @@ package bstmap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private int size;
@@ -86,10 +87,20 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         }
     }
 
-    // Unsupported API
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        // If you used `HashSet` won't print the elements in-order, but `TreeSet` will
+        Set<K> mapKeys = new TreeSet<>();
+        extractKeys(this.root, mapKeys);
+        return mapKeys;
+    }
+
+    private void extractKeys(Node node, Set<K> set) {
+        if (node != null) {
+            set.add(node.key);
+            extractKeys(node.left, set);
+            extractKeys(node.right, set);
+        }
     }
 
     @Override
@@ -176,7 +187,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             if (node != null) {
                 // Put root and its left side in the stack
                 // In-order
-                 pushLeft(node);
+                pushLeft(node);
 
                 // Reversed order
                 // pushRight(node);
