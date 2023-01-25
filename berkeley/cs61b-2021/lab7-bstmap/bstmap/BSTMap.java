@@ -2,13 +2,14 @@ package bstmap;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private int size;
     private Node root;
 
     public BSTMap() {
-        this.size = size;
+        this.size = 0;
     }
 
     @Override
@@ -101,11 +102,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     /*
-    * It's important to note that this method
-    * can only be used to get the max key if the keys are unique,
-    * if the keys are not unique the method will return the rightmost key,
-    * which is not necessary the max key.
-    * */
+     * It's important to note that this method
+     * can only be used to get the max key if the keys are unique,
+     * if the keys are not unique the method will return the rightmost key,
+     * which is not necessary the max key.
+     * */
     private Node getMaxNode(Node node) {
         if (node == null || this.size == 0) {
             return null;
@@ -161,10 +162,60 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return nodeValue;
     }
 
-    // Unsupported API
     @Override
-    public Iterator iterator() {
-        throw new UnsupportedOperationException();
+    public Iterator<K> iterator() {
+        return new MapKeysIterator(this.root);
+    }
+
+
+    // In-order "LRR" iterator
+    private class MapKeysIterator implements Iterator<K> {
+        private final Stack<Node> nodesTracker = new Stack<>();
+
+        public MapKeysIterator(Node node) {
+            if (node != null) {
+                // Put root and its left side in the stack
+                // In-order
+                 pushLeft(node);
+
+                // Reversed order
+                // pushRight(node);
+            } else {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+        }
+
+        private void pushLeft(Node node) {
+            while (node != null) {
+                nodesTracker.push(node);
+                node = node.left;
+            }
+        }
+
+        private void pushRight(Node node) {
+            while (node != null) {
+                nodesTracker.push(node);
+                node = node.right;
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !nodesTracker.isEmpty();
+        }
+
+        @Override
+        public K next() {
+            Node currentNode = nodesTracker.pop();
+
+            // For each right node "if it exits" in the stack track their left side as well
+            // In-order
+            pushLeft(currentNode.right);
+
+            // Reversed order
+            // pushRight(currentNode.left);
+            return currentNode.key;
+        }
     }
 
     private class Node {
@@ -178,10 +229,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             this.value = value;
             this.left = null;
             this.right = null;
-        }
-
-        public V getValue() {
-            return value;
         }
     }
 }

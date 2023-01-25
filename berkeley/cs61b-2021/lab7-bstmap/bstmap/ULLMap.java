@@ -113,6 +113,7 @@ public class ULLMap<K, V> implements Map61B<K, V> {
          * Stores the next Entry in the linked list.
          */
         Entry next;
+
         /**
          * Stores KEY as the key in this key-value pair, VAL as the value, and
          * NEXT as the next node in the linked list.
