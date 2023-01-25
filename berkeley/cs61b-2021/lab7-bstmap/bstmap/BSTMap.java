@@ -19,9 +19,26 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         this.size = 0;
     }
 
+    /*
+     *  You can't use `get()` method to check for key, why?
+     *   - The get() method returns the value associated with a given key,
+     *   or null if the key is not present in the map. So, if a key is present
+     *   in the map but its value is null, the get() method will return null which can be misleading.
+     * */
     @Override
     public boolean containsKey(K key) {
-        return get(key) != null;
+        Node current = this.root;
+        while (current != null) {
+            int comparisonValue = key.compareTo(current.key);
+            if (comparisonValue > 0) {
+                current = current.right;
+            } else if (comparisonValue < 0) {
+                current = current.left;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
