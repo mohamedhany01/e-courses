@@ -389,3 +389,6 @@ tramp
 !byow/**/*.mp4
 !byow/**/*.gif
 !byow/**/*.wav
+
+# Project 2 gitlet
+.gitlet/
