@@ -2,33 +2,57 @@ import com.gitlet.global.Global;
 import com.gitlet.utilities.IO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class TestIO {
 
     @Test
-    public void buildNewPath() {
-        String pathName = "foo";
-        Path newPath = IO.buildNewPath(pathName);
-        Path expectedPath = Paths.get(Global.CURRENT_WORKING_DIRECTORY.toString(), pathName);
-        Assertions.assertEquals(expectedPath, newPath);
+    public void joinPath_newPath_returnValidPath() {
+        String newPathName = "foo";
+        Path currentDirectory = Global.CURRENT_WORKING_DIRECTORY;
+        Path newPath = IO.joinPathToWorkingDirectory(currentDirectory, newPathName);
+        String expectPath = Paths.get(currentDirectory.toString(), newPathName).toString();
+
+        Assertions.assertEquals(expectPath, newPath.toString());
     }
 
     @Test
-    public void createAFile() {
-        Path newPath = IO.createPath(IO.buildNewPath("simple_file.txt"), 'F');
-        Assertions.assertTrue(IO.isPathExists(newPath));
-        Assertions.assertNull(IO.createPath(newPath, 'F'));
-        Assertions.assertTrue(IO.deletePath(newPath));
+    public void buildPath_newPathInCurrentDir_returnValidPath() {
+        String newPathName = "foo";
+        String newPath = IO.buildNewPath(newPathName).toString();
+        String expectPath = Global.CURRENT_WORKING_DIRECTORY + File.separator + newPathName;
+
+        Assertions.assertEquals(expectPath, newPath.toString());
     }
 
     @Test
-    public void createADirectory() {
-        Path newPath = IO.createPath(IO.buildNewPath("simple_directory"), 'D');
-        Assertions.assertTrue(IO.isPathExists(newPath));
-        Assertions.assertNull(IO.createPath(newPath, 'D'));
-        Assertions.assertTrue(IO.deletePath(newPath));
+    public void createFile_newFileInCurrentDirectory_returnNewFile() {
+        String fileName = "simple_file.txt";
+        Path newFilePath = IO.buildNewPath(fileName);
+        Path createdFile = IO.createPath(newFilePath, 'f');
+
+        Assertions.assertNotEquals(null, createdFile);
+        Assertions.assertNull(IO.createPath(newFilePath, 'f'));
+        Assertions.assertEquals(true, IO.isPathExists(createdFile));
+        Assertions.assertTrue(IO.deletePath(createdFile));
+    }
+
+    @Test
+    public void createDirectory_newDirectoryInCurrentDirectory_returnNewDirectory() {
+        Path createdDirectory = IO.createPath(IO.buildNewPath("simple_directory"), 'D');
+
+        Assertions.assertTrue(IO.isPathExists(createdDirectory));
+        Assertions.assertNull(IO.createPath(createdDirectory, 'D'));
+        Assertions.assertEquals(true, IO.isPathExists(createdDirectory));
+        Assertions.assertTrue(IO.deletePath(createdDirectory));
+    }
+
+    @Test
+    public void foo() {
+        Assertions.assertNotEquals(null, IO.filterDirectory(Global.CURRENT_WORKING_DIRECTORY, Global.GITLET_IGNORE));
     }
 
     @Test

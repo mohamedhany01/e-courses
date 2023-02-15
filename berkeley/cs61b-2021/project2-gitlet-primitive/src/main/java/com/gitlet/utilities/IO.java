@@ -1,16 +1,13 @@
 package com.gitlet.utilities;
 import com.gitlet.global.Global;
-import java.io.IOException;
-import java.io.File;
-import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.io.LineNumberReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 public class IO {
     public final static Path joinPathToWorkingDirectory(Path main, String extend) {
@@ -100,5 +97,32 @@ public class IO {
             }
         }
         return 0;
+    }
+
+    public final static List<Path> readPathsFromFile(Path parentPath, String pathName) {
+        List<Path> ignoredPaths = new LinkedList<>();
+        Path fullPath = IO.buildNewPath(parentPath, pathName);
+        if (IO.isPathExists(fullPath)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(fullPath.toFile()))) {
+                String pathInFile = reader.readLine();
+                while ( pathInFile != null) {
+                    ignoredPaths.add(buildNewPath(parentPath, pathInFile));
+                    pathInFile = reader.readLine();
+                };
+                return ignoredPaths;
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+        return null;
+    }
+
+    public final static List<Path> filterDirectory(Path mainPath, String file) {
+        if (!isPathExists(mainPath)) {
+            return null;
+        }
+
+        List<Path> filteredPaths = IO.readPathsFromFile(mainPath, file);
+        return filteredPaths;
     }
 }
