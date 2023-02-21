@@ -2,9 +2,15 @@ package gitlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static gitlet.Utils.join;
+import static gitlet.Utils.writeObject;
 
 // TODO: any imports you need here
 
@@ -37,7 +43,6 @@ public class Repository {
     public static final File INDEX = initializeStagingArea();
     public static final File OBJECTS = initializeRepositoryArea();
     public static final File HEAD = null;
-
     public static final File MASTER = null;
 
     public static void initializeRepository() {
@@ -53,6 +58,57 @@ public class Repository {
                 Commit.getDefaultParent()
         );
         storeObjects(blob, tree, commit);
+    }
+
+    public static void repoStatus() {
+        HashMap<String, Blob> stagingArea = loadStagingArea();
+        displayUntrackedFiles(stagingArea);
+    }
+
+    public static void repoStage(String [] args) {
+        // TODO: trace this after adding `gitlet` as well
+        // Add to the staging area
+        HashMap<String, Blob> stagingArea = loadStagingArea();
+
+        for (int i = 1; i < args.length; i++) {
+            Path fullPath = Paths.get(CWD.getPath(), args[i]);
+            if (!Files.exists(fullPath)) {
+                throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!" );
+            }
+
+            // Create new Blob
+            Blob blob = new Blob(fullPath);
+            stagingArea.put(blob.getHash(), blob);
+        }
+
+        stagingArea = updateStagingArea(stagingArea);
+        
+        for (Map.Entry<String, Blob> entry:stagingArea.entrySet()) {
+            System.out.println(entry.getValue().getFileName() + " " + entry.getKey());
+        }
+    }
+
+    private static void displayUntrackedFiles(HashMap<String, Blob> stagingArea) {
+        File workingDirectory = CWD;
+        List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
+
+        System.out.println("Untracked Files");
+        for (String fileName : fileNames) {
+            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
+            String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
+            if (!stagingArea.containsKey(fileHash)) {
+                System.out.println("\t" + fullPath.getFileName());
+            }
+        }
+    }
+
+    private static HashMap<String, Blob> loadStagingArea() {
+        return (HashMap<String, Blob>) Utils.readObject(INDEX, HashMap.class);
+    }
+
+    private static HashMap<String, Blob> updateStagingArea(HashMap<String, Blob> stagingArea) {
+        writeObject(INDEX, stagingArea);
+        return loadStagingArea();
     }
 
     private static void storeObjects(Blob blob, Tree tree, Commit commit) {
@@ -97,6 +153,10 @@ public class Repository {
             if (!index.exists()) {
                 try {
                     index.createNewFile();
+
+                    // Add hash map as staging area structure
+                    HashMap<String, Blob> stagingAreaMap = new HashMap<>();
+                    writeObject(index, stagingAreaMap);
                     return index;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
