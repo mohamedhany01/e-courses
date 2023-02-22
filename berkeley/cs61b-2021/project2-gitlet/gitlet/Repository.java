@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static gitlet.Utils.join;
 import static gitlet.Utils.writeObject;
@@ -48,47 +47,45 @@ public class Repository {
     public static void initializeRepository() {
         Blob blob = new Blob(NULL_FILE.toPath());
         Tree tree = new Tree(blob.getHash());
-        Commit commit = new Commit(
-                Commit.getDefaultMessage(),
-                Commit.getDefaultData(),
-                Commit.getDefaultAuthorName(),
-                Commit.getDefaultAuthorEmail(),
-                tree.getHash(),
-                Commit.calcHash(blob.getHash(), tree.getHash()),
-                Commit.getDefaultParent()
-        );
+        Commit commit = new Commit(Commit.getDefaultMessage(), Commit.getDefaultData(), Commit.getDefaultAuthorName(), Commit.getDefaultAuthorEmail(), tree.getHash(), Commit.calcHash(blob.getHash(), tree.getHash()), Commit.getDefaultParent());
         storeObjects(blob, tree, commit);
     }
 
     public static void repoStatus() {
-        HashMap<String, Blob> stagingArea = loadStagingArea();
+        HashMap<String, String> stagingArea = loadStagingArea();
         displayUntrackedFiles(stagingArea);
+        displayModifiedFiles(stagingArea);
     }
 
-    public static void repoStage(String [] args) {
+    public static void repoStage(String[] args) {
         // TODO: trace this after adding `gitlet` as well
         // Add to the staging area
-        HashMap<String, Blob> stagingArea = loadStagingArea();
+        HashMap<String, String> stagingArea = loadStagingArea();
 
         for (int i = 1; i < args.length; i++) {
             Path fullPath = Paths.get(CWD.getPath(), args[i]);
             if (!Files.exists(fullPath)) {
-                throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!" );
+                throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!");
             }
 
             // Create new Blob
             Blob blob = new Blob(fullPath);
-            stagingArea.put(blob.getHash(), blob);
+
+            if (!stagingArea.containsValue(blob.getHash())) {
+                // Modified and thus it will be updated
+                if (stagingArea.containsKey(blob.getFilePath())) {
+                    stagingArea.put(blob.getFilePath(), blob.getHash());
+                } else {
+                    // It's totally a new entry
+                    stagingArea.put(blob.getFilePath(), blob.getHash());
+                }
+            }
         }
 
-        stagingArea = updateStagingArea(stagingArea);
-        
-        for (Map.Entry<String, Blob> entry:stagingArea.entrySet()) {
-            System.out.println(entry.getValue().getFileName() + " " + entry.getKey());
-        }
+        updateStagingArea(stagingArea);
     }
 
-    private static void displayUntrackedFiles(HashMap<String, Blob> stagingArea) {
+    private static void displayUntrackedFiles(HashMap<String, String> stagingArea) {
         File workingDirectory = CWD;
         List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
 
@@ -96,17 +93,40 @@ public class Repository {
         for (String fileName : fileNames) {
             Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
             String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
-            if (!stagingArea.containsKey(fileHash)) {
+            String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
+            /*
+             * If it's empty or doesn't have a hash and the relative path isn't in the index
+             * */
+            if ((stagingArea.isEmpty() || !stagingArea.containsKey(fileRelativePath)) && !stagingArea.containsValue(fileHash)) {
                 System.out.println("\t" + fullPath.getFileName());
             }
         }
     }
 
-    private static HashMap<String, Blob> loadStagingArea() {
-        return (HashMap<String, Blob>) Utils.readObject(INDEX, HashMap.class);
+    private static void displayModifiedFiles(HashMap<String, String> stagingArea) {
+        File workingDirectory = CWD;
+        List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
+
+        System.out.println("\nModified Files");
+        for (String fileName : fileNames) {
+            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
+            String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
+            String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
+
+            /*
+             * If it's in the index and its hash is changed
+             * */
+            if (stagingArea.containsKey(fileRelativePath) && !stagingArea.containsValue(fileHash)) {
+                System.out.println("\t" + fullPath.getFileName());
+            }
+        }
     }
 
-    private static HashMap<String, Blob> updateStagingArea(HashMap<String, Blob> stagingArea) {
+    private static HashMap<String, String> loadStagingArea() {
+        return (HashMap<String, String>) Utils.readObject(INDEX, HashMap.class);
+    }
+
+    private static HashMap<String, String> updateStagingArea(HashMap<String, String> stagingArea) {
         writeObject(INDEX, stagingArea);
         return loadStagingArea();
     }
@@ -155,7 +175,7 @@ public class Repository {
                     index.createNewFile();
 
                     // Add hash map as staging area structure
-                    HashMap<String, Blob> stagingAreaMap = new HashMap<>();
+                    HashMap<String, String> stagingAreaMap = new HashMap<>();
                     writeObject(index, stagingAreaMap);
                     return index;
                 } catch (IOException e) {

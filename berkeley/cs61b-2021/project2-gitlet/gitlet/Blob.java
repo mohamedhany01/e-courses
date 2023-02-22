@@ -2,6 +2,7 @@ package gitlet;
 
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
@@ -14,6 +15,7 @@ import java.util.Arrays;
 public class Blob implements Serializable {
 
     private final String fileName;
+    private final String filePath;
     private final String hash;
     private final String type = "blob";
 
@@ -22,6 +24,7 @@ public class Blob implements Serializable {
     public Blob(Path filePath) {
         this.fileName = setFileName(filePath);
         this.hash = setHash(filePath);
+        this.filePath = setFilePath(filePath);
     }
 
     public String getType() {
@@ -34,6 +37,10 @@ public class Blob implements Serializable {
         // Set content as well
         this.content = Arrays.toString(fileContent);
         return Utils.sha1(fileContent);
+    }
+
+    private String setFilePath(Path path) {
+        return Paths.get(path.relativize(Repository.CWD.toPath()).toString(), this.fileName).toString();
     }
 
     public String getContent() {
@@ -50,5 +57,9 @@ public class Blob implements Serializable {
 
     public String getHash() {
         return hash;
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 }
