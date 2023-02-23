@@ -2,11 +2,12 @@ package gitlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static gitlet.Utils.join;
 import static gitlet.Utils.writeObject;
@@ -44,7 +45,7 @@ public class Repository {
 
     public static void initializeRepository() {
         Blob blob = new Blob();
-        Tree tree = new Tree(blob.getHash());
+        Tree tree = new Tree(blob);
         Commit rootCommit = new Commit(
                 Commit.getDefaultMessage(),
                 Commit.getDefaultData(),
@@ -55,7 +56,7 @@ public class Repository {
                 tree.getHash()),
                 Commit.getDefaultParent()
         );
-        storeObjects(blob, tree, rootCommit);
+        storeObjects(tree, rootCommit, blob);
     }
 
     public static void repoStatus() {
@@ -93,6 +94,37 @@ public class Repository {
         }
 
         updateStagingArea(stagingArea);
+    }
+
+    public static void repoCommit(String[] args) {
+        String commitMessage = args[1];
+        HashMap<String, String> stagingArea = loadStagingArea();
+
+        Blob[] blobs = new Blob[stagingArea.size()];
+        int counter = 0;
+        for (Map.Entry<String, String> entry: stagingArea.entrySet()) {
+            StringTokenizer tokenizer = new StringTokenizer(entry.getKey());
+            String file = null;
+            for (;tokenizer.hasMoreElements();) {
+                file = tokenizer.nextToken("\\");
+            }
+            blobs[counter++] = new Blob(Paths.get(CWD.toString(), file));
+        }
+        Tree tree = new Tree(blobs);
+
+        // TODO: make parent the commit hash in the HEAD file
+        Commit commit = new Commit(
+                commitMessage,
+                LocalDateTime.now(),
+                Commit.getDefaultAuthorName(),
+                Commit.getDefaultAuthorEmail(),
+                tree.getHash(),
+                Commit.calcHash(Utils.sha1(tree.getContent()), tree.getHash()),
+                null
+        );
+        storeObjects(tree, commit, blobs);
+
+        // TODO: update staging area "index"
     }
 
     private static void displayUntrackedFiles(HashMap<String, String> stagingArea) {
@@ -161,12 +193,20 @@ public class Repository {
         return loadStagingArea();
     }
 
-    private static void storeObjects(Blob blob, Tree tree, Commit commit) {
-        File blobObject = Paths.get(OBJECTS.toString(), blob.getHash()).toFile();
+    private static HashMap<String, String> clearStagingArea(HashMap<String, String> stagingArea) {
+        stagingArea.clear();
+        return stagingArea;
+    }
+
+    private static void storeObjects(Tree tree, Commit commit, Blob ...blobs) {
         File treeObject = Paths.get(OBJECTS.toString(), tree.getHash()).toFile();
         File commitObject = Paths.get(OBJECTS.toString(), commit.getHash()).toFile();
 
-        Utils.writeObject(blobObject, blob);
+        // Write the blob directly to "objects" path, since this list of valid objects
+        for (Blob blob: blobs) {
+            File blobObject = Paths.get(OBJECTS.toString(), blob.getHash()).toFile();
+            Utils.writeObject(blobObject, blob);
+        }
         Utils.writeObject(treeObject, tree);
         Utils.writeObject(commitObject, commit);
     }

@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Represents a gitlet tree object.
@@ -13,18 +14,37 @@ import java.io.Serializable;
 public class Tree implements Serializable {
     private final String hash;
     private final String type = "tree";
-    private final String content;
+    private final String[] content;
 
-    public Tree(String blobHash) {
-        this.hash = Utils.sha1(blobHash);
-        this.content = blobHash;
+    public Tree(Blob ...blobs) {
+        this.content = new String[blobs.length];
+        setContent(blobs);
+        this.hash = Utils.sha1(this.getContent());
     }
 
     public String getHash() {
         return hash;
     }
 
-    public String getContent() {
+    public void setContent(Object ...blobs) {
+        int counter = 0;
+
+        for (Object blob : blobs) {
+            Blob b = (Blob) blob;
+            this.content[counter++] = b.getHash();
+        }
+    }
+
+    public String[] getContent() {
         return content;
+    }
+
+    @Override
+    public String toString() {
+        return "Tree{" +
+                "hash='" + hash + '\'' +
+                ", type='" + type + '\'' +
+                ", content=" + Arrays.toString(content) +
+                '}';
     }
 }
