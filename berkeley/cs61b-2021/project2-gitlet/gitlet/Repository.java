@@ -37,19 +37,25 @@ public class Repository {
      * The .gitlet directory.
      */
     public static final File GITLET_DIR = initializeGitletDirectory();
-    public static final File TEMP = initializeTempDirectory();
-    public static final File NULL_FILE = initializeNULLFile();
     public static final File INDEX = initializeStagingArea();
     public static final File OBJECTS = initializeRepositoryArea();
     public static final File HEAD = null;
     public static final File MASTER = null;
 
     public static void initializeRepository() {
-        // TODO: modify this to be no commit and no tree "empty files"
-        Blob blob = new Blob(NULL_FILE.toPath());
+        Blob blob = new Blob();
         Tree tree = new Tree(blob.getHash());
-        Commit commit = new Commit(Commit.getDefaultMessage(), Commit.getDefaultData(), Commit.getDefaultAuthorName(), Commit.getDefaultAuthorEmail(), tree.getHash(), Commit.calcHash(blob.getHash(), tree.getHash()), Commit.getDefaultParent());
-        storeObjects(blob, tree, commit);
+        Commit rootCommit = new Commit(
+                Commit.getDefaultMessage(),
+                Commit.getDefaultData(),
+                Commit.getDefaultAuthorName(),
+                Commit.getDefaultAuthorEmail(),
+                tree.getHash(),
+                Commit.calcHash(blob.getHash(),
+                tree.getHash()),
+                Commit.getDefaultParent()
+        );
+        storeObjects(blob, tree, rootCommit);
     }
 
     public static void repoStatus() {
@@ -143,22 +149,6 @@ public class Repository {
         Utils.writeObject(commitObject, commit);
     }
 
-    private static File initializeNULLFile() {
-        if (TEMP.exists()) {
-            File nullFile = join(TEMP, "NULL");
-            if (!nullFile.exists()) {
-                try {
-                    nullFile.createNewFile();
-                    return nullFile;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return nullFile;
-        }
-        throw new RuntimeException("Can't find {" + TEMP.getName() + "} directory.");
-    }
-
     private static File initializeGitletDirectory() {
         File gitletRepo = join(CWD, ".gitlet");
 
@@ -166,7 +156,8 @@ public class Repository {
             gitletRepo.mkdir();
             return gitletRepo;
         }
-        throw new RuntimeException("A Gitlet version-control system already exists in the current directory.");
+        return gitletRepo;
+//        throw new RuntimeException("A Gitlet version-control system already exists in the current directory.");
     }
 
     private static File initializeStagingArea() {
@@ -197,18 +188,6 @@ public class Repository {
                 return objects;
             }
             return objects;
-        }
-        throw new RuntimeException("Can't find {" + GITLET_DIR.getName() + "} directory.");
-    }
-
-    private static File initializeTempDirectory() {
-        if (GITLET_DIR.exists()) {
-            File temp = join(GITLET_DIR, "temp");
-            if (!temp.exists()) {
-                temp.mkdir();
-                return temp;
-            }
-            return temp;
         }
         throw new RuntimeException("Can't find {" + GITLET_DIR.getName() + "} directory.");
     }

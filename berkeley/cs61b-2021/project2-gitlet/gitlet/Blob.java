@@ -21,6 +21,13 @@ public class Blob implements Serializable {
 
     private String content;
 
+    public Blob() {
+        this.fileName = null;
+        this.content = null;
+        this.hash = Utils.sha1("");
+        this.filePath = Repository.CWD.toString();
+    }
+
     public Blob(Path filePath) {
         this.fileName = setFileName(filePath);
         this.hash = setHash(filePath);

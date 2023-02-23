@@ -40,7 +40,7 @@ public class Commit implements Serializable {
     /**
      * The type of this commit.
      */
-    private String type = "commit";
+    private static String type = "commit";
     /**
      * The tree hash of this commit.
      */
@@ -56,9 +56,17 @@ public class Commit implements Serializable {
      */
     private final String parent;
 
-    public Commit(String message, LocalDateTime date, String authorName, String authorEmail, String tree, String hash, String parent) {
+    public Commit(
+            String message,
+            LocalDateTime date,
+            String authorName,
+            String authorEmail,
+            String tree,
+            String hash,
+            String parent
+    ) {
         this.message = message;
-        this.type = getType();
+        this.type = Commit.getType();
         this.date = date;
         this.authorName = authorName;
         this.authorEmail = authorEmail;
@@ -93,7 +101,7 @@ public class Commit implements Serializable {
         return "foo@example.com";
     }
 
-    public String getType() {
+    public static String getType() {
         return type;
     }
 
