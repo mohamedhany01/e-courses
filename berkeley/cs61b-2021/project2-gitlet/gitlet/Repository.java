@@ -2,7 +2,6 @@ package gitlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -103,6 +102,8 @@ public class Repository {
         Blob[] blobs = new Blob[stagingArea.size()];
         int counter = 0;
         for (Map.Entry<String, String> entry: stagingArea.entrySet()) {
+
+            // TODO: modify this odd logic of splitting and make it clear
             StringTokenizer tokenizer = new StringTokenizer(entry.getKey());
             String file = null;
             for (;tokenizer.hasMoreElements();) {
@@ -123,8 +124,6 @@ public class Repository {
                 null
         );
         storeObjects(tree, commit, blobs);
-
-        // TODO: update staging area "index"
     }
 
     private static void displayUntrackedFiles(HashMap<String, String> stagingArea) {
@@ -137,7 +136,7 @@ public class Repository {
             String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
             String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
             /*
-             * If it's empty or doesn't have a hash and the relative path isn't in the index
+             * If staging area "index" doesn't have any info "empty" or doesn't have file's path and its hash
              * */
             if ((stagingArea.isEmpty() || !stagingArea.containsKey(fileRelativePath)) && !stagingArea.containsValue(fileHash)) {
                 System.out.println(fullPath.getFileName());
@@ -156,7 +155,7 @@ public class Repository {
             String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
 
             /*
-             * If it's in the index and its hash is changed
+             * If staging area "index" has file path but file's hash not the same
              * */
             if (stagingArea.containsKey(fileRelativePath) && !stagingArea.containsValue(fileHash)) {
                 System.out.println(fullPath.getFileName());
@@ -175,16 +174,16 @@ public class Repository {
             String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
 
             /*
-             * If it's in the index and its hash is changed
+             * If staging area "index" has info about this blob and local repo "objects/" doesn't
              * */
-            if (stagingArea.containsKey(fileRelativePath)) {
+            if (stagingArea.containsKey(fileRelativePath) && stagingArea.containsValue(fileHash) && !Files.exists(Paths.get(OBJECTS.toString(), fileHash))) {
                 System.out.println(fullPath.getFileName());
             }
         }
     }
 
 
-    private static HashMap<String, String> loadStagingArea() {
+    public static HashMap<String, String> loadStagingArea() {
         return (HashMap<String, String>) Utils.readObject(INDEX, HashMap.class);
     }
 
