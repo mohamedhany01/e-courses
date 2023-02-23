@@ -45,6 +45,7 @@ public class Repository {
     public static final File MASTER = null;
 
     public static void initializeRepository() {
+        // TODO: modify this to be no commit and no tree "empty files"
         Blob blob = new Blob(NULL_FILE.toPath());
         Tree tree = new Tree(blob.getHash());
         Commit commit = new Commit(Commit.getDefaultMessage(), Commit.getDefaultData(), Commit.getDefaultAuthorName(), Commit.getDefaultAuthorEmail(), tree.getHash(), Commit.calcHash(blob.getHash(), tree.getHash()), Commit.getDefaultParent());
@@ -59,6 +60,7 @@ public class Repository {
 
     public static void repoStage(String[] args) {
         // TODO: trace this after adding `gitlet` as well
+        // TODO: modify this to accept only one file, not multiple files
         // Add to the staging area
         HashMap<String, String> stagingArea = loadStagingArea();
 
@@ -89,7 +91,7 @@ public class Repository {
         File workingDirectory = CWD;
         List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
 
-        System.out.println("Untracked Files");
+        System.out.println("=== Untracked Files ===");
         for (String fileName : fileNames) {
             Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
             String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
@@ -98,7 +100,7 @@ public class Repository {
              * If it's empty or doesn't have a hash and the relative path isn't in the index
              * */
             if ((stagingArea.isEmpty() || !stagingArea.containsKey(fileRelativePath)) && !stagingArea.containsValue(fileHash)) {
-                System.out.println("\t" + fullPath.getFileName());
+                System.out.println(fullPath.getFileName());
             }
         }
     }
@@ -164,7 +166,7 @@ public class Repository {
             gitletRepo.mkdir();
             return gitletRepo;
         }
-        return gitletRepo;
+        throw new RuntimeException("A Gitlet version-control system already exists in the current directory.");
     }
 
     private static File initializeStagingArea() {
