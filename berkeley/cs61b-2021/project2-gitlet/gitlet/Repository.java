@@ -60,8 +60,10 @@ public class Repository {
 
     public static void repoStatus() {
         HashMap<String, String> stagingArea = loadStagingArea();
-        displayUntrackedFiles(stagingArea);
+        // TODO: enhance this logic, because we have redundant logic in all display methods
+        displayStagedFiles(stagingArea);
         displayModifiedFiles(stagingArea);
+        displayUntrackedFiles(stagingArea);
     }
 
     public static void repoStage(String[] args) {
@@ -97,7 +99,7 @@ public class Repository {
         File workingDirectory = CWD;
         List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
 
-        System.out.println("=== Untracked Files ===");
+        System.out.println("\n=== Untracked Files ===");
         for (String fileName : fileNames) {
             Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
             String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
@@ -115,7 +117,7 @@ public class Repository {
         File workingDirectory = CWD;
         List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
 
-        System.out.println("\nModified Files");
+        System.out.println("\n=== Modifications Not Staged For Commit ===");
         for (String fileName : fileNames) {
             Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
             String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
@@ -125,10 +127,30 @@ public class Repository {
              * If it's in the index and its hash is changed
              * */
             if (stagingArea.containsKey(fileRelativePath) && !stagingArea.containsValue(fileHash)) {
-                System.out.println("\t" + fullPath.getFileName());
+                System.out.println(fullPath.getFileName());
             }
         }
     }
+
+    private static void displayStagedFiles(HashMap<String, String> stagingArea) {
+        File workingDirectory = CWD;
+        List<String> fileNames = Utils.plainFilenamesIn(workingDirectory);
+
+        System.out.println("\n=== Staged Files ===");
+        for (String fileName : fileNames) {
+            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
+            String fileHash = Utils.sha1(Utils.readContents(fullPath.toFile()));
+            String fileRelativePath = Paths.get(fullPath.relativize(Repository.CWD.toPath()).toString(), fileName).toString();
+
+            /*
+             * If it's in the index and its hash is changed
+             * */
+            if (stagingArea.containsKey(fileRelativePath)) {
+                System.out.println(fullPath.getFileName());
+            }
+        }
+    }
+
 
     private static HashMap<String, String> loadStagingArea() {
         return (HashMap<String, String>) Utils.readObject(INDEX, HashMap.class);
