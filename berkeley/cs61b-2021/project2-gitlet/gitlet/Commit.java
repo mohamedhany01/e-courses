@@ -1,6 +1,9 @@
 package gitlet;
 
+import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -113,6 +116,14 @@ public class Commit implements Serializable {
         return tree;
     }
 
+    public String getParent() {
+        return parent;
+    }
+
+    public static Commit loadCommit(String hash) {
+        Path objectPath = Paths.get(Repository.OBJECTS.toString(), hash);
+        return Utils.readObject(objectPath.toFile(), Commit.class);
+    }
     @Override
     public String toString() {
         return "Commit{" +

@@ -1,5 +1,7 @@
 package gitlet;
 
+import edu.princeton.cs.algs4.ST;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,8 +41,10 @@ public class Repository {
     public static final File GITLET_DIR = initializeGitletDirectory();
     public static final File INDEX = initializeStagingArea();
     public static final File OBJECTS = initializeRepositoryArea();
-    public static final File HEAD = null;
+    public static final File HEAD = initializeHEAD();
     public static final File MASTER = null;
+
+    private static final LinkedList<Commit> HISTORY = new LinkedList<>();
 
     public static void initializeRepository() {
         Blob blob = new Blob();
@@ -56,6 +60,22 @@ public class Repository {
                 Commit.getDefaultParent()
         );
         storeObjects(tree, rootCommit, blob);
+        updateHeadPointer(HEAD, rootCommit.getHash());
+    }
+
+    public static void repoLog() {
+        Commit commit = Commit.loadCommit(readHead(HEAD));
+        while (true) {
+            HISTORY.addLast(commit);
+            if (commit.getParent() == null) {
+                break;
+            }
+            commit = Commit.loadCommit(commit.getParent());
+        }
+
+        for (Commit c:HISTORY) {
+            System.out.println(c);
+        }
     }
 
     public static void repoStatus() {
@@ -113,7 +133,7 @@ public class Repository {
         }
         Tree tree = new Tree(blobs);
 
-        // TODO: make parent the commit hash in the HEAD file
+        String parentHash = Commit.loadCommit(readHead(HEAD)).getHash();
         Commit commit = new Commit(
                 commitMessage,
                 LocalDateTime.now(),
@@ -121,9 +141,10 @@ public class Repository {
                 Commit.getDefaultAuthorEmail(),
                 tree.getHash(),
                 Commit.calcHash(Utils.sha1(tree.getContent()), tree.getHash()),
-                null
+                parentHash
         );
         storeObjects(tree, commit, blobs);
+        updateHeadPointer(HEAD, commit.getHash());
     }
 
     private static void displayUntrackedFiles(HashMap<String, String> stagingArea) {
@@ -251,5 +272,35 @@ public class Repository {
             return objects;
         }
         throw new RuntimeException("Can't find {" + GITLET_DIR.getName() + "} directory.");
+    }
+
+    private static File initializeHEAD() {
+        if (GITLET_DIR.exists()) {
+            File head = join(GITLET_DIR, "HEAD");
+            if (!head.exists()) {
+                try {
+                    head.createNewFile();
+                    return head;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return head;
+        }
+        throw new RuntimeException("Can't find {" + GITLET_DIR.getName() + "} directory.");
+    }
+
+    private static String updateHeadPointer(File head, String commitHash) {
+        Utils.writeContents(head, commitHash);
+        return readHead(head);
+    }
+
+    private static String readHead(File head) {
+        byte[] all = Utils.readContents(head);
+        StringBuilder builder = new StringBuilder();
+        for (byte b: all) {
+            builder.append((char) b);
+        }
+        return builder.toString();
     }
 }
