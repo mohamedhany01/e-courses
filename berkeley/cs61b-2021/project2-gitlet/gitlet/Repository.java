@@ -115,6 +115,27 @@ public class Repository {
         updateStagingArea(stagingArea);
     }
 
+    public static void repoUnstage(String[] args) {
+
+        // TODO: this operation supports only one file per-time, so maybe supporting multiple file if possible
+        HashMap<String, String> stagingArea = loadStagingArea();
+
+        Path fullPath = Paths.get(CWD.getPath(), args[1]);
+        if (!Files.exists(fullPath)) {
+            throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!");
+        }
+
+        // Create new Blob
+        Blob blob = new Blob(fullPath);
+
+        // TODO: this condition is handle only files in current working directory, no nesting is supported yet
+        // If passed file is in the staging area then remove it
+        if (stagingArea.containsKey(blob.getFilePath()) && stagingArea.containsValue(blob.getHash())) {
+            stagingArea.remove(blob.getFilePath());
+        }
+        updateStagingArea(stagingArea);
+    }
+
     public static void repoCommit(String[] args) {
         String commitMessage = args[1];
         HashMap<String, String> stagingArea = loadStagingArea();
