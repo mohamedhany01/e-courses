@@ -3,7 +3,6 @@ package gitlet;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 /**
  * Represents a gitlet blob object.
@@ -19,7 +18,7 @@ public class Blob implements Serializable {
     private final String hash;
     private final String type = "blob";
 
-    private String content;
+    private byte [] content;
 
     public Blob() {
         this.fileName = null;
@@ -39,18 +38,16 @@ public class Blob implements Serializable {
     }
 
     private String setHash(Path path) {
-        byte[] fileContent = Utils.readContents(path.toFile());
-
         // Set content as well
-        this.content = Arrays.toString(fileContent);
-        return Utils.sha1(fileContent);
+        this.content = Utils.readContents(path.toFile());
+        return Utils.sha1(this.content);
     }
 
     private String setFilePath(Path path) {
         return Paths.get(path.relativize(Repository.CWD.toPath()).toString(), this.fileName).toString();
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 

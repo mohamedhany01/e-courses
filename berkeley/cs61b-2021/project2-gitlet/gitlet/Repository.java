@@ -4,6 +4,7 @@ import edu.princeton.cs.algs4.ST;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -163,6 +164,7 @@ public class Repository {
         updateStagingArea(stagingArea);
     }
 
+    // TODO: in staging algorithm we have a bug that is affect `findTheCommit()`, we should commit only the files in staging area and the file that is its  hash change only not all files!
     public static void repoCommit(String[] args) {
         String commitMessage = args[1];
         HashMap<String, String> stagingArea = loadStagingArea();
@@ -353,4 +355,53 @@ public class Repository {
         }
         return builder.toString();
     }
+
+    /*
+    *   TODO: in staging algorithm we have duplication resolve it
+    * */
+    public static void repoCheckout(String[] args) {
+        Commit commit = findTheCommit(args[2]);
+        if (commit != null) {
+            File treePath = Paths.get(OBJECTS.toString(), commit.getTree()).toFile();
+            Tree treeObject = Utils.readObject(treePath, Tree.class);
+            String [] blobs = treeObject.getContent();
+            for (String blob: blobs) {
+                File blobPath = Paths.get(OBJECTS.toString(), blob).toFile();
+                Blob blobObject = Utils.readObject(blobPath, Blob.class);
+                String decodedContent = new String(blobObject.getContent(), StandardCharsets.UTF_8);
+                Path path = Paths.get(CWD.toString(), blobObject.getFileName());
+                try {
+                    Files.deleteIfExists(path);
+                    Files.createFile(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Utils.writeContents(path.toFile(), decodedContent);
+            }
+        }
+    }
+
+    private static Commit findTheCommit(String target) {
+        String fileName = target;
+
+        HISTORY = loadHistory();
+
+        for (Commit c:HISTORY) {
+            File treePath = Paths.get(OBJECTS.toString(), c.getTree()).toFile();
+            Tree treeObject = Utils.readObject(treePath, Tree.class);
+            String [] blobs = treeObject.getContent();
+//            System.out.println(treeObject);
+            for (String blob: blobs) {
+                File blobPath = Paths.get(OBJECTS.toString(), blob).toFile();
+                Blob blobObject = Utils.readObject(blobPath, Blob.class);
+                if (blobObject.getFileName().equals(fileName)) {
+                    return c;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
 }
