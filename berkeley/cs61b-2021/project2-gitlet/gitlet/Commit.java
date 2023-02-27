@@ -120,6 +120,10 @@ public class Commit implements Serializable {
         return parent;
     }
 
+    public String getMessage() {
+        return this.message;
+    }
+
     public static Commit loadCommit(String hash) {
         Path objectPath = Paths.get(Repository.OBJECTS.toString(), hash);
         return Utils.readObject(objectPath.toFile(), Commit.class);

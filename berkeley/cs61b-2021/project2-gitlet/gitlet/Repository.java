@@ -44,7 +44,7 @@ public class Repository {
     public static final File HEAD = initializeHEAD();
     public static final File MASTER = null;
 
-    private static final LinkedList<Commit> HISTORY = new LinkedList<>();
+    private static LinkedList<Commit> HISTORY = null;
 
     public static void initializeRepository() {
         Blob blob = new Blob();
@@ -63,19 +63,46 @@ public class Repository {
         updateHeadPointer(HEAD, rootCommit.getHash());
     }
 
+    // TODO: HISTORY loads in request only find a better solution
     public static void repoLog() {
+        HISTORY = loadHistory();
+
+        for (Commit c:HISTORY) {
+            System.out.println(c);
+        }
+    }
+
+    private static LinkedList<Commit> loadHistory() {
         Commit commit = Commit.loadCommit(readHead(HEAD));
+
+        if (commit == null) {
+            return null;
+        }
+
+        LinkedList<Commit> history = new LinkedList<>();
         while (true) {
-            HISTORY.addLast(commit);
+            history.addLast(commit);
             if (commit.getParent() == null) {
                 break;
             }
             commit = Commit.loadCommit(commit.getParent());
         }
 
+        return history;
+    }
+
+    public static void repoFind(String[] args) {
+        HISTORY = loadHistory();
+
+        String commitMassage = args[1];
+
         for (Commit c:HISTORY) {
-            System.out.println(c);
+            if (c.getMessage().equals(commitMassage)) {
+                System.out.println(c.getHash());
+            }
         }
+
+//        System.out.println(commitMassage);
     }
 
     public static void repoStatus() {
@@ -228,6 +255,8 @@ public class Repository {
     public static HashMap<String, String> loadStagingArea() {
         return (HashMap<String, String>) Utils.readObject(INDEX, HashMap.class);
     }
+
+    /////
 
     private static HashMap<String, String> updateStagingArea(HashMap<String, String> stagingArea) {
         writeObject(INDEX, stagingArea);
