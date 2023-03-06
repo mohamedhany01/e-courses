@@ -1,11 +1,12 @@
-package com.gitlet.utilities;
+package com.gitletx.utilities.hashing;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Extra {
-    public static final String getObjectID(Object... objects) {
+public class Hashing implements IHashing{
+    @Override
+    public String sha1(Object... objects) {
         try {
             StringBuilder bytesHash = new StringBuilder();
             MessageDigest digest = MessageDigest.getInstance("SHA-1");

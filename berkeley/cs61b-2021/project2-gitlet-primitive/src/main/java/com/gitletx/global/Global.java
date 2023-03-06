@@ -1,5 +1,5 @@
-package com.gitlet.global;
-import com.gitlet.utilities.IO;
+package com.gitletx.global;
+import com.gitletx.utilities.io.IO;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
