@@ -30,6 +30,5 @@ hs_err_pid*
 # VScode cache
 .vscode/
 berkeley/cs61b-2021/gitletx/.gitignore
-berkeley/cs61b-2021/gitletx/pom.xml
 berkeley/cs61b-2021/gitletx/.gitletx
 
