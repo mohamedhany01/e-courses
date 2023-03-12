@@ -1,6 +1,5 @@
 package gitlet;
 
-import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +24,10 @@ public class Commit implements Serializable {
      */
 
     /**
+     * The type of this commit.
+     */
+    private static String type = "commit";
+    /**
      * The message of this Commit.
      */
     private final String message;
@@ -40,10 +43,6 @@ public class Commit implements Serializable {
      * The email author of this commit.
      */
     private final String authorEmail;
-    /**
-     * The type of this commit.
-     */
-    private static String type = "commit";
     /**
      * The tree hash of this commit.
      */
@@ -69,7 +68,7 @@ public class Commit implements Serializable {
             String parent
     ) {
         this.message = message;
-        this.type = Commit.getType();
+        type = Commit.getType();
         this.date = date;
         this.authorName = authorName;
         this.authorEmail = authorEmail;
@@ -108,6 +107,11 @@ public class Commit implements Serializable {
         return type;
     }
 
+    public static Commit loadCommit(String hash) {
+        Path objectPath = Paths.get(Repository.OBJECTS.toString(), hash);
+        return Utils.readObject(objectPath.toFile(), Commit.class);
+    }
+
     public String getHash() {
         return hash;
     }
@@ -124,10 +128,6 @@ public class Commit implements Serializable {
         return this.message;
     }
 
-    public static Commit loadCommit(String hash) {
-        Path objectPath = Paths.get(Repository.OBJECTS.toString(), hash);
-        return Utils.readObject(objectPath.toFile(), Commit.class);
-    }
     @Override
     public String toString() {
         return "Commit{" +

@@ -16,7 +16,7 @@ public class Tree implements Serializable {
     private final String type = "tree";
     private final String[] content;
 
-    public Tree(Blob ...blobs) {
+    public Tree(Blob... blobs) {
         this.content = new String[blobs.length];
         setContent(blobs);
         this.hash = Utils.sha1(this.getContent());
@@ -26,17 +26,17 @@ public class Tree implements Serializable {
         return hash;
     }
 
-    public void setContent(Object ...blobs) {
+    public String[] getContent() {
+        return content;
+    }
+
+    public void setContent(Object... blobs) {
         int counter = 0;
 
         for (Object blob : blobs) {
             Blob b = (Blob) blob;
             this.content[counter++] = b.getHash();
         }
-    }
-
-    public String[] getContent() {
-        return content;
     }
 
     @Override

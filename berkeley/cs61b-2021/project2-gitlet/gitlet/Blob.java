@@ -18,7 +18,7 @@ public class Blob implements Serializable {
     private final String hash;
     private final String type = "blob";
 
-    private byte [] content;
+    private byte[] content;
 
     public Blob() {
         this.fileName = null;

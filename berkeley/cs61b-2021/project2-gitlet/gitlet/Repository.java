@@ -1,7 +1,5 @@
 package gitlet;
 
-import edu.princeton.cs.algs4.ST;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -57,7 +55,7 @@ public class Repository {
                 Commit.getDefaultAuthorEmail(),
                 tree.getHash(),
                 Commit.calcHash(blob.getHash(),
-                tree.getHash()),
+                        tree.getHash()),
                 Commit.getDefaultParent()
         );
         storeObjects(tree, rootCommit, blob);
@@ -68,7 +66,7 @@ public class Repository {
     public static void repoLog() {
         HISTORY = loadHistory();
 
-        for (Commit c:HISTORY) {
+        for (Commit c : HISTORY) {
             System.out.println(c);
         }
     }
@@ -97,7 +95,7 @@ public class Repository {
 
         String commitMassage = args[1];
 
-        for (Commit c:HISTORY) {
+        for (Commit c : HISTORY) {
             if (c.getMessage().equals(commitMassage)) {
                 System.out.println(c.getHash());
             }
@@ -171,12 +169,12 @@ public class Repository {
 
         Blob[] blobs = new Blob[stagingArea.size()];
         int counter = 0;
-        for (Map.Entry<String, String> entry: stagingArea.entrySet()) {
+        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
 
             // TODO: modify this odd logic of splitting and make it clear
             StringTokenizer tokenizer = new StringTokenizer(entry.getKey());
             String file = null;
-            for (;tokenizer.hasMoreElements();) {
+            while (tokenizer.hasMoreElements()) {
                 file = tokenizer.nextToken("\\");
             }
             blobs[counter++] = new Blob(Paths.get(CWD.toString(), file));
@@ -270,12 +268,12 @@ public class Repository {
         return stagingArea;
     }
 
-    private static void storeObjects(Tree tree, Commit commit, Blob ...blobs) {
+    private static void storeObjects(Tree tree, Commit commit, Blob... blobs) {
         File treeObject = Paths.get(OBJECTS.toString(), tree.getHash()).toFile();
         File commitObject = Paths.get(OBJECTS.toString(), commit.getHash()).toFile();
 
         // Write the blob directly to "objects" path, since this list of valid objects
-        for (Blob blob: blobs) {
+        for (Blob blob : blobs) {
             File blobObject = Paths.get(OBJECTS.toString(), blob.getHash()).toFile();
             Utils.writeObject(blobObject, blob);
         }
@@ -350,22 +348,22 @@ public class Repository {
     private static String readHead(File head) {
         byte[] all = Utils.readContents(head);
         StringBuilder builder = new StringBuilder();
-        for (byte b: all) {
+        for (byte b : all) {
             builder.append((char) b);
         }
         return builder.toString();
     }
 
     /*
-    *   TODO: in staging algorithm we have duplication resolve it
-    * */
+     *   TODO: in staging algorithm we have duplication resolve it
+     * */
     public static void repoCheckout(String[] args) {
         Commit commit = findTheCommit(args[2]);
         if (commit != null) {
             File treePath = Paths.get(OBJECTS.toString(), commit.getTree()).toFile();
             Tree treeObject = Utils.readObject(treePath, Tree.class);
-            String [] blobs = treeObject.getContent();
-            for (String blob: blobs) {
+            String[] blobs = treeObject.getContent();
+            for (String blob : blobs) {
                 File blobPath = Paths.get(OBJECTS.toString(), blob).toFile();
                 Blob blobObject = Utils.readObject(blobPath, Blob.class);
                 String decodedContent = new String(blobObject.getContent(), StandardCharsets.UTF_8);
@@ -386,12 +384,12 @@ public class Repository {
 
         HISTORY = loadHistory();
 
-        for (Commit c:HISTORY) {
+        for (Commit c : HISTORY) {
             File treePath = Paths.get(OBJECTS.toString(), c.getTree()).toFile();
             Tree treeObject = Utils.readObject(treePath, Tree.class);
-            String [] blobs = treeObject.getContent();
+            String[] blobs = treeObject.getContent();
 //            System.out.println(treeObject);
-            for (String blob: blobs) {
+            for (String blob : blobs) {
                 File blobPath = Paths.get(OBJECTS.toString(), blob).toFile();
                 Blob blobObject = Utils.readObject(blobPath, Blob.class);
                 if (blobObject.getFileName().equals(fileName)) {
