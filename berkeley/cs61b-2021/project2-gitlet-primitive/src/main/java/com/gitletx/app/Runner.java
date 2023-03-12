@@ -1,5 +1,7 @@
-import com.gitlet.app.Repository;
-import com.gitlet.utilities.Validation;
+package com.gitletx.app;
+
+import com.gitletx.app.Repository;
+import com.gitletx.utilities.Validation;
 
 public class Runner {
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
-package com.gitlet.app;
+package com.gitletx.app;
 
-import com.gitlet.global.Global;
-import com.gitlet.utilities.IO;
+import com.gitletx.global.Global;
+import com.gitletx.utilities.io.IO;
 
 import java.nio.file.Path;
 import java.util.List;

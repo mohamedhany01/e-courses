@@ -1,5 +1,5 @@
-import com.gitlet.global.Global;
-import com.gitlet.utilities.IO;
+import com.gitletx.global.Global;
+import com.gitletx.utilities.io.IO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

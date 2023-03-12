@@ -1,4 +1,4 @@
-package com.gitlet.utilities;
+package com.gitletx.utilities;
 
 public class Validation {
     public final static void validateArguments(String[] args, String command, int validCount) {

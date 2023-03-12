@@ -1,5 +1,5 @@
-package com.gitlet.utilities;
-import com.gitlet.global.Global;
+package com.gitletx.utilities.io;
+import com.gitletx.global.Global;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
