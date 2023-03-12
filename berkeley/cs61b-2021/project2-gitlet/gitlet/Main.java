@@ -1,24 +1,50 @@
 package gitlet;
 
-/** Driver class for Gitlet, a subset of the Git version-control system.
- *  @author TODO
+import java.util.Arrays;
+
+/**
+ * Driver class for Gitlet, a subset of the Git version-control system.
+ *
+ * @author Mohamed Hany
  */
 public class Main {
 
-    /** Usage: java gitlet.Main ARGS, where ARGS contains
-     *  <COMMAND> <OPERAND1> <OPERAND2> ... 
+    /**
+     * Usage: java gitlet.Main ARGS, where ARGS contains
+     * <COMMAND> <OPERAND1> <OPERAND2> ...
      */
     public static void main(String[] args) {
+        System.out.println(Arrays.toString(args));
         // TODO: what if args is empty?
         String firstArg = args[0];
-        switch(firstArg) {
+        switch (firstArg) {
             case "init":
-                // TODO: handle the `init` command
+                App.init();
+                break;
+            case "status":
+                App.status();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
+                App.stage(args);
                 break;
-            // TODO: FILL THE REST IN
+            case "commit":
+                App.commit(args);
+                break;
+            case "log":
+                App.log();
+                break;
+            case "rm":
+                App.unstage(args);
+                break;
+            case "find":
+                App.find(args);
+                break;
+            case "checkout":
+                App.checkout(args);
+                break;
+//            case "debug":
+//                System.out.println(Repository.loadStagingArea());
+//                break;
         }
     }
 }

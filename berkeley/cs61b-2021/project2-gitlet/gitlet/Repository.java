@@ -1,29 +1,36 @@
 package gitlet;
 
-import java.io.File;
-import static gitlet.Utils.*;
+import java.nio.file.Path;
 
-// TODO: any imports you need here
+public class Repository implements IRepository {
+    private static Repository instance;
+    private final IUtilitiesWrapper utilities;
 
-/** Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
- *  does at a high level.
- *
- *  @author TODO
- */
-public class Repository {
-    /**
-     * TODO: add instance variables here.
-     *
-     * List all instance variables of the Repository class here with a useful
-     * comment above them describing what that variable represents and how that
-     * variable is used. We've provided two examples for you.
-     */
+    private Repository(IUtilitiesWrapper utilities) {
+        this.utilities = utilities;
+    }
 
-    /** The current working directory. */
-    public static final File CWD = new File(System.getProperty("user.dir"));
-    /** The .gitlet directory. */
-    public static final File GITLET_DIR = join(CWD, ".gitlet");
+    public static Repository create(IUtilitiesWrapper utilities) {
+        if (instance == null) {
+            return instance = new Repository(utilities);
+        }
+        return instance;
+    }
 
-    /* TODO: fill in the rest of this class. */
+    @Override
+    public ICommit commitObjects(ICommit commit, ITree tree, IBlob... blobs) {
+
+        for (IBlob blob : blobs) {
+            Path blobPath = Path.of(GitletPaths.OBJECTS.toString(), blob.getHash());
+            utilities.writeObject(blobPath.toFile(), blob);
+        }
+
+        Path treePath = Path.of(GitletPaths.OBJECTS.toString(), tree.getHash());
+        Path commitPath = Path.of(GitletPaths.OBJECTS.toString(), commit.getHash());
+
+        utilities.writeObject(treePath.toFile(), tree);
+        utilities.writeObject(commitPath.toFile(), commit);
+
+        return commit;
+    }
 }

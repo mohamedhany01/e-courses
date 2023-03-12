@@ -17,7 +17,7 @@
 
     <build>
         <sourceDirectory>${project.basedir}</sourceDirectory>
-        <testSourceDirectory>${project.basedir}</testSourceDirectory>
+        <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
