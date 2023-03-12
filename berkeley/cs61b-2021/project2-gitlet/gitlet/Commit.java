@@ -1,20 +1,16 @@
 package gitlet;
 
-import java.io.Serializable;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+// TODO: any imports you need here
 
-/**
- * Represents a gitlet commit object.
+import java.util.Date; // TODO: You'll likely use this in this class
+
+/** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- * @author Mohamed Hany
+ *  @author TODO
  */
-public class Commit implements Serializable {
+public class Commit {
     /**
      * TODO: add instance variables here.
      *
@@ -23,122 +19,8 @@ public class Commit implements Serializable {
      * variable is used. We've provided one example for `message`.
      */
 
-    /**
-     * The type of this commit.
-     */
-    private static String type = "commit";
-    /**
-     * The message of this Commit.
-     */
-    private final String message;
-    /**
-     * When this commit is created.
-     */
-    private final LocalDateTime date;
-    /**
-     * Who created this commit.
-     */
-    private final String authorName;
-    /**
-     * The email author of this commit.
-     */
-    private final String authorEmail;
-    /**
-     * The tree hash of this commit.
-     */
-    private final String tree;
+    /** The message of this Commit. */
+    private String message;
 
-    /**
-     * The hash of this commit.
-     */
-    private final String hash;
-
-    /**
-     * The parent hash of this commit.
-     */
-    private final String parent;
-
-    public Commit(
-            String message,
-            LocalDateTime date,
-            String authorName,
-            String authorEmail,
-            String tree,
-            String hash,
-            String parent
-    ) {
-        this.message = message;
-        type = Commit.getType();
-        this.date = date;
-        this.authorName = authorName;
-        this.authorEmail = authorEmail;
-        this.tree = tree;
-        this.hash = hash;
-        this.parent = parent;
-    }
-
-    public static String calcHash(String... commits) {
-        return Utils.sha1(commits);
-    }
-
-    // These defaults are used for root commit only
-    public static LocalDateTime getDefaultData() {
-        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC")).toLocalDateTime();
-        return zeroDate;
-    }
-
-    public static String getDefaultMessage() {
-        return "initial commit";
-    }
-
-    public static String getDefaultParent() {
-        return null;
-    }
-
-    public static String getDefaultAuthorName() {
-        return "Foo";
-    }
-
-    public static String getDefaultAuthorEmail() {
-        return "foo@example.com";
-    }
-
-    public static String getType() {
-        return type;
-    }
-
-    public static Commit loadCommit(String hash) {
-        Path objectPath = Paths.get(Repository.OBJECTS.toString(), hash);
-        return Utils.readObject(objectPath.toFile(), Commit.class);
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public String getTree() {
-        return tree;
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    @Override
-    public String toString() {
-        return "Commit{" +
-                "message='" + message + '\'' +
-                ", type='" + type + '\'' +
-                ", date=" + date +
-                ", authorName='" + authorName + '\'' +
-                ", authorEmail='" + authorEmail + '\'' +
-                ", tree='" + tree + '\'' +
-                ", hash='" + hash + '\'' +
-                ", parent='" + parent + '\'' +
-                '}';
-    }
+    /* TODO: fill in the rest of this class. */
 }
