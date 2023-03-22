@@ -27,7 +27,7 @@ public class StubUtilitiesWrapper implements IUtilitiesWrapper {
 
     @Override
     public String readContentsAsString(File file) {
-        return null;
+        return "fake content";
     }
 
     @Override
