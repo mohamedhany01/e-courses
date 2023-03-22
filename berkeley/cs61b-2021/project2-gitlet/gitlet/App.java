@@ -118,7 +118,7 @@ public class App {
                 utilities.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
         );
 
-        Repository repository = Repository.create(utilities);
+        Repository repository = Repository.create(utilities, gitletPaths);
         ICommit committedObject = repository.commitObjects(commit, tree, blobs);
 
         head.updateHEAD(committedObject.getHash());
