@@ -2,6 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 public class StubUtilitiesWrapper implements IUtilitiesWrapper {
@@ -17,7 +18,7 @@ public class StubUtilitiesWrapper implements IUtilitiesWrapper {
 
     @Override
     public <T extends Serializable> T readObject(File file, Class<T> expectedClass) {
-        return null;
+        return (T) new HashMap<>();
     }
 
     @Override
