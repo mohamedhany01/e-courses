@@ -21,7 +21,8 @@ public class App {
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IStagingArea stagingArea = new StagingArea(utilities);
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
@@ -51,7 +52,8 @@ public class App {
     public static void status() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IStagingArea stagingArea = new StagingArea(utilities);
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
         manager.showStatus();
     }
@@ -59,7 +61,8 @@ public class App {
     public static void stage(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IStagingArea stagingArea = new StagingArea(utilities);
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
@@ -83,7 +86,8 @@ public class App {
     public static void commit(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IStagingArea stagingArea = new StagingArea(utilities);
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
 
         // Get the commit message and load the staging area
         String commitMessage = args[1];
@@ -150,7 +154,8 @@ public class App {
 
     public static void log() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
         Commit nextCommit = Commit.getCommit(head.getHEAD(), utilities);
 
         if (nextCommit == null) {
@@ -169,7 +174,8 @@ public class App {
     public static void find(String[] args) {
         String commitMassage = args[1];
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
         Commit nextCommit = Commit.getCommit(head.getHEAD(), utilities);
 
         if (nextCommit == null) {
@@ -203,7 +209,8 @@ public class App {
     public static void checkout(String[] args) {
         String fileName = args[2];
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IHEAD head = new HEAD(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
         Commit currentCommit = Commit.getCommit(head.getHEAD(), utilities);
 
         if (currentCommit == null) {
