@@ -10,37 +10,39 @@ import java.util.Map;
 
 public class StagingArea implements IStagingArea {
     private final IUtilitiesWrapper utilities;
+    private final IGitletPathsWrapper gitletPaths;
 
-    public StagingArea(IUtilitiesWrapper utilities) {
+    public StagingArea(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
         this.utilities = utilities;
+        this.gitletPaths = gitletPaths;
     }
 
     @Override
     public void writeStagingArea() {
-        if (!Files.exists(GitletPaths.INDEX)) {
+        if (!Files.exists(gitletPaths.getIndex())) {
             throw new RuntimeException("index file not found");
         }
-        this.utilities.writeObject(GitletPaths.INDEX.toFile(), new HashMap<String, String>());
+        this.utilities.writeObject(gitletPaths.getIndex().toFile(), new HashMap<String, String>());
     }
 
     public void writeStagingArea(HashMap<String, String> stagingArea) {
-        if (!Files.exists(GitletPaths.INDEX)) {
+        if (!Files.exists(gitletPaths.getIndex())) {
             throw new RuntimeException("index file not found");
         }
-        this.utilities.writeObject(GitletPaths.INDEX.toFile(), stagingArea);
+        this.utilities.writeObject(gitletPaths.getIndex().toFile(), stagingArea);
     }
 
     @Override
     public HashMap<String, String> loadStagingArea() {
-        if (!Files.exists(GitletPaths.INDEX)) {
+        if (!Files.exists(gitletPaths.getIndex())) {
             throw new RuntimeException("index file not found");
         }
-        return (HashMap<String, String>) this.utilities.readObject(GitletPaths.INDEX.toFile(), HashMap.class);
+        return (HashMap<String, String>) this.utilities.readObject(gitletPaths.getIndex().toFile(), HashMap.class);
     }
 
     @Override
     public HashMap<String, String> updateStagingArea(HashMap<String, String> newStagingArea) {
-        if (!Files.exists(GitletPaths.INDEX)) {
+        if (!Files.exists(gitletPaths.getIndex())) {
             throw new RuntimeException("index file not found");
         }
         writeStagingArea(newStagingArea);
@@ -49,7 +51,7 @@ public class StagingArea implements IStagingArea {
 
     @Override
     public void displayStagedFiles() {
-        File workingDirectory = GitletPaths.WORKING_DIRECTORY.toFile();
+        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
         List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
         HashMap<String, String> stagingArea = loadStagingArea();
 
@@ -70,7 +72,7 @@ public class StagingArea implements IStagingArea {
 
     @Override
     public void displayUntrackedFiles() {
-        File workingDirectory = GitletPaths.WORKING_DIRECTORY.toFile();
+        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
         List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
         HashMap<String, String> stagingArea = loadStagingArea();
 
@@ -90,7 +92,7 @@ public class StagingArea implements IStagingArea {
 
     @Override
     public void displayModifiedFiles() {
-        File workingDirectory = GitletPaths.WORKING_DIRECTORY.toFile();
+        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
         List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
         HashMap<String, String> stagingArea = loadStagingArea();
 

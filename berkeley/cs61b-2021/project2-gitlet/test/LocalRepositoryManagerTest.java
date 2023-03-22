@@ -33,7 +33,8 @@ public class LocalRepositoryManagerTest {
     @Before
     public void setup() {
         IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new StubHEAD();
 
         manager = LocalRepositoryManager.create(utilities, stagingArea, head);

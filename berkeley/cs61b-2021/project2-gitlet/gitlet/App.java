@@ -20,8 +20,8 @@ public class App {
         }
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
@@ -51,8 +51,8 @@ public class App {
 
     public static void status() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
         manager.showStatus();
@@ -60,8 +60,8 @@ public class App {
 
     public static void stage(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
@@ -85,8 +85,8 @@ public class App {
 
     public static void commit(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
 
         // Get the commit message and load the staging area
@@ -127,7 +127,8 @@ public class App {
     public static void unstage(String[] args) {
         // TODO: this operation supports only one file per-time, so maybe supporting multiple file if possible
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities);
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
 
         Path fullPath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), args[1]);
