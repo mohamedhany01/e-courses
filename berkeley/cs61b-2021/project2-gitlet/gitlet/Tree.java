@@ -1,5 +1,9 @@
 package gitlet;
 
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.ITree;
+import gitlet.interfaces.IUtilitiesWrapper;
+
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;

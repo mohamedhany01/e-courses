@@ -1,9 +1,12 @@
-package gitlet;
+package gitlet.fakes;
+
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.IStagingArea;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class StubStagingArea implements IStagingArea {
+public class FakeStagingArea implements IStagingArea {
     @Override
     public void writeStagingArea() {
 

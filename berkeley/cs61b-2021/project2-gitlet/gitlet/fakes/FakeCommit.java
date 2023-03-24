@@ -1,10 +1,12 @@
-package gitlet;
+package gitlet.fakes;
+
+import gitlet.interfaces.ICommit;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class StubCommit implements ICommit {
+public class FakeCommit implements ICommit {
     @Override
     public String getMessage() {
         return "message";

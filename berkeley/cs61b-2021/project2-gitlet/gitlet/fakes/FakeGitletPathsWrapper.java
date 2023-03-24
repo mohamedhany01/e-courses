@@ -1,4 +1,6 @@
-package gitlet;
+package gitlet.fakes;
+
+import gitlet.interfaces.IGitletPathsWrapper;
 
 import java.nio.file.Path;
 

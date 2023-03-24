@@ -1,11 +1,16 @@
-package gitlet;
+package gitlet.fakes;
+
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.ILocalRepositoryManager;
+import gitlet.interfaces.ITree;
 
 import java.nio.file.Path;
 
-public class StubLocalRepositoryManager implements ILocalRepositoryManager {
+public class FakeLocalRepositoryManager implements ILocalRepositoryManager {
     @Override
     public ICommit commitRootCommit(IBlob blob, ITree tree, ICommit commit) {
-        return new StubCommit();
+        return new FakeCommit();
     }
 
     @Override

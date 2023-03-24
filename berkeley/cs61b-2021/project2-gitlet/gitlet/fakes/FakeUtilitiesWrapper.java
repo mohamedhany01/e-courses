@@ -1,11 +1,13 @@
-package gitlet;
+package gitlet.fakes;
+
+import gitlet.interfaces.IUtilitiesWrapper;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-public class StubUtilitiesWrapper implements IUtilitiesWrapper {
+public class FakeUtilitiesWrapper implements IUtilitiesWrapper {
     @Override
     public String sha1(Object... objects) {
         return "sha1";

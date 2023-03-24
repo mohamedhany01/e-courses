@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.interfaces.IGitletPathsWrapper;
+
 import java.nio.file.Path;
 
 public class GitletPathsWrapper implements IGitletPathsWrapper {

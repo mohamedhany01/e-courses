@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.interfaces.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

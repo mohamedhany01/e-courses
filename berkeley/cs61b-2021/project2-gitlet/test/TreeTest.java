@@ -1,4 +1,8 @@
 import gitlet.*;
+import gitlet.fakes.FakeBlob;
+import gitlet.fakes.FakeUtilitiesWrapper;
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -6,8 +10,8 @@ public class TreeTest {
 
     @Test
     public void Tree_getType_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
-        IBlob[] blobs = new StubBlob[]{new StubBlob(), new StubBlob(), new StubBlob()};
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree(utilities, blobs);
         String expected = "tree";
 
@@ -18,8 +22,8 @@ public class TreeTest {
 
     @Test
     public void Tree_getContent_returnArrayOfString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
-        IBlob[] blobs = new StubBlob[]{new StubBlob(), new StubBlob(), new StubBlob()};
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree(utilities, blobs);
 
         String[] expected = new String[]{"hash", "hash", "hash"};
@@ -31,8 +35,8 @@ public class TreeTest {
 
     @Test
     public void Tree_getHash_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
-        IBlob[] blobs = new StubBlob[]{new StubBlob(), new StubBlob(), new StubBlob()};
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree(utilities, blobs);
         String expected = "sha1";
 

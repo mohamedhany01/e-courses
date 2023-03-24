@@ -1,6 +1,8 @@
-package gitlet;
+package gitlet.fakes;
 
-public class StubHEAD implements IHEAD {
+import gitlet.interfaces.IHEAD;
+
+public class FakeHEAD implements IHEAD {
     @Override
     public String updateHEAD(String newHash) {
         return null;

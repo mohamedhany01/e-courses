@@ -1,4 +1,7 @@
 import gitlet.*;
+import gitlet.fakes.FakeGitletPathsWrapper;
+import gitlet.fakes.FakeUtilitiesWrapper;
+import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -9,7 +12,7 @@ import java.nio.file.Path;
 public class HEADTest {
     @Test
     public void HEAD_updateHEAD_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         HEAD head = new HEAD(utilities, gitletPaths);
@@ -24,7 +27,7 @@ public class HEADTest {
     public ExpectedException exceptionRule = ExpectedException.none();
     @Test
     public void HEAD_updateHEADWhilePathInvalid_throwException() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         HEAD head = new HEAD(utilities, gitletPaths);
@@ -37,7 +40,7 @@ public class HEADTest {
 
     @Test
     public void HEAD_getHEAD_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         HEAD head = new HEAD(utilities, gitletPaths);

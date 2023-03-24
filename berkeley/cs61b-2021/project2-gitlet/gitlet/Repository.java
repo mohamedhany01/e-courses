@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.interfaces.*;
+
 import java.nio.file.Path;
 
 public class Repository implements IRepository {

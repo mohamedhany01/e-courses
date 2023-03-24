@@ -1,6 +1,6 @@
 import gitlet.Blob;
-import gitlet.IUtilitiesWrapper;
-import gitlet.StubUtilitiesWrapper;
+import gitlet.interfaces.IUtilitiesWrapper;
+import gitlet.fakes.FakeUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class BlobTest {
 
     @Test
     public void Blob_getType_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte [] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
@@ -28,7 +28,7 @@ public class BlobTest {
 
     @Test
     public void Blob_getContent_returnArrayOfBytes() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte [] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
@@ -42,7 +42,7 @@ public class BlobTest {
 
     @Test
     public void Blob_getHash_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte [] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
@@ -56,7 +56,7 @@ public class BlobTest {
 
     @Test
     public void Blob_getFileName_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte [] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
@@ -70,7 +70,7 @@ public class BlobTest {
 
     @Test
     public void Blob_getFilePath_returnString() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte [] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");

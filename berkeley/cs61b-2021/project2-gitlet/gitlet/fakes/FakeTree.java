@@ -1,6 +1,8 @@
-package gitlet;
+package gitlet.fakes;
 
-public class StubTree implements ITree {
+import gitlet.interfaces.ITree;
+
+public class FakeTree implements ITree {
     @Override
     public String getType() {
         return "tree";

@@ -1,5 +1,8 @@
 package gitlet;
 
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.IUtilitiesWrapper;
+
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;

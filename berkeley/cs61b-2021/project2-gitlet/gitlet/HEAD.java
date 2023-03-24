@@ -1,5 +1,9 @@
 package gitlet;
 
+import gitlet.interfaces.IGitletPathsWrapper;
+import gitlet.interfaces.IHEAD;
+import gitlet.interfaces.IUtilitiesWrapper;
+
 import java.nio.file.Files;
 
 public class HEAD implements IHEAD {

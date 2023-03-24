@@ -1,4 +1,7 @@
 import gitlet.*;
+import gitlet.fakes.FakeGitletPathsWrapper;
+import gitlet.fakes.FakeUtilitiesWrapper;
+import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,7 +15,7 @@ public class StagingAreaTest {
     public ExpectedException exceptionRule = ExpectedException.none();
     @Test
     public void StagingArea_writeStagingAreaIndexInvalidPath_throwException() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -25,7 +28,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_writeStagingAreaWithStagingAreaIndexInvalidPath_throwException() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -38,7 +41,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_loadStagingAreaIndexInvalidPath_throwException() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -51,7 +54,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_loadStagingAreaIndexValidPath_returnHashMap() {
-        StubUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        FakeUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -65,7 +68,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_updateStagingAreaInvalidPath_throwException() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -78,7 +81,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_updateStagingAreaValidPath_returnHashMap() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
@@ -92,7 +95,7 @@ public class StagingAreaTest {
 
     @Test
     public void StagingArea_getBlobsReadyToBeCommitted_returnHashMap() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);

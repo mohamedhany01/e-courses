@@ -1,6 +1,8 @@
-package gitlet;
+package gitlet.fakes;
 
-public class StubBlob implements IBlob {
+import gitlet.interfaces.IBlob;
+
+public class FakeBlob implements IBlob {
 
     @Override
     public String getType() {

@@ -1,4 +1,4 @@
-package gitlet;
+package gitlet.interfaces;
 
 import java.util.HashMap;
 import java.util.List;

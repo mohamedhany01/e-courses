@@ -1,4 +1,6 @@
 import gitlet.*;
+import gitlet.fakes.*;
+import gitlet.interfaces.*;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,10 +34,10 @@ public class LocalRepositoryManagerTest {
 
     @Before
     public void setup() {
-        IUtilitiesWrapper utilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
-        IHEAD head = new StubHEAD();
+        IHEAD head = new FakeHEAD();
 
         manager = LocalRepositoryManager.create(utilities, stagingArea, head);
     }
@@ -85,9 +87,9 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_storeRootCommit_returnNotNull() {
-        IBlob blob = new StubBlob();
-        ITree tree = new StubTree();
-        ICommit commit = new StubCommit();
+        IBlob blob = new FakeBlob();
+        ITree tree = new FakeTree();
+        ICommit commit = new FakeCommit();
 
         ICommit actual = manager.commitRootCommit(blob, tree, commit);
 

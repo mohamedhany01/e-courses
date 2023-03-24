@@ -1,4 +1,9 @@
 import gitlet.*;
+import gitlet.fakes.*;
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.ITree;
+import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,12 +13,12 @@ public class RepositoryTest {
     @Test
 
     public void Repository_commitObjects_returnCommit() {
-        IUtilitiesWrapper stubUtilities = new StubUtilitiesWrapper();
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
-        IBlob stubBlob = new StubBlob();
-        ITree stubTree = new StubTree();
-        ICommit stubCommit = new StubCommit();
+        IBlob stubBlob = new FakeBlob();
+        ITree stubTree = new FakeTree();
+        ICommit stubCommit = new FakeCommit();
         Repository repository = Repository.create(stubUtilities, stubGitletPaths);
 
         ICommit expect = repository.commitObjects(stubCommit, stubTree, stubBlob);

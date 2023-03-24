@@ -1,4 +1,4 @@
-package gitlet;
+package gitlet.interfaces;
 
 import java.io.File;
 import java.io.Serializable;

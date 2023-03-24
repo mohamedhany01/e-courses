@@ -1,4 +1,4 @@
-package gitlet;
+package gitlet.interfaces;
 
 public interface IHEAD {
     String updateHEAD(String newHash);
