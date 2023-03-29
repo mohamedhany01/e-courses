@@ -1,6 +1,5 @@
 package gitlet;
 
-import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ITree;
 import gitlet.interfaces.IUtilitiesWrapper;
 
@@ -8,18 +7,16 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Tree implements ITree, Serializable {
     private final static String type = "tree";
-    private final String[] content;
-    private final String hash;
+    private final List<Object> content;
+    private String hash;
 
-    public Tree(IUtilitiesWrapper utilities, IBlob... blobs) {
-        this.content = new String[blobs.length];
-        for (int i = 0; i < blobs.length; i++) {
-            this.content[i] = blobs[i].getHash();
-        }
-        this.hash = utilities.sha1(this.content);
+    public Tree() {
+        this.content = new LinkedList<>();
     }
 
     public static Tree getTree(String hash, IUtilitiesWrapper utilities) {
@@ -37,8 +34,16 @@ public class Tree implements ITree, Serializable {
     }
 
     @Override
-    public String[] getContent() {
-        return content;
+    public List<Object> getContent() {
+        return this.content;
+    }
+
+    public void setBlob(String hash) {
+        this.content.add(hash);
+    }
+
+    public void calculateContentHash(IUtilitiesWrapper utilities) {
+        this.hash = utilities.sha1(this.content);
     }
 
     @Override

@@ -10,10 +10,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class App {
     public static void init() {
@@ -37,7 +34,9 @@ public class App {
                 null,
                 null
         );
-        Tree tree = new Tree(utilities, blob);
+        Tree tree = new Tree();
+        tree.setBlob(blob.getHash());
+        tree.calculateContentHash(utilities);
         Commit commit = new Commit(
                 "initial commit",
                 zeroDate,
@@ -91,23 +90,42 @@ public class App {
         IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
 
+        System.out.println("The content of Staging Tree are:");
+        System.out.println(stagingArea.loadStagingArea());
+
         // Get the commit message and load the staging area
         String commitMessage = args[1];
         HashMap<String, String> readyBlobs = stagingArea.getBlobsReadyToBeCommitted();
-        IBlob[] blobs = new IBlob[readyBlobs.size()];
 
-        int counter = 0;
+        System.out.println("The content will be committed: ");
+        System.out.println(readyBlobs);
+
+        List<IBlob> blobs = new LinkedList<>();
+
+        Tree tree = new Tree();
         for (Map.Entry<String, String> entry : readyBlobs.entrySet()) {
-            File filePath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), entry.getKey()).toFile();
-            blobs[counter] = new Blob(
-                    utilities,
-                    utilities.readContents(filePath),
-                    filePath.getName(),
-                    entry.getKey()
-            );
-            counter++;
+            Path blobPathInRepo = Paths.get(gitletPaths.getObjects().toString(), entry.getValue());
+
+            // I file in staging area isn't exist in the repo area "changed for example" then we need to create a new blob
+            if (!Files.exists(blobPathInRepo)) {
+                Path filePath = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
+                Blob newBlob = new Blob(
+                        utilities,
+                        utilities.readContents(filePath.toFile()),
+                        filePath.getFileName().toString(),
+                        entry.getKey());
+
+                blobs.add(newBlob);
+                tree.setBlob(newBlob.getHash());
+            }
+            else {
+                // No new blob needed since this blobs already in the repo "objects directory"
+                tree.setBlob(entry.getValue());
+            }
+
         }
-        Tree tree = new Tree(utilities, blobs);
+
+        tree.calculateContentHash(utilities);
 
         String parentHash = head.getHEAD();
         Commit commit = new Commit(
@@ -198,9 +216,9 @@ public class App {
 
     // TODO: move it to working directory class
     public static Blob findBlob(String fileName, Tree tree, IUtilitiesWrapper utilities) {
-        String[] blobsInTree = tree.getContent();
-        for (int i = 0; i < blobsInTree.length; i++) {
-            Blob blob = Blob.getBlob(blobsInTree[i], utilities);
+        List<Object> blobsInTree = tree.getContent();
+        for (int i = 0; i < blobsInTree.size(); i++) {
+            Blob blob = Blob.getBlob((String) blobsInTree.get(i), utilities);
             if (blob.getFileName().equals(fileName)) {
                 return blob;
             }

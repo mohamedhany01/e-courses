@@ -16,6 +16,8 @@ public interface IStagingArea {
 
     void displayModifiedFiles();
 
+    void displayRemovedFiles();
+
     void stage(List<IBlob> blobs);
 
     HashMap<String, String> getBlobsReadyToBeCommitted();

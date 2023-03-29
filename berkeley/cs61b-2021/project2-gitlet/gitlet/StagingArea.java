@@ -117,6 +117,19 @@ public class StagingArea implements IStagingArea {
     }
 
     @Override
+    public void displayRemovedFiles() {
+        HashMap<String, String> stagingArea = loadStagingArea();
+        System.out.println("\n=== Removed Files ===");
+        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
+            Path fileInWorkingDirectory = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
+            boolean isFileAlreadyExist = Files.exists(fileInWorkingDirectory);
+            if (!isFileAlreadyExist) {
+                System.out.println(fileInWorkingDirectory.getFileName());
+            }
+        }
+    }
+
+    @Override
     public void stage(List<IBlob> blobs) {
         HashMap<String, String> stagingArea = loadStagingArea();
 
@@ -140,8 +153,10 @@ public class StagingArea implements IStagingArea {
         HashMap<String, String> stagingArea = loadStagingArea();
         HashMap<String, String> readyBlobs = new HashMap<>();
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
-            boolean isBlobAlreadyCommitted = Files.exists(Paths.get(GitletPaths.OBJECTS.toString(), entry.getValue()));
-            if (!isBlobAlreadyCommitted) {
+            Path fileInWorkingDirectory = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
+            boolean isFileAlreadyExist = Files.exists(fileInWorkingDirectory);
+//            boolean isBlobAlreadyCommitted = Files.exists(Paths.get(gitletPaths.getObjects().toString(), entry.getValue()));
+            if (isFileAlreadyExist) {
                 readyBlobs.put(entry.getKey(), entry.getValue());
             }
         }

@@ -38,6 +38,11 @@ public class FakeStagingArea implements IStagingArea {
     }
 
     @Override
+    public void displayRemovedFiles() {
+
+    }
+
+    @Override
     public void stage(List<IBlob> blobs) {
 
     }

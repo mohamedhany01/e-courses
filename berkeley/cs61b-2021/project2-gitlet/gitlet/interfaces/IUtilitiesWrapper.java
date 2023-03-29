@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface IUtilitiesWrapper {
     String sha1(Object... objects);
+    String sha1(List<Object> vals);
 
     void writeObject(File file, Serializable obj);
 

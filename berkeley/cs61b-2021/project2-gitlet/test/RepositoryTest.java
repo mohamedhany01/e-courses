@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RepositoryTest {
     @Test
@@ -16,7 +18,7 @@ public class RepositoryTest {
         IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
-        IBlob stubBlob = new FakeBlob();
+        List<FakeBlob> stubBlob = new ArrayList<>();
         ITree stubTree = new FakeTree();
         ICommit stubCommit = new FakeCommit();
         Repository repository = Repository.create(stubUtilities, stubGitletPaths);

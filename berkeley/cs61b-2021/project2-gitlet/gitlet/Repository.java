@@ -3,6 +3,7 @@ package gitlet;
 import gitlet.interfaces.*;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class Repository implements IRepository {
     private static Repository instance;
@@ -22,7 +23,7 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public ICommit commitObjects(ICommit commit, ITree tree, IBlob... blobs) {
+    public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
 
         for (IBlob blob : blobs) {
             Path blobPath = Path.of(gitletPaths.getObjects().toString(), blob.getHash());

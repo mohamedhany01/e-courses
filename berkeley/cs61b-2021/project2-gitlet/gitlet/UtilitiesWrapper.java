@@ -13,6 +13,11 @@ public class UtilitiesWrapper implements IUtilitiesWrapper {
     }
 
     @Override
+    public String sha1(List<Object> vals) {
+        return Utils.sha1(vals);
+    }
+
+    @Override
     public void writeObject(File file, Serializable obj) {
         Utils.writeObject(file, obj);
     }

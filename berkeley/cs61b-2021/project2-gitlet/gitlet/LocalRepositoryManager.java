@@ -106,9 +106,10 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
     @Override
     public void showStatus() {
-        stagingArea.displayUntrackedFiles();
         stagingArea.displayStagedFiles();
+        stagingArea.displayRemovedFiles();
         stagingArea.displayModifiedFiles();
+        stagingArea.displayUntrackedFiles();
     }
 
     @Override

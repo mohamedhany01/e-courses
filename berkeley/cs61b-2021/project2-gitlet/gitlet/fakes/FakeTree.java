@@ -2,6 +2,9 @@ package gitlet.fakes;
 
 import gitlet.interfaces.ITree;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class FakeTree implements ITree {
     @Override
     public String getType() {
@@ -9,8 +12,8 @@ public class FakeTree implements ITree {
     }
 
     @Override
-    public String[] getContent() {
-        return new String[]{};
+    public List<Object> getContent() {
+        return new LinkedList<>();
     }
 
     @Override

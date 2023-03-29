@@ -14,6 +14,11 @@ public class FakeUtilitiesWrapper implements IUtilitiesWrapper {
     }
 
     @Override
+    public String sha1(List<Object> vals)  {
+        return "sha1";
+    }
+
+    @Override
     public void writeObject(File file, Serializable obj) {
 
     }
