@@ -1,4 +1,4 @@
-import gitlet.*;
+import gitlet.HEAD;
 import gitlet.fakes.FakeGitletPathsWrapper;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IUtilitiesWrapper;
@@ -10,6 +10,9 @@ import org.junit.rules.ExpectedException;
 import java.nio.file.Path;
 
 public class HEADTest {
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
     @Test
     public void HEAD_updateHEAD_returnString() {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
@@ -23,8 +26,6 @@ public class HEADTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
     @Test
     public void HEAD_updateHEADWhilePathInvalid_throwException() {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();

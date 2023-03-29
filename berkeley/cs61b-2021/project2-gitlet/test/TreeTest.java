@@ -1,4 +1,4 @@
-import gitlet.*;
+import gitlet.Tree;
 import gitlet.fakes.FakeBlob;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IBlob;
@@ -16,7 +16,7 @@ public class TreeTest {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree();
-        for (IBlob blob:blobs) {
+        for (IBlob blob : blobs) {
             tree.setBlob(blob.getHash());
         }
         tree.calculateContentHash(utilities);
@@ -32,7 +32,7 @@ public class TreeTest {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree();
-        for (IBlob blob:blobs) {
+        for (IBlob blob : blobs) {
             tree.setBlob(blob.getHash());
         }
         tree.setBlob("hash");
@@ -56,7 +56,7 @@ public class TreeTest {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree();
-        for (IBlob blob:blobs) {
+        for (IBlob blob : blobs) {
             tree.setBlob(blob.getHash());
         }
         String expected = "sha1";

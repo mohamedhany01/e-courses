@@ -14,7 +14,7 @@ public class FakeUtilitiesWrapper implements IUtilitiesWrapper {
     }
 
     @Override
-    public String sha1(List<Object> vals)  {
+    public String sha1(List<Object> vals) {
         return "sha1";
     }
 

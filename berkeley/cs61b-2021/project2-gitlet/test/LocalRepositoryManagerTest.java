@@ -1,4 +1,6 @@
-import gitlet.*;
+import gitlet.GitletPathsWrapper;
+import gitlet.LocalRepositoryManager;
+import gitlet.StagingArea;
 import gitlet.fakes.*;
 import gitlet.interfaces.*;
 import org.junit.AfterClass;
@@ -27,7 +29,7 @@ public class LocalRepositoryManagerTest {
                 }
                 Files.deleteIfExists(repoPath);
             } catch (IOException e) {
-                System.out.println(e.toString());
+                System.out.println(e);
             }
         }
     }

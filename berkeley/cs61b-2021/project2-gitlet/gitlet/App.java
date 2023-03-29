@@ -2,7 +2,6 @@ package gitlet;
 
 import gitlet.interfaces.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +9,10 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void init() {
@@ -117,8 +119,7 @@ public class App {
 
                 blobs.add(newBlob);
                 tree.setBlob(newBlob.getHash());
-            }
-            else {
+            } else {
                 // No new blob needed since this blobs already in the repo "objects directory"
                 tree.setBlob(entry.getValue());
             }

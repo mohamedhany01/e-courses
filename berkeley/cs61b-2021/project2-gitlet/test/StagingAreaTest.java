@@ -1,4 +1,4 @@
-import gitlet.*;
+import gitlet.StagingArea;
 import gitlet.fakes.FakeGitletPathsWrapper;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IUtilitiesWrapper;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class StagingAreaTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
+
     @Test
     public void StagingArea_writeStagingAreaIndexInvalidPath_throwException() {
         IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();

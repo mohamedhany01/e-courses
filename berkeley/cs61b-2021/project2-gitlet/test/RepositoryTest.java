@@ -1,6 +1,5 @@
-import gitlet.*;
+import gitlet.Repository;
 import gitlet.fakes.*;
-import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ITree;
 import gitlet.interfaces.IUtilitiesWrapper;
