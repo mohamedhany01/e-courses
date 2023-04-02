@@ -69,21 +69,31 @@ public class App {
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
-        List<IBlob> blobs = new LinkedList<>();
-
         for (int i = 1; i < args.length; i++) {
-            Path validFile = manager.verifyFile(args[i]);
-            blobs.add(
-                    new Blob(
-                            utilities,
-                            utilities.readContents(validFile.toFile()),
-                            args[i],
-                            validFile.toString()
-                    )
-            );
+            String fileName = args[i];
+            Path fullPath = Paths.get(gitletPaths.getWorkingDirectory().toString(), fileName);
+
+            if (!stagingArea.hasFileName(fileName) && !Files.exists(fullPath)) {
+                throw new RuntimeException("Can't handle {" + fileName + "} it isn't exist!");
+            }
+
+            if (Files.exists(fullPath)) {
+                stagingArea.stage(new Blob(
+                        utilities,
+                        utilities.readContents(fullPath.toFile()),
+                        args[i],
+                        fullPath.toString()
+                ));
+            }
+
+            // If not exist this mean it's deleted, so no new blob should be created, and should be removed form the staging area
+            if (stagingArea.hasFileName(fileName) && !Files.exists(fullPath)) {
+                stagingArea.deleteEntry(fileName);
+                stagingArea.stagManually(fileName, "null");
+            }
         }
 
-        stagingArea.stage(blobs);
+        System.out.println(stagingArea.loadStagingArea());
     }
 
     public static void commit(String[] args) {
@@ -108,7 +118,7 @@ public class App {
         for (Map.Entry<String, String> entry : readyBlobs.entrySet()) {
             Path blobPathInRepo = Paths.get(gitletPaths.getObjects().toString(), entry.getValue());
 
-            // I file in staging area isn't exist in the repo area "changed for example" then we need to create a new blob
+            // If file in staging area isn't exist in the repo area "changed for example" then we need to create a new blob
             if (!Files.exists(blobPathInRepo)) {
                 Path filePath = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
                 Blob newBlob = new Blob(
@@ -143,6 +153,16 @@ public class App {
         ICommit committedObject = repository.commitObjects(commit, tree, blobs);
 
         head.updateHEAD(committedObject.getHash());
+
+        // Clean staging area from deleted files
+        for (Map.Entry<String, String> entry : stagingArea.loadStagingArea().entrySet()) {
+            if (entry.getValue().equals("null")) {
+                HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
+                currentStagingArea.remove(entry.getKey(), entry.getValue());
+                stagingArea.updateStagingArea(currentStagingArea);
+                System.out.println("[X] " + entry.getKey() + " removed from Staging Area");
+            }
+        }
     }
 
     public static void unstage(String[] args) {
@@ -271,5 +291,10 @@ public class App {
 //                }
 //            }
 //        }
+    }
+
+    static void debug() {
+        IStagingArea stagingArea = new StagingArea(new UtilitiesWrapper(), new GitletPathsWrapper());
+        System.out.println(stagingArea.loadStagingArea());
     }
 }

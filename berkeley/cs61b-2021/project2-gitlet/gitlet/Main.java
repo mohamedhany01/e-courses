@@ -42,9 +42,9 @@ public class Main {
             case "checkout":
                 App.checkout(args);
                 break;
-//            case "debug":
-//                System.out.println(Repository.loadStagingArea());
-//                break;
+            case "debug":
+                App.debug();
+                break;
         }
     }
 }

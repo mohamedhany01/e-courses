@@ -18,7 +18,13 @@ public interface IStagingArea {
 
     void displayRemovedFiles();
 
-    void stage(List<IBlob> blobs);
+    void stage(IBlob blob);
+
+    void stagManually(String key, String hash);
+
+    void deleteEntry(String key);
+
+    boolean hasFileName(String key);
 
     HashMap<String, String> getBlobsReadyToBeCommitted();
 }

@@ -43,8 +43,23 @@ public class FakeStagingArea implements IStagingArea {
     }
 
     @Override
-    public void stage(List<IBlob> blobs) {
+    public void stage(IBlob blob) {
 
+    }
+
+    @Override
+    public void stagManually(String key, String hash) {
+
+    }
+
+    @Override
+    public void deleteEntry(String key) {
+
+    }
+
+    @Override
+    public boolean hasFileName(String key) {
+        return false;
     }
 
     @Override

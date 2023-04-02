@@ -69,10 +69,19 @@ public class StagingArea implements IStagingArea {
             /*
              * If staging area "index" has info about this blob and local repo "objects/" doesn't
              * */
-            if (stagingArea.containsKey(fileName) && stagingArea.containsValue(fileHash) && !Files.exists(Paths.get(GitletPaths.OBJECTS.toString(), fileHash))) {
+            boolean stagedButExist = stagingArea.containsKey(fileName) && stagingArea.containsValue(fileHash) && !Files.exists(Paths.get(GitletPaths.OBJECTS.toString(), fileHash));
+
+            if (stagedButExist) {
                 System.out.println(fullPath.getFileName());
             }
         }
+
+        // staged but deleted
+        stagingArea.forEach((String fileName, String hash) -> {
+            if (hash.equals("null")) {
+                System.out.println(fileName);
+            }
+        });
     }
 
     @Override
@@ -123,29 +132,49 @@ public class StagingArea implements IStagingArea {
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
             Path fileInWorkingDirectory = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
             boolean isFileAlreadyExist = Files.exists(fileInWorkingDirectory);
-            if (!isFileAlreadyExist) {
+            if (!isFileAlreadyExist && !entry.getValue().equals("null")) {
                 System.out.println(fileInWorkingDirectory.getFileName());
             }
         }
     }
 
     @Override
-    public void stage(List<IBlob> blobs) {
+    public void stage(IBlob blob) {
         HashMap<String, String> stagingArea = loadStagingArea();
 
-        for (IBlob blob : blobs) {
-            if (!stagingArea.containsValue(blob.getHash())) {
-                // Modified and thus it will be updated
-                if (stagingArea.containsKey(blob.getFilePath())) {
-                    stagingArea.put(blob.getFileName(), blob.getHash());
-                } else {
-                    // It's totally a new entry
-                    stagingArea.put(blob.getFileName(), blob.getHash());
-                }
+        if (!stagingArea.containsValue(blob.getHash())) {
+            // Modified and thus it will be updated
+            if (stagingArea.containsKey(blob.getFilePath())) {
+                stagingArea.put(blob.getFileName(), blob.getHash());
+            } else {
+                // It's totally a new entry
+                stagingArea.put(blob.getFileName(), blob.getHash());
             }
         }
 
         updateStagingArea(stagingArea);
+    }
+
+    @Override
+    public void stagManually(String key, String hash) {
+        HashMap<String, String> stagingArea = loadStagingArea();
+
+        stagingArea.put(key, hash);
+
+        updateStagingArea(stagingArea);
+    }
+
+    @Override
+    public void deleteEntry(String key) {
+        HashMap<String, String> stagingArea = loadStagingArea();
+        stagingArea.remove(key);
+        updateStagingArea(stagingArea);
+    }
+
+    @Override
+    public boolean hasFileName(String key) {
+        HashMap<String, String> stagingArea = loadStagingArea();
+        return stagingArea.containsKey(key);
     }
 
     @Override
