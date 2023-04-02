@@ -1,0 +1,11 @@
+[1]
+- Add foo.txt, bar.txt, and buz.txt with content
+- Stage them
+- Commit them
+- Now, remove foo.txt
+- Stage it
+- Commit it
+- Get foo.txt back again with the same content
+- Stage it again
+- Now, try to check the `status`
+- Bug: Can't show status of "foo.txt"!
