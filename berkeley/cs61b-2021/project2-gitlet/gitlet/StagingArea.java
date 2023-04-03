@@ -69,7 +69,7 @@ public class StagingArea implements IStagingArea {
             /*
              * If staging area "index" has info about this blob and local repo "objects/" doesn't
              * */
-            boolean stagedButExist = stagingArea.containsKey(fileName) && stagingArea.containsValue(fileHash) && !Files.exists(Paths.get(GitletPaths.OBJECTS.toString(), fileHash));
+            boolean stagedButExist = stagingArea.containsKey(fileName) && stagingArea.containsValue(fileHash) && !Repository.isInRepository(fileHash, gitletPaths);
 
             if (stagedButExist) {
                 System.out.println(fullPath.getFileName());

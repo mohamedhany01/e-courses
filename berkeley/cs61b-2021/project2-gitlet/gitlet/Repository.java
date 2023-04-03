@@ -2,7 +2,9 @@ package gitlet;
 
 import gitlet.interfaces.*;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Repository implements IRepository {
@@ -37,5 +39,10 @@ public class Repository implements IRepository {
         utilities.writeObject(commitPath.toFile(), commit);
 
         return commit;
+    }
+
+    public static boolean isInRepository(String hash, IGitletPathsWrapper gitletPaths) {
+        Path objectPath = Paths.get(gitletPaths.getObjects().toString(), hash);
+        return Files.exists(objectPath);
     }
 }
