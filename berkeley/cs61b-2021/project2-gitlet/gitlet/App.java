@@ -89,7 +89,7 @@ public class App {
             // If not exist this mean it's deleted, so no new blob should be created, and should be removed form the staging area
             if (stagingArea.hasFileName(fileName) && !Files.exists(fullPath)) {
                 stagingArea.deleteEntry(fileName);
-                stagingArea.stagManually(fileName, "null");
+                stagingArea.stagManually(fileName, "");
             }
         }
 
@@ -156,7 +156,7 @@ public class App {
 
         // Clean staging area from deleted files
         for (Map.Entry<String, String> entry : stagingArea.loadStagingArea().entrySet()) {
-            if (entry.getValue().equals("null")) {
+            if (entry.getValue().isEmpty()) {
                 HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
                 currentStagingArea.remove(entry.getKey(), entry.getValue());
                 stagingArea.updateStagingArea(currentStagingArea);

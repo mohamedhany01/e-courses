@@ -1,16 +1,11 @@
 package gitlet;
 
-import gitlet.interfaces.IBlob;
-import gitlet.interfaces.IGitletPathsWrapper;
-import gitlet.interfaces.IStagingArea;
-import gitlet.interfaces.IUtilitiesWrapper;
+import gitlet.interfaces.*;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class StagingArea implements IStagingArea {
@@ -55,87 +50,57 @@ public class StagingArea implements IStagingArea {
     }
 
     @Override
-    public void displayStagedFiles() {
-        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
-        List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
+    public void getFilesStatus() {
+        // TODO: Make this logic more simple
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IHEAD head = new HEAD(utilities, gitletPaths);
+        IWorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+        HashMap<String, String> HEADFiles = head.getCommitFiles();
         HashMap<String, String> stagingArea = loadStagingArea();
 
         System.out.println("\n=== Staged Files ===");
-        for (String fileName : fileNames) {
-            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
-            String fileHash = utilities.sha1(utilities.readContents(fullPath.toFile()));
-//            String fileRelativePath = Paths.get(fullPath.relativize(workingDirectory.toPath()).toString(), fileName).toString();
+        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
+            String stagingAreaFile = entry.getKey();
+            String HeadFileHash = HEADFiles.get(stagingAreaFile);
+            String stagingAreaFileHash = stagingArea.get(stagingAreaFile);
 
-            /*
-             * If staging area "index" has info about this blob and local repo "objects/" doesn't
-             * */
-            boolean stagedButExist = stagingArea.containsKey(fileName) && stagingArea.containsValue(fileHash) && !Repository.isInRepository(fileHash, gitletPaths);
-
-            if (stagedButExist) {
-                System.out.println(fullPath.getFileName());
+            if (!HEADFiles.containsKey(stagingAreaFile) || !HeadFileHash.equals(stagingAreaFileHash)) {
+                System.out.println(stagingAreaFile);
             }
         }
 
-        // staged but deleted
-        stagingArea.forEach((String fileName, String hash) -> {
-            if (hash.equals("null")) {
-                System.out.println(fileName);
-            }
-        });
-    }
+        System.out.println("\n=== Removed Files ===");
+        // In case it staged and then deleted
+        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
+            String file = entry.getKey();
 
-    @Override
-    public void displayUntrackedFiles() {
-        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
-        List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
-        HashMap<String, String> stagingArea = loadStagingArea();
-
-        System.out.println("\n=== Untracked Files ===");
-        for (String fileName : fileNames) {
-            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
-            String fileHash = utilities.sha1(utilities.readContents(fullPath.toFile()));
-//            String fileRelativePath = Paths.get(fullPath.relativize(workingDirectory.toPath()).toString(), fileName).toString();
-            /*
-             * If staging area "index" doesn't have any info "empty" or doesn't have file's path and its hash
-             * */
-            if ((stagingArea.isEmpty() || !stagingArea.containsKey(fileName)) && !stagingArea.containsValue(fileHash)) {
-                System.out.println(fullPath.getFileName());
+            if (!workingArea.isFileExist(file) && !stagingArea.get(file).isEmpty()) {
+                System.out.println(file);
             }
         }
-    }
-
-    @Override
-    public void displayModifiedFiles() {
-        File workingDirectory = gitletPaths.getWorkingDirectory().toFile();
-        List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
-        HashMap<String, String> stagingArea = loadStagingArea();
 
         System.out.println("\n=== Modifications Not Staged For Commit ===");
-        for (String fileName : fileNames) {
-            Path fullPath = Paths.get(workingDirectory.getPath(), fileName);
-            String fileHash = utilities.sha1(utilities.readContents(fullPath.toFile()));
-//            String fileRelativePath = Paths.get(fullPath.relativize(workingDirectory.toPath()).toString(), fileName).toString();
-
-            /*
-             * If staging area "index" has file path but file's hash not the same
-             * */
-            if (stagingArea.containsKey(fileName) && !stagingArea.containsValue(fileHash)) {
-                System.out.println(fullPath.getFileName());
+        for (String fileName : workingArea.getFiles()) {
+            String fileHash = workingArea.getFileHash(fileName);
+            if (stagingArea.containsKey(fileName) && !stagingArea.get(fileName).equals(fileHash)) {
+                System.out.println(fileName);
             }
         }
+
+        System.out.println("\n=== Untracked Files ===");
+        for (String fileName : workingArea.getFiles()) {
+            if (!containsPair(fileName, workingArea.getFileHash(fileName))) {
+                System.out.println(fileName);
+            }
+        }
+
     }
 
     @Override
-    public void displayRemovedFiles() {
+    public boolean containsPair(String fileName, String hash) {
         HashMap<String, String> stagingArea = loadStagingArea();
-        System.out.println("\n=== Removed Files ===");
-        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
-            Path fileInWorkingDirectory = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
-            boolean isFileAlreadyExist = Files.exists(fileInWorkingDirectory);
-            if (!isFileAlreadyExist && !entry.getValue().equals("null")) {
-                System.out.println(fileInWorkingDirectory.getFileName());
-            }
-        }
+        return stagingArea.containsKey(fileName) && stagingArea.get(fileName).equals(hash);
     }
 
     @Override

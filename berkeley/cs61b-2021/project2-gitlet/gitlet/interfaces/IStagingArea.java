@@ -1,7 +1,6 @@
 package gitlet.interfaces;
 
 import java.util.HashMap;
-import java.util.List;
 
 public interface IStagingArea {
     void writeStagingArea();
@@ -10,13 +9,9 @@ public interface IStagingArea {
 
     HashMap<String, String> updateStagingArea(HashMap<String, String> newStagingArea);
 
-    void displayStagedFiles();
+    void getFilesStatus();
 
-    void displayUntrackedFiles();
-
-    void displayModifiedFiles();
-
-    void displayRemovedFiles();
+    boolean containsPair(String fileName, String hash);
 
     void stage(IBlob blob);
 

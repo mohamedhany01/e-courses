@@ -24,6 +24,11 @@ public class Repository implements IRepository {
         return instance;
     }
 
+    public static boolean isInRepository(String hash, IGitletPathsWrapper gitletPaths) {
+        Path objectPath = Paths.get(gitletPaths.getObjects().toString(), hash);
+        return Files.exists(objectPath);
+    }
+
     @Override
     public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
 
@@ -39,10 +44,5 @@ public class Repository implements IRepository {
         utilities.writeObject(commitPath.toFile(), commit);
 
         return commit;
-    }
-
-    public static boolean isInRepository(String hash, IGitletPathsWrapper gitletPaths) {
-        Path objectPath = Paths.get(gitletPaths.getObjects().toString(), hash);
-        return Files.exists(objectPath);
     }
 }

@@ -4,7 +4,6 @@ import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IStagingArea;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class FakeStagingArea implements IStagingArea {
     @Override
@@ -23,23 +22,13 @@ public class FakeStagingArea implements IStagingArea {
     }
 
     @Override
-    public void displayStagedFiles() {
+    public void getFilesStatus() {
 
     }
 
     @Override
-    public void displayUntrackedFiles() {
-
-    }
-
-    @Override
-    public void displayModifiedFiles() {
-
-    }
-
-    @Override
-    public void displayRemovedFiles() {
-
+    public boolean containsPair(String fileName, String hash) {
+        return false;
     }
 
     @Override

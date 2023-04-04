@@ -5,6 +5,7 @@ import gitlet.interfaces.IHEAD;
 import gitlet.interfaces.IUtilitiesWrapper;
 
 import java.nio.file.Files;
+import java.util.HashMap;
 
 public class HEAD implements IHEAD {
 
@@ -29,5 +30,19 @@ public class HEAD implements IHEAD {
     @Override
     public String getHEAD() {
         return this.utilities.readContentsAsString(gitletPaths.getHead().toFile());
+    }
+
+    @Override
+    public HashMap<String, String> getCommitFiles() {
+        String commitHash = getHEAD();
+        Commit currentCommit = Commit.getCommit(commitHash, utilities);
+        Tree currentTree = Tree.getTree(currentCommit.getTree(), utilities);
+        HashMap<String, String> commitFiles = new HashMap<>();
+
+        currentTree.getContent().forEach((Object blobHash) -> {
+            Blob blob = Blob.getBlob((String) blobHash, utilities);
+            commitFiles.put(blob.getFileName(), blob.getHash());
+        });
+        return commitFiles;
     }
 }
