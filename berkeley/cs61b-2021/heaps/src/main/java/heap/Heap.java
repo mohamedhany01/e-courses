@@ -1,5 +1,7 @@
 package heap;
 
+import java.lang.reflect.Array;
+
 public class Heap<T extends Comparable<T>> {
     protected static final int ROOT = 0;
     private static final int DEFAULT_SIZE = 10;
@@ -7,12 +9,12 @@ public class Heap<T extends Comparable<T>> {
     protected int size;
 
     public Heap() {
-        this.heaps = (T[]) new Comparable[DEFAULT_SIZE];
+        this.heaps = (T[]) Array.newInstance(Comparable.class, DEFAULT_SIZE);
         this.size = 0;
     }
 
     public Heap(int heapSize) {
-        this.heaps = (T[]) new Comparable[heapSize];
+        this.heaps = (T[]) Array.newInstance(Comparable.class, heapSize);
         this.size = 0;
     }
 
