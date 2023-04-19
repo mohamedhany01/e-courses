@@ -1,41 +1,63 @@
 package app;
 
 import heap.MaxHeap;
+import heap.MinHeap;
 
 import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        MaxHeap<Integer> maxHeap = new MaxHeap<>();
-//            maxHeap.add(10);
-//        maxHeap.add(20);
-//        maxHeap.add(100);
-//        maxHeap.add(1000);
-//        maxHeap.add(200);
+        System.out.println("================= MAX HEAP =================");
 
-        maxHeap.add(66);
-//        System.out.println(maxHeap.removeMax());
+        MaxHeap<Integer> maxHeap = new MaxHeap<>();
+
         maxHeap.add(50);
         maxHeap.add(30);
         maxHeap.add(20);
         maxHeap.add(15);
         maxHeap.add(10);
+        maxHeap.add(1000);
         maxHeap.add(8);
         maxHeap.add(16);
 
-        System.out.println(maxHeap.find(16));
+        System.out.println(maxHeap);
+        System.out.println("Find 1000: " + maxHeap.find(1000));
+        System.out.println("Max Heap: " + maxHeap.getMaxHeap());
 
-        maxHeap.increaseKey(50, 70);
-        maxHeap.increaseKey(8, 80);
-        int[] b = new int[maxHeap.getSize()];
+        int[] sortedArrayMax = new int[maxHeap.getSize()];
         for (int i = maxHeap.getSize() - 1; i >= 0; i--) {
-            b[i] = maxHeap.removeMax();
+            sortedArrayMax[i] = maxHeap.removeMax();
         }
 
-        System.out.println(Arrays.toString(b));
+        System.out.println(Arrays.toString(sortedArrayMax));
+        System.out.println("Is empty: " + maxHeap.isEmpty());
 
-        System.out.println(Arrays.toString(maxHeap.heapify(new Integer[]{8, 16, 20, 30, 50, 10, 15})));
+        System.out.println(Arrays.toString(maxHeap.heapify(new Integer[]{50, 20, 10, 30, 1000, 16, 15, 8})));
 
-        System.out.println(Arrays.toString(maxHeap.heapify(new Integer[]{10, 20, 15, 12, 40, 25, 18})));
+        System.out.println("================= MIN HEAP =================");
+        MinHeap<Integer> minHeap = new MinHeap<>();
+
+        minHeap.add(50);
+        minHeap.add(30);
+        minHeap.add(20);
+        minHeap.add(15);
+        minHeap.add(10);
+        minHeap.add(1000);
+        minHeap.add(8);
+        minHeap.add(16);
+
+        System.out.println(minHeap);
+        System.out.println("Find 1000: " + minHeap.find(1000));
+        System.out.println("Min Heap: " + minHeap.getMaxHeap());
+
+        int[] sortedArrayMin = new int[minHeap.getSize()];
+        for (int i = minHeap.getSize() - 1; i >= 0; i--) {
+            sortedArrayMin[i] = minHeap.removeMin();
+        }
+
+        System.out.println(Arrays.toString(sortedArrayMin));
+        System.out.println("Is empty: " + minHeap.isEmpty());
+
+        System.out.println(Arrays.toString(minHeap.heapify(new Integer[]{50, 20, 10, 30, 1000, 16, 15, 8})));
     }
 }
