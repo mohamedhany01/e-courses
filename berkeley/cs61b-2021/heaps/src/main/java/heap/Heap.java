@@ -1,6 +1,7 @@
 package heap;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class Heap<T extends Comparable<T>> {
     protected static final int ROOT = 0;
@@ -60,5 +61,12 @@ public class Heap<T extends Comparable<T>> {
         T temp = heap[a];
         heap[a] = heap[b];
         heap[b] = temp;
+    }
+
+    @Override
+    public String toString() {
+        return "Heap{" +
+                "heaps=" + Arrays.toString(heaps) +
+                '}';
     }
 }
