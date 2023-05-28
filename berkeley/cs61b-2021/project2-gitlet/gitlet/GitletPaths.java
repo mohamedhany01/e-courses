@@ -8,4 +8,5 @@ public class GitletPaths {
     public final static Path INDEX = Path.of(gitlet.toString(), "index");
     public final static Path OBJECTS = Path.of(gitlet.toString(), "objects");
     public final static Path HEAD = Path.of(gitlet.toString(), "HEAD");
+    public final static Path BRANCHES = Path.of(gitlet.toString(), "refs", "heads");
 }

@@ -12,4 +12,6 @@ public interface IGitletPathsWrapper {
     Path getObjects();
 
     Path getIndex();
+
+    Path getRefs();
 }

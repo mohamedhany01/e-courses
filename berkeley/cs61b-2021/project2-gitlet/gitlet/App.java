@@ -15,9 +15,25 @@ import java.util.List;
 import java.util.Map;
 
 public class App {
+
+    /*  init: https://sp21.datastructur.es/materials/proj/proj2/proj2#init
+    *
+    *   - A commit that contains no files and has the commit message initial commit [DONE]
+    *
+    *   - It will have a single branch: master, which initially points to this initial commit, and master will be the current branch [DONE]
+    *
+    *   - The timestamp for this initial commit will be 00:00:00 UTC, Thursday, 1 January 1970} [DONE]
+    *
+    *   - If there is already a Gitlet version-control system in the current directory, it should abort [DONE]
+    *
+    *   - It should NOT overwrite the existing system with a new one, Should print the error message A Gitlet version-control system already exists in the current directory. [DONE]
+    *
+    *   - Line count: ~15
+    * */
     public static void init() {
         if (LocalRepositoryManager.isgitletExists()) {
-            throw new RuntimeException("gitlet exists");
+            System.out.print("A Gitlet version-control system already exists in the current directory.");
+            System.exit(0);
         }
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
@@ -50,6 +66,9 @@ public class App {
         );
 
         manager.commitRootCommit(blob, tree, commit);
+
+        Repository repository = Repository.create(utilities, gitletPaths);
+        repository.createBranch("master", commit.getHash());
     }
 
     public static void status() {

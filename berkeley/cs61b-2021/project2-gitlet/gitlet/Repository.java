@@ -45,4 +45,16 @@ public class Repository implements IRepository {
 
         return commit;
     }
+
+    @Override
+    public String createBranch(String name, String commitHash) {
+        Path branchFullPath = Path.of(gitletPaths.getRefs().toString(), name);
+        utilities.writeContents(branchFullPath.toFile(), commitHash);
+        return utilities.readContentsAsString(branchFullPath.toFile());
+    }
+
+    @Override
+    public String updateBranch(String name, String commitHash) {
+        return null;
+    }
 }

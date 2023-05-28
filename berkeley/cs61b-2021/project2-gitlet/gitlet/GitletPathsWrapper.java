@@ -29,4 +29,9 @@ public class GitletPathsWrapper implements IGitletPathsWrapper {
     public Path getIndex() {
         return GitletPaths.INDEX;
     }
+
+    @Override
+    public Path getRefs() {
+        return GitletPaths.BRANCHES;
+    }
 }

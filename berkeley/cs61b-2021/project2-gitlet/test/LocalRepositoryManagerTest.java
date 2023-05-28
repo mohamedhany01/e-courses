@@ -88,6 +88,15 @@ public class LocalRepositoryManagerTest {
     }
 
     @Test
+    public void LocalRepositoryManager_getRefs_returnPath() {
+        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet", "refs", "heads");
+
+        Path actual = manager.getRefs();
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void LocalRepositoryManager_storeRootCommit_returnNotNull() {
         IBlob blob = new FakeBlob();
         ITree tree = new FakeTree();

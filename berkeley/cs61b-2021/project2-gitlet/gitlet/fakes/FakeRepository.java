@@ -12,4 +12,14 @@ public class FakeRepository implements IRepository {
     public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
         return commit;
     }
+
+    @Override
+    public String createBranch(String name, String commitHash) {
+        return null;
+    }
+
+    @Override
+    public String updateBranch(String name, String commitHash) {
+        return null;
+    }
 }

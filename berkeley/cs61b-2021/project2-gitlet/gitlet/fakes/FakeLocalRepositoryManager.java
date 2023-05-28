@@ -34,6 +34,11 @@ public class FakeLocalRepositoryManager implements ILocalRepositoryManager {
     }
 
     @Override
+    public Path getRefs() {
+        return Path.of(System.getProperty("user.dir"));
+    }
+
+    @Override
     public void showStatus() {
 
     }

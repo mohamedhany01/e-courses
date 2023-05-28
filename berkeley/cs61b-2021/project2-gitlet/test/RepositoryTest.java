@@ -27,4 +27,17 @@ public class RepositoryTest {
         Assert.assertNotNull(expect);
         Assert.assertTrue(expect instanceof ICommit);
     }
+
+    @Test
+    public void Repository_createBranch_returnBranchHash() {
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
+        stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        Repository repository = Repository.create(stubUtilities, stubGitletPaths);
+
+        String expected = repository.createBranch("foo", "anything");
+
+        Assert.assertNotNull(expected);
+        Assert.assertEquals("fake content", expected);
+    }
 }

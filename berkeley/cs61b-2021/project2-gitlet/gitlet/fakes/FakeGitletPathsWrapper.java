@@ -31,4 +31,9 @@ public class FakeGitletPathsWrapper implements IGitletPathsWrapper {
     public Path getIndex() {
         return fakePath;
     }
+
+    @Override
+    public Path getRefs() {
+        return fakePath;
+    }
 }

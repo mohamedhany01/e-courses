@@ -13,6 +13,8 @@ public interface ILocalRepositoryManager {
 
     Path getHEAD();
 
+    Path getRefs();
+
     void showStatus();
 
     Path verifyFile(String fileName);

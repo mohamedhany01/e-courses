@@ -14,6 +14,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
     private final Path INDEX;
     private final Path OBJECTS;
     private final Path HEAD;
+    private final Path BRANCHES;
     private final IUtilitiesWrapper utilities;
 
     private final IStagingArea stagingArea;
@@ -25,6 +26,10 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
         INDEX = initializePath(gitlet.toString(), "index", 'F');
         OBJECTS = initializePath(gitlet.toString(), "objects", 'D');
         HEAD = initializePath(gitlet.toString(), "HEAD", 'F');
+        BRANCHES = initializePath(gitlet.toString(), Path.of(
+                "refs",
+                "heads"
+        ).toString(), 'D');
 
         this.utilities = utilities;
         this.stagingArea = stagingArea;
@@ -37,7 +42,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
         if (!Files.exists(newPath)) {
             if (type == 'D') {
                 try {
-                    return Files.createDirectory(newPath);
+                    return Files.createDirectories(newPath);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -102,6 +107,11 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
     @Override
     public Path getHEAD() {
         return HEAD;
+    }
+
+    @Override
+    public Path getRefs() {
+        return BRANCHES;
     }
 
     @Override
