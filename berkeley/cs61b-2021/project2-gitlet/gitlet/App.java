@@ -80,20 +80,34 @@ public class App {
         manager.showStatus();
     }
 
+    /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add
+    *
+    *   - Adds a copy of the file as it currently exists to the staging area (see the description of the commit command) [DONE]
+    *
+    *   - Staging an already-staged file overwrites the previous entry in the staging area with the new contents [DONE]
+    *
+    *   - The staging area should be somewhere in .gitlet [DONE]
+    *
+    *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version)
+    *
+    *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm.
+    *
+    *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
+    *
+    *   - 20 lines
+    * */
     public static void stage(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
-        IHEAD head = new HEAD(utilities, gitletPaths);
-
-        LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
         for (int i = 1; i < args.length; i++) {
             String fileName = args[i];
             Path fullPath = Paths.get(gitletPaths.getWorkingDirectory().toString(), fileName);
 
             if (!stagingArea.hasFileName(fileName) && !Files.exists(fullPath)) {
-                throw new RuntimeException("Can't handle {" + fileName + "} it isn't exist!");
+                System.out.print("File does not exist.");
+                System.exit(0);
             }
 
             if (Files.exists(fullPath)) {
@@ -112,6 +126,7 @@ public class App {
             }
         }
 
+        // TODO: remove this line
         System.out.println(stagingArea.loadStagingArea());
     }
 
