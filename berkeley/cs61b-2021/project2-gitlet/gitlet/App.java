@@ -253,6 +253,12 @@ public class App {
         }
     }
 
+    /*
+    *   rm: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm
+    *   - Unstage the file if it is currently staged for addition. [DONE]
+    *   - If the file is tracked in the current commit, stage it for removal and remove the file from the working directory if the user has not already done so [DONE]
+    *   - If the file is neither staged nor tracked by the head commit, print the error message No reason to remove the file. [DONE]
+    * */
     public static void unstage(String[] args) {
         // TODO: this operation supports only one file per-time, so maybe supporting multiple file if possible
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
@@ -260,26 +266,52 @@ public class App {
         IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
 
-        Path fullPath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), args[1]);
+        String fileToBeRemoved = args[1];
+
+        Path fullPath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), fileToBeRemoved);
+
+        // TODO: remove this condition
         if (!Files.exists(fullPath)) {
             throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!");
         }
 
+        if (!stagingArea.hasFileName(fileToBeRemoved)) {
+            System.out.print("No reason to remove the file.");
+            System.exit(0);
+        }
+
         // Extract file info
-        String fileName = fullPath.getFileName().toString();
         String fileHash = utilities.sha1(
                 utilities.readContentsAsString(
                         fullPath.toFile()
                 )
         );
 
-        // TODO: this condition is handle only files in current working directory, no nesting is supported yet
-        // If passed file is in the staging area then remove it
-        if (currentStagingArea.containsKey(fileName) && currentStagingArea.containsValue(fileHash)) {
-            currentStagingArea.remove(fileName);
-        }
+        // TODO: this condition is handle only files in current working directory, no nesting "sub-directories" is supported yet
+        // If the file in the staging area then gitlet knows something about it
+        if (currentStagingArea.containsKey(fileToBeRemoved)) {
 
-        stagingArea.updateStagingArea(currentStagingArea);
+            // Stage it to be removed if it is in the repo
+            if (Repository.isInRepository(fileHash, gitletPaths)) {
+                stagingArea.stagManually(fileToBeRemoved, "");
+
+                // Remove the file from the working directory
+                try {
+                    Files.deleteIfExists(fullPath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // Need to load updated staging area, to stage deleted file
+                currentStagingArea = stagingArea.loadStagingArea();
+            }
+
+            // If the file is in the staging area and not tracked by the current commit "not in the repo" then remove it "unstage"
+            if (!Repository.isInRepository(fileHash, gitletPaths) && currentStagingArea.containsKey(fileToBeRemoved) && currentStagingArea.get(fileToBeRemoved).equals(fileHash)) {
+                currentStagingArea.remove(fileToBeRemoved);
+            }
+
+            stagingArea.updateStagingArea(currentStagingArea);
+        }
     }
 
     public static void log() {

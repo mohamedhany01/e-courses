@@ -148,7 +148,9 @@ public class StagingArea implements IStagingArea {
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
             String committedCommitHash = entry.getValue();
             Path committedCommitFullPath = Path.of(gitletPaths.getObjects().toString(), committedCommitHash);
-            if (stagingArea.size() != 0 && !Files.exists(committedCommitFullPath)) {
+
+            // The OR "||" condition is in case a hash of a file is empty "" using stagManually(), process it as a dirty state
+            if (stagingArea.size() != 0 && !Files.exists(committedCommitFullPath) || entry.getValue().isEmpty()) {
                 return false;
             }
         }
