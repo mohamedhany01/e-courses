@@ -52,6 +52,11 @@ public class FakeStagingArea implements IStagingArea {
     }
 
     @Override
+    public boolean isStagingAreaInCleanState() {
+        return true;
+    }
+
+    @Override
     public HashMap<String, String> getBlobsReadyToBeCommitted() {
         return new HashMap<>() {
         };

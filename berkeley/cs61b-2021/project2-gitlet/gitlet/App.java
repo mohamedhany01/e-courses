@@ -88,9 +88,9 @@ public class App {
     *
     *   - The staging area should be somewhere in .gitlet [DONE]
     *
-    *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version)
+    *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version) TODO
     *
-    *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm.
+    *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. TODO
     *
     *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
     *
@@ -130,19 +130,66 @@ public class App {
         System.out.println(stagingArea.loadStagingArea());
     }
 
+    /* commit: https://sp21.datastructur.es/materials/proj/proj2/proj2#commit
+    *
+    *   - Saves a snapshot of tracked files in the current commit and staging area so they can be restored at a later time [DONE]
+    *
+    *   - A commit will only update the contents of files it is tracking that have been staged for addition at the time of commit, in which case the commit will now include the version of the file that was staged instead of the version it got from its parent [DONE]
+    *
+    *   - A commit will save and start tracking any files that were staged for addition but weren’t tracked by its parent. [DONE]
+    *
+    *   - Files tracked in the current commit may be untracked in the new commit as a result being staged for removal by the rm command. [DONE]
+    *
+    *   - The staging area is cleared after a commit. [DONE]
+    *
+    *   - The commit command never adds, changes, or removes files in the working directory (other than those in the .gitlet directory). [DONE]
+    *
+    *   - The rm command will remove such files, as well as staging them for removal, so that they will be untracked after a commit. [DONE]
+    *
+    *   - Any changes made to files after staging for addition or removal are ignored by the  commit command, which only modifies the contents of the .gitlet directory. [DONE]
+    *
+    *   - After the commit command, the new commit is added as a new node in the commit tree. [DONE]
+    *
+    *   - The commit just made becomes the “current commit”, and the head pointer now points to it. The previous head commit is this commit’s parent commit. [DONE]
+    *
+    *   - Each commit should contain the date and time it was made. [DONE]
+    *
+    *   - Each commit is identified by its SHA-1 id, which must include the file (blob) references of its files, parent reference, log message, and commit time. [DONE]
+    *
+    *   - If no files have been staged, abort. Print the message No changes added to the commit. [DONE]
+    *
+    *   - Every commit must have a non-blank message. If it doesn’t, print the error message Please enter a commit message. [DONE]
+    *
+    *   - From real git: In real git, commits may have multiple parents (due to merging) and also have considerably more metadata.
+    *
+    *  - Line count: ~35
+    * */
     public static void commit(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
         IHEAD head = new HEAD(utilities, gitletPaths);
 
+        if (stagingArea.isStagingAreaInCleanState()) {
+            System.out.print("No changes added to the commit.");
+            System.exit(0);
+        }
+
+        // TODO: remove this log
         System.out.println("The content of Staging Tree are:");
         System.out.println(stagingArea.loadStagingArea());
 
         // Get the commit message and load the staging area
-        String commitMessage = args[1];
+        String commitMessage = args[1].trim();
+
+        if (commitMessage.isEmpty()) {
+            System.out.print("Please enter a commit message.");
+            System.exit(0);
+        }
+
         HashMap<String, String> readyBlobs = stagingArea.getBlobsReadyToBeCommitted();
 
+        // TODO: remove this log
         System.out.println("The content will be committed: ");
         System.out.println(readyBlobs);
 
@@ -186,6 +233,7 @@ public class App {
         Repository repository = Repository.create(utilities, gitletPaths);
         ICommit committedObject = repository.commitObjects(commit, tree, blobs);
 
+        // TODO: update this to include branches as well
         head.updateHEAD(committedObject.getHash());
 
         // Clean staging area from deleted files

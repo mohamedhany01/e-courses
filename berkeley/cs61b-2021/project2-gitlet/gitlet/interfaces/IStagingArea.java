@@ -21,5 +21,7 @@ public interface IStagingArea {
 
     boolean hasFileName(String key);
 
+    boolean isStagingAreaInCleanState();
+
     HashMap<String, String> getBlobsReadyToBeCommitted();
 }

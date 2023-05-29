@@ -108,4 +108,16 @@ public class StagingAreaTest {
         Assert.assertTrue(actual.isEmpty());
     }
 
+    @Test
+    public void StagingArea_isStagingAreaInCleanState_returnBoolean() {
+        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
+        stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        StagingArea stagingArea = new StagingArea(stubUtilities, stubGitletPaths);
+
+        boolean expected = stagingArea.isStagingAreaInCleanState();
+
+        Assert.assertTrue(expected);
+    }
+
 }

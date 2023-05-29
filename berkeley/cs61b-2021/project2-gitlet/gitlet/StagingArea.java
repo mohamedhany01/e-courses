@@ -143,6 +143,19 @@ public class StagingArea implements IStagingArea {
     }
 
     @Override
+    public boolean isStagingAreaInCleanState() {
+        HashMap<String, String> stagingArea = loadStagingArea();
+        for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
+            String committedCommitHash = entry.getValue();
+            Path committedCommitFullPath = Path.of(gitletPaths.getObjects().toString(), committedCommitHash);
+            if (stagingArea.size() != 0 && !Files.exists(committedCommitFullPath)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public HashMap<String, String> getBlobsReadyToBeCommitted() {
         HashMap<String, String> stagingArea = loadStagingArea();
         HashMap<String, String> readyBlobs = new HashMap<>();
