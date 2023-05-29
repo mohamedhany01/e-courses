@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public class HEADTest {
@@ -15,7 +16,8 @@ public class HEADTest {
 
     @Test
     public void HEAD_updateHEAD_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        utilities.fakeContent = "fake content";
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         HEAD head = new HEAD(utilities, gitletPaths);
@@ -28,7 +30,8 @@ public class HEADTest {
 
     @Test
     public void HEAD_updateHEADWhilePathInvalid_throwException() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        utilities.fakeContent = "fake content";
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"), "fake");
         HEAD head = new HEAD(utilities, gitletPaths);
@@ -41,13 +44,28 @@ public class HEADTest {
 
     @Test
     public void HEAD_getHEAD_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        utilities.fakeContent = "fake content";
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         HEAD head = new HEAD(utilities, gitletPaths);
         String expected = "fake content";
 
         String actual = head.getHEAD();
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void HEAD_getActiveBranchHash_returnString() {
+        FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
+        utilities.fakeContent = "fake" + File.separator + "head" +File.separator + "value";
+        FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
+        gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        HEAD head = new HEAD(utilities, gitletPaths);
+        String expected = "fake" + File.separator + "head" +File.separator + "value";
+
+        String actual = head.getActiveBranchHash();
 
         Assert.assertEquals(expected, actual);
     }

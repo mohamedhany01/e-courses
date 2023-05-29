@@ -67,8 +67,12 @@ public class App {
 
         manager.commitRootCommit(blob, tree, commit);
 
+        String defaultBranch = "master";
+
         Repository repository = Repository.create(utilities, gitletPaths);
-        repository.createBranch("master", commit.getHash());
+        repository.createBranch(defaultBranch, commit.getHash());
+
+        head.updateHEAD(defaultBranch);
     }
 
     public static void status() {
@@ -219,7 +223,7 @@ public class App {
 
         tree.calculateContentHash(utilities);
 
-        String parentHash = head.getHEAD();
+        String parentHash = head.getActiveBranchHash();
         Commit commit = new Commit(
                 commitMessage,
                 LocalDateTime.now(),
@@ -233,8 +237,10 @@ public class App {
         Repository repository = Repository.create(utilities, gitletPaths);
         ICommit committedObject = repository.commitObjects(commit, tree, blobs);
 
-        // TODO: update this to include branches as well
-        head.updateHEAD(committedObject.getHash());
+        repository.updateBranch(
+                head.getActiveBranchName(),
+                committedObject.getHash()
+        );
 
         // Clean staging area from deleted files
         for (Map.Entry<String, String> entry : stagingArea.loadStagingArea().entrySet()) {
@@ -280,7 +286,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit nextCommit = Commit.getCommit(head.getHEAD(), utilities);
+        Commit nextCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
 
         if (nextCommit == null) {
             return;
@@ -300,7 +306,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit nextCommit = Commit.getCommit(head.getHEAD(), utilities);
+        Commit nextCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
 
         if (nextCommit == null) {
             return;
@@ -335,7 +341,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit currentCommit = Commit.getCommit(head.getHEAD(), utilities);
+        Commit currentCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
 
         if (currentCommit == null) {
             return;

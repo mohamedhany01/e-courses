@@ -30,14 +30,31 @@ public class RepositoryTest {
 
     @Test
     public void Repository_createBranch_returnBranchHash() {
-        IUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        FakeUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        stubUtilities.fakeContent = "fake content";
         FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
         stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         Repository repository = Repository.create(stubUtilities, stubGitletPaths);
 
+        // TODO: failure due to singleton pattern when run only, replace Repository to be normal
         String expected = repository.createBranch("foo", "anything");
 
         Assert.assertNotNull(expected);
-        Assert.assertEquals("fake content", expected);
+        Assert.assertEquals("fake\\head\\value", expected);
+    }
+
+    @Test
+    public void Repository_updateBranch_returnBranchName() {
+        FakeUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        stubUtilities.fakeContent = "fake content";
+        FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
+        stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        Repository repository = Repository.create(stubUtilities, stubGitletPaths);
+
+        // TODO: failure due to singleton pattern when run only, replace Repository to be normal
+        String expected = repository.updateBranch("foo", "anything");
+
+        Assert.assertNotNull(expected);
+        Assert.assertEquals("fake\\head\\value", expected);
     }
 }

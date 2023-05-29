@@ -55,6 +55,6 @@ public class Repository implements IRepository {
 
     @Override
     public String updateBranch(String name, String commitHash) {
-        return null;
+        return createBranch(name, commitHash);
     }
 }
