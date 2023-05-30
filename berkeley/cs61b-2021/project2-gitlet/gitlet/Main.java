@@ -45,6 +45,9 @@ public class Main {
             case "checkout":
                 App.checkout(args);
                 break;
+            case "branch":
+                App.branch(args);
+                break;
             case "debug":
                 App.debug();
                 break;

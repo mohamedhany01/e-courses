@@ -386,7 +386,7 @@ public class App {
         }
     }
 
-    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#find
+    /* find: https://sp21.datastructur.es/materials/proj/proj2/proj2#find
      *
      * - Prints out the ids of all commits that have the given commit message, one per line. [DONE]
      *
@@ -436,7 +436,7 @@ public class App {
         }
     }
 
-    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#status
+    /* status: https://sp21.datastructur.es/materials/proj/proj2/proj2#status
      *
      * - Displays what branches currently exist, and marks the current branch with a *. [DONE]
      *
@@ -459,6 +459,40 @@ public class App {
         IHEAD head = new HEAD(utilities, gitletPaths);
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
         manager.showStatus();
+    }
+
+    /* branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#branch
+     *
+     * - Creates a new branch with the given name, and points it at the current head commit. [DONE]
+     *
+     * - A branch is nothing more than a name for a reference (a SHA-1 identifier) to a commit node. [DONE]
+     *
+     * - This command does NOT immediately switch to the newly created branch (just as in real Git). [DONE]
+     *
+     * - Before you ever call branch, your code should be running with a default branch called “master”. [DONE]
+     *
+     * - Failure cases: If a branch with the given name already exists, print the error message A branch with that name already exists. [DONE]
+     * */
+    public static void branch(String[] args) {
+        String branchName = args[1];
+
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        HEAD head = new HEAD(utilities, gitletPaths);
+        Repository repository = Repository.create(utilities, gitletPaths);
+
+        Path branches = gitletPaths.getRefs();
+
+        if (!Files.exists(branches)) {
+            System.exit(0);
+        }
+
+        if (Files.exists(Path.of(branches.toString(), branchName))) {
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        }
+
+        repository.createBranch(branchName, head.getActiveBranchHash());
     }
 
     // TODO: move it to working directory class
