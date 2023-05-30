@@ -395,25 +395,53 @@ public class App {
         }
     }
 
+    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#find
+     *
+     * - Prints out the ids of all commits that have the given commit message, one per line. [DONE]
+     *
+     * - If there are multiple such commits, it prints the ids out on separate lines. [DONE]
+     *
+     * - The commit message is a single operand; to indicate a multiword message, put the operand in quotation marks, as for the commit command below. Hint: the hint for this command is the same as the one for global-log. [DONE]
+     *
+     * - If no such commit exists, prints the error message Found no commit with that message. [DONE]
+     *
+     * - Doesn’t exist in real git. Similar effects can be achieved by grepping the output of log. [DONE]
+     * */
     public static void find(String[] args) {
         String commitMassage = args[1];
+        boolean commitFound = false;
+
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit nextCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
+        Path objectsDirectory = gitletPaths.getObjects();
 
-        if (nextCommit == null) {
-            return;
+        // If no objects directory just exit and don't do anything
+        if (!Files.exists(objectsDirectory)) {
+            System.exit(0);
         }
 
-        while (true) {
-            if (nextCommit.getMessage().equals(commitMassage)) {
-                System.out.println(nextCommit.getHash());
+        // Loop over objects directory, and read all serialized objects
+        for (String objectHash : utilities.plainFilenamesIn(objectsDirectory.toFile())) {
+            Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
+
+            try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
+                Object rowObject = reader.readObject();
+
+                // If you found any object of type Commit print it
+                if (rowObject instanceof Commit commit && commit.getMessage().equals(commitMassage)) {
+                    System.out.println(commit.getHash());
+                    commitFound = true;
+                }
+
+            } catch (FileNotFoundException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            if (nextCommit.getParent() == null) {
-                break;
-            }
-            nextCommit = Commit.getCommit(nextCommit.getParent(), utilities);
+        }
+
+        if (!commitFound) {
+            System.out.println("Found no commit with that message.");
         }
     }
 
