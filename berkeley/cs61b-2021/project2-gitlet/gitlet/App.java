@@ -495,6 +495,43 @@ public class App {
         repository.createBranch(branchName, head.getActiveBranchHash());
     }
 
+    /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
+     *
+     * - Deletes the branch with the given name. [DONE]
+     *
+     * - This only means to delete the pointer associated with the branch; it does not mean to delete all commits that were created under the branch, or anything like that. [DONE]
+     *
+     * - If a branch with the given name does not exist, aborts. Print the error message A branch with that name does not exist. [DONE]
+     *
+     * - If you try to remove the branch you’re currently on, aborts, printing the error message Cannot remove the current branch. [DONE]
+     * */
+    public static void removeBranch(String[] args) {
+        String branchName = args[1];
+
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        HEAD head = new HEAD(utilities, gitletPaths);
+        Repository repository = Repository.create(utilities, gitletPaths);
+
+        Path branches = gitletPaths.getRefs();
+
+        if (!Files.exists(branches)) {
+            System.exit(0);
+        }
+
+        if (!Files.exists(Path.of(branches.toString(), branchName))) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+
+        if (head.getActiveBranchName().equals(branchName)) {
+            System.out.println("Cannot remove the current branch.");
+            System.exit(0);
+        }
+
+        repository.removeBranch(branchName);
+    }
+
     // TODO: move it to working directory class
     public static Blob findBlob(String fileName, Tree tree, IUtilitiesWrapper utilities) {
         List<Object> blobsInTree = tree.getContent();

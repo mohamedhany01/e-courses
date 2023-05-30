@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FakeRepository implements IRepository {
+    boolean branchStatus = false;
+
     @Override
     public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
         return commit;
@@ -17,6 +19,11 @@ public class FakeRepository implements IRepository {
     @Override
     public String createBranch(String name, String commitHash) {
         return null;
+    }
+
+    @Override
+    public boolean removeBranch(String name) {
+        return branchStatus;
     }
 
     @Override

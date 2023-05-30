@@ -2,6 +2,7 @@ package gitlet;
 
 import gitlet.interfaces.*;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +52,16 @@ public class Repository implements IRepository {
         Path branchFullPath = Path.of(gitletPaths.getRefs().toString(), name);
         utilities.writeContents(branchFullPath.toFile(), commitHash);
         return utilities.readContentsAsString(branchFullPath.toFile());
+    }
+
+    @Override
+    public boolean removeBranch(String name) {
+        Path branchFullPath = Path.of(gitletPaths.getRefs().toString(), name);
+        try {
+            return Files.deleteIfExists(branchFullPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -48,6 +48,9 @@ public class Main {
             case "branch":
                 App.branch(args);
                 break;
+            case "rm-branch":
+                App.removeBranch(args);
+                break;
             case "debug":
                 App.debug();
                 break;

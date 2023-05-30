@@ -7,6 +7,8 @@ public interface IRepository {
 
     String createBranch(String name, String commitHash);
 
+    boolean removeBranch(String name);
+
     String updateBranch(String name, String commitHash);
 
     List<String> getAllBranches();
