@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 public class Commit implements ICommit, Serializable {
     /**
@@ -61,7 +64,19 @@ public class Commit implements ICommit, Serializable {
         return getCommit(rootCommitHash, utilities);
     }
 
+    public static String formatCommitData(LocalDateTime rowData) {
+        ZoneOffset offset = ZoneOffset.ofHours(-8);
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss uuuu Z");
+
+        OffsetDateTime offsetDateTime = OffsetDateTime.of(rowData, offset);
+        String result = offsetDateTime.format(pattern);
+        return result;
+    }
+
     public static Commit getCommit(String hash, IUtilitiesWrapper utilities) {
+        if (hash == null) {
+            return null;
+        }
         Path commitFullPath = Paths.get(GitletPaths.OBJECTS.toString(), hash);
         if (!Files.exists(commitFullPath)) {
             throw new RuntimeException("Commit with " + hash + " not found");

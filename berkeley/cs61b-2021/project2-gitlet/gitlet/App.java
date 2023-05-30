@@ -6,9 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +42,8 @@ public class App {
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
-        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC")).toLocalDateTime();
+        // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
+        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         // Root commit
         Blob blob = new Blob(
@@ -314,22 +314,41 @@ public class App {
         }
     }
 
+    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
+    *
+    *   - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
+    *
+    * - Ignoring any second parents found in merge commits. TODO
+    *
+    * - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
+    *
+    * - There is a === before each commit and an empty line after it [DONE]
+    *
+    * - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
+    *
+    * - Merge field. TODO
+    * */
     public static void log() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit nextCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
 
-        if (nextCommit == null) {
-            return;
-        }
+        String currentHead = head.getActiveBranchHash();
+        Commit currentCommit = Commit.getCommit(currentHead, utilities);
 
         while (true) {
-            System.out.println(nextCommit);
-            if (nextCommit.getParent() == null) {
+            if (currentCommit == null) {
                 break;
             }
-            nextCommit = Commit.getCommit(nextCommit.getParent(), utilities);
+
+            System.out.println("===");
+            System.out.println("commit " + currentCommit.getHash());
+            System.out.println("Date: " + Commit.formatCommitData(
+                    currentCommit.getDate()
+            ));
+            System.out.println(currentCommit.getMessage() + "\n");
+
+            currentCommit = Commit.getCommit(currentCommit.getParent(), utilities);
         }
     }
 
