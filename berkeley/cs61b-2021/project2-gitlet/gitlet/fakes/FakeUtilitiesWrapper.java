@@ -4,6 +4,7 @@ import gitlet.interfaces.IUtilitiesWrapper;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class FakeUtilitiesWrapper implements IUtilitiesWrapper {
 
     @Override
     public List<String> plainFilenamesIn(File dir) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

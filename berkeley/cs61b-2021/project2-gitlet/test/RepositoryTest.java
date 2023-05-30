@@ -57,4 +57,18 @@ public class RepositoryTest {
         Assert.assertNotNull(expected);
         Assert.assertEquals("fake\\head\\value", expected);
     }
+
+    @Test
+    public void Repository_getAllBranches_returnListOfBranches() {
+        FakeUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
+        stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        Repository repository = Repository.create(stubUtilities, stubGitletPaths);
+
+        List<String> expected = repository.getAllBranches();
+
+        Assert.assertNotNull(expected);
+        Assert.assertTrue(expected instanceof List<String>);
+        Assert.assertEquals(0, expected.size());
+    }
 }

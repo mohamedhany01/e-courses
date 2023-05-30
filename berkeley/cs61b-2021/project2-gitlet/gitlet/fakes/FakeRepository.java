@@ -5,6 +5,7 @@ import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IRepository;
 import gitlet.interfaces.ITree;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FakeRepository implements IRepository {
@@ -21,5 +22,11 @@ public class FakeRepository implements IRepository {
     @Override
     public String updateBranch(String name, String commitHash) {
         return null;
+    }
+
+    @Override
+    public List<String> getAllBranches() {
+        return new LinkedList<>() {
+        };
     }
 }

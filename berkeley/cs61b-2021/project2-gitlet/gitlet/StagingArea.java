@@ -56,8 +56,18 @@ public class StagingArea implements IStagingArea {
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
         IWorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+        Repository repository = Repository.create(utilities, gitletPaths);
         HashMap<String, String> HEADFiles = head.getCommitFiles();
         HashMap<String, String> stagingArea = loadStagingArea();
+
+        System.out.println("\n=== Branches ===");
+        for (String branch : repository.getAllBranches()) {
+            if (branch.equals(head.getActiveBranchName())) {
+                System.out.println("*" + branch);
+            } else {
+                System.out.println(branch);
+            }
+        }
 
         System.out.println("\n=== Staged Files ===");
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
@@ -84,7 +94,11 @@ public class StagingArea implements IStagingArea {
         for (String fileName : workingArea.getFiles()) {
             String fileHash = workingArea.getFileHash(fileName);
             if (stagingArea.containsKey(fileName) && !stagingArea.get(fileName).equals(fileHash)) {
-                System.out.println(fileName);
+                if (stagingArea.containsKey(fileName) && !stagingArea.get(fileName).equals(fileHash)) {
+                    System.out.println(fileName + " (modified)");
+                } else {
+                    System.out.println(fileName + " (deleted)");
+                }
             }
         }
 

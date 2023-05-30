@@ -8,4 +8,6 @@ public interface IRepository {
     String createBranch(String name, String commitHash);
 
     String updateBranch(String name, String commitHash);
+
+    List<String> getAllBranches();
 }

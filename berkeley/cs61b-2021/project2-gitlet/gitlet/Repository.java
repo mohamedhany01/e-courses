@@ -57,4 +57,14 @@ public class Repository implements IRepository {
     public String updateBranch(String name, String commitHash) {
         return createBranch(name, commitHash);
     }
+
+    @Override
+    public List<String> getAllBranches() {
+        Path branches = gitletPaths.getRefs();
+        if (!Files.exists(branches)) {
+            System.exit(0);
+        }
+
+        return utilities.plainFilenamesIn(branches.toFile());
+    }
 }

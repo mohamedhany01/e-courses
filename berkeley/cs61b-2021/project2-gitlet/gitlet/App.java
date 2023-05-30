@@ -79,15 +79,6 @@ public class App {
         head.updateHEAD(defaultBranch);
     }
 
-    public static void status() {
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
-        IHEAD head = new HEAD(utilities, gitletPaths);
-        LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
-        manager.showStatus();
-    }
-
     /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add
      *
      *   - Adds a copy of the file as it currently exists to the staging area (see the description of the commit command) [DONE]
@@ -443,6 +434,31 @@ public class App {
         if (!commitFound) {
             System.out.println("Found no commit with that message.");
         }
+    }
+
+    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#status
+     *
+     * - Displays what branches currently exist, and marks the current branch with a *. [DONE]
+     *
+     * - Displays what files have been staged for addition or removal. TODO
+     *
+     * - The last two sections (modifications not staged and untracked files) are extra credit, worth 32 points. Feel free to leave them blank (leaving just the headers). TODO
+     *
+     * - There is an empty line between sections, and the entire status ends in an empty line as well. [DONE]
+     *
+     * - Entries should be listed in lexicographic order, using the Java string-comparison order (the asterisk doesn’t count). TODO
+     *
+     * - Runtime: Make sure this depends only on the amount of data in the working directory plus the number of files staged to be added or deleted plus the number of branches. [DONE]
+     *
+     * - READ: https://sp21.datastructur.es/materials/proj/proj2/proj2#status for more details
+     * */
+    public static void status() {
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+        IHEAD head = new HEAD(utilities, gitletPaths);
+        LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
+        manager.showStatus();
     }
 
     // TODO: move it to working directory class
