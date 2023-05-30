@@ -1,7 +1,6 @@
 import gitlet.HEAD;
 import gitlet.fakes.FakeGitletPathsWrapper;
 import gitlet.fakes.FakeUtilitiesWrapper;
-import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,11 +58,11 @@ public class HEADTest {
     @Test
     public void HEAD_getActiveBranchHash_returnString() {
         FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-        utilities.fakeContent = "fake" + File.separator + "head" +File.separator + "value";
+        utilities.fakeContent = "fake" + File.separator + "head" + File.separator + "value";
         FakeGitletPathsWrapper gitletPaths = new FakeGitletPathsWrapper();
         gitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
         HEAD head = new HEAD(utilities, gitletPaths);
-        String expected = "fake" + File.separator + "head" +File.separator + "value";
+        String expected = "fake" + File.separator + "head" + File.separator + "value";
 
         String actual = head.getActiveBranchHash();
 

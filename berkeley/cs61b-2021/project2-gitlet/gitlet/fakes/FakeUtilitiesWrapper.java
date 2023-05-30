@@ -10,7 +10,7 @@ import java.util.List;
 public class FakeUtilitiesWrapper implements IUtilitiesWrapper {
 
     // TODO: to solve Repository_createBranch_returnBranchHash for now, until replace singleton in Repository class
-    public String fakeContent = "fake" + File.separator + "head" +File.separator + "value";
+    public String fakeContent = "fake" + File.separator + "head" + File.separator + "value";
 
     @Override
     public String sha1(Object... objects) {

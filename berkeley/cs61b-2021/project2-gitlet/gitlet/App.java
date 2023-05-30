@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,19 +17,19 @@ import java.util.Map;
 public class App {
 
     /*  init: https://sp21.datastructur.es/materials/proj/proj2/proj2#init
-    *
-    *   - A commit that contains no files and has the commit message initial commit [DONE]
-    *
-    *   - It will have a single branch: master, which initially points to this initial commit, and master will be the current branch [DONE]
-    *
-    *   - The timestamp for this initial commit will be 00:00:00 UTC, Thursday, 1 January 1970} [DONE]
-    *
-    *   - If there is already a Gitlet version-control system in the current directory, it should abort [DONE]
-    *
-    *   - It should NOT overwrite the existing system with a new one, Should print the error message A Gitlet version-control system already exists in the current directory. [DONE]
-    *
-    *   - Line count: ~15
-    * */
+     *
+     *   - A commit that contains no files and has the commit message initial commit [DONE]
+     *
+     *   - It will have a single branch: master, which initially points to this initial commit, and master will be the current branch [DONE]
+     *
+     *   - The timestamp for this initial commit will be 00:00:00 UTC, Thursday, 1 January 1970} [DONE]
+     *
+     *   - If there is already a Gitlet version-control system in the current directory, it should abort [DONE]
+     *
+     *   - It should NOT overwrite the existing system with a new one, Should print the error message A Gitlet version-control system already exists in the current directory. [DONE]
+     *
+     *   - Line count: ~15
+     * */
     public static void init() {
         if (LocalRepositoryManager.isgitletExists()) {
             System.out.print("A Gitlet version-control system already exists in the current directory.");
@@ -85,21 +86,21 @@ public class App {
     }
 
     /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add
-    *
-    *   - Adds a copy of the file as it currently exists to the staging area (see the description of the commit command) [DONE]
-    *
-    *   - Staging an already-staged file overwrites the previous entry in the staging area with the new contents [DONE]
-    *
-    *   - The staging area should be somewhere in .gitlet [DONE]
-    *
-    *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version) TODO
-    *
-    *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. TODO
-    *
-    *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
-    *
-    *   - 20 lines
-    * */
+     *
+     *   - Adds a copy of the file as it currently exists to the staging area (see the description of the commit command) [DONE]
+     *
+     *   - Staging an already-staged file overwrites the previous entry in the staging area with the new contents [DONE]
+     *
+     *   - The staging area should be somewhere in .gitlet [DONE]
+     *
+     *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version) TODO
+     *
+     *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. TODO
+     *
+     *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
+     *
+     *   - 20 lines
+     * */
     public static void stage(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
@@ -135,39 +136,39 @@ public class App {
     }
 
     /* commit: https://sp21.datastructur.es/materials/proj/proj2/proj2#commit
-    *
-    *   - Saves a snapshot of tracked files in the current commit and staging area so they can be restored at a later time [DONE]
-    *
-    *   - A commit will only update the contents of files it is tracking that have been staged for addition at the time of commit, in which case the commit will now include the version of the file that was staged instead of the version it got from its parent [DONE]
-    *
-    *   - A commit will save and start tracking any files that were staged for addition but weren’t tracked by its parent. [DONE]
-    *
-    *   - Files tracked in the current commit may be untracked in the new commit as a result being staged for removal by the rm command. [DONE]
-    *
-    *   - The staging area is cleared after a commit. [DONE]
-    *
-    *   - The commit command never adds, changes, or removes files in the working directory (other than those in the .gitlet directory). [DONE]
-    *
-    *   - The rm command will remove such files, as well as staging them for removal, so that they will be untracked after a commit. [DONE]
-    *
-    *   - Any changes made to files after staging for addition or removal are ignored by the  commit command, which only modifies the contents of the .gitlet directory. [DONE]
-    *
-    *   - After the commit command, the new commit is added as a new node in the commit tree. [DONE]
-    *
-    *   - The commit just made becomes the “current commit”, and the head pointer now points to it. The previous head commit is this commit’s parent commit. [DONE]
-    *
-    *   - Each commit should contain the date and time it was made. [DONE]
-    *
-    *   - Each commit is identified by its SHA-1 id, which must include the file (blob) references of its files, parent reference, log message, and commit time. [DONE]
-    *
-    *   - If no files have been staged, abort. Print the message No changes added to the commit. [DONE]
-    *
-    *   - Every commit must have a non-blank message. If it doesn’t, print the error message Please enter a commit message. [DONE]
-    *
-    *   - From real git: In real git, commits may have multiple parents (due to merging) and also have considerably more metadata.
-    *
-    *  - Line count: ~35
-    * */
+     *
+     *   - Saves a snapshot of tracked files in the current commit and staging area so they can be restored at a later time [DONE]
+     *
+     *   - A commit will only update the contents of files it is tracking that have been staged for addition at the time of commit, in which case the commit will now include the version of the file that was staged instead of the version it got from its parent [DONE]
+     *
+     *   - A commit will save and start tracking any files that were staged for addition but weren’t tracked by its parent. [DONE]
+     *
+     *   - Files tracked in the current commit may be untracked in the new commit as a result being staged for removal by the rm command. [DONE]
+     *
+     *   - The staging area is cleared after a commit. [DONE]
+     *
+     *   - The commit command never adds, changes, or removes files in the working directory (other than those in the .gitlet directory). [DONE]
+     *
+     *   - The rm command will remove such files, as well as staging them for removal, so that they will be untracked after a commit. [DONE]
+     *
+     *   - Any changes made to files after staging for addition or removal are ignored by the  commit command, which only modifies the contents of the .gitlet directory. [DONE]
+     *
+     *   - After the commit command, the new commit is added as a new node in the commit tree. [DONE]
+     *
+     *   - The commit just made becomes the “current commit”, and the head pointer now points to it. The previous head commit is this commit’s parent commit. [DONE]
+     *
+     *   - Each commit should contain the date and time it was made. [DONE]
+     *
+     *   - Each commit is identified by its SHA-1 id, which must include the file (blob) references of its files, parent reference, log message, and commit time. [DONE]
+     *
+     *   - If no files have been staged, abort. Print the message No changes added to the commit. [DONE]
+     *
+     *   - Every commit must have a non-blank message. If it doesn’t, print the error message Please enter a commit message. [DONE]
+     *
+     *   - From real git: In real git, commits may have multiple parents (due to merging) and also have considerably more metadata.
+     *
+     *  - Line count: ~35
+     * */
     public static void commit(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
@@ -254,11 +255,11 @@ public class App {
     }
 
     /*
-    *   rm: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm
-    *   - Unstage the file if it is currently staged for addition. [DONE]
-    *   - If the file is tracked in the current commit, stage it for removal and remove the file from the working directory if the user has not already done so [DONE]
-    *   - If the file is neither staged nor tracked by the head commit, print the error message No reason to remove the file. [DONE]
-    * */
+     *   rm: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm
+     *   - Unstage the file if it is currently staged for addition. [DONE]
+     *   - If the file is tracked in the current commit, stage it for removal and remove the file from the working directory if the user has not already done so [DONE]
+     *   - If the file is neither staged nor tracked by the head commit, print the error message No reason to remove the file. [DONE]
+     * */
     public static void unstage(String[] args) {
         // TODO: this operation supports only one file per-time, so maybe supporting multiple file if possible
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
@@ -315,19 +316,19 @@ public class App {
     }
 
     /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
-    *
-    *   - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
-    *
-    * - Ignoring any second parents found in merge commits. TODO
-    *
-    * - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
-    *
-    * - There is a === before each commit and an empty line after it [DONE]
-    *
-    * - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
-    *
-    * - Merge field. TODO
-    * */
+     *
+     *   - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
+     *
+     * - Ignoring any second parents found in merge commits. TODO
+     *
+     * - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
+     *
+     * - There is a === before each commit and an empty line after it [DONE]
+     *
+     * - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
+     *
+     * - Merge field. TODO
+     * */
     public static void log() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();

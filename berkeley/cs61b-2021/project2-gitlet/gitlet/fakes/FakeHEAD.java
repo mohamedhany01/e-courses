@@ -2,7 +2,6 @@ package gitlet.fakes;
 
 import gitlet.interfaces.IHEAD;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class FakeHEAD implements IHEAD {

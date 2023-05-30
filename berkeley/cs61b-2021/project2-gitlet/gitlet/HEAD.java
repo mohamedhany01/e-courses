@@ -7,7 +7,6 @@ import gitlet.interfaces.IUtilitiesWrapper;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -55,7 +54,7 @@ public class HEAD implements IHEAD {
 
     @Override
     public String getActiveBranchHash() {
-       String activeBranchName = getActiveBranchName();
+        String activeBranchName = getActiveBranchName();
         String branchPath = Path.of(gitletPaths.getRefs().toString(), activeBranchName).toString();
         return utilities.readContentsAsString(new File(branchPath));
     }
@@ -64,7 +63,7 @@ public class HEAD implements IHEAD {
     public String getActiveBranchName() {
         // https://stackoverflow.com/a/28630124
         String pathSeparatorPattern = Pattern.quote(File.separator);
-        String [] activeBranch = getHEAD().split(pathSeparatorPattern);
+        String[] activeBranch = getHEAD().split(pathSeparatorPattern);
         return activeBranch[2];
     }
 }

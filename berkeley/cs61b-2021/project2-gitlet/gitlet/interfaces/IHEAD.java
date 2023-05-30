@@ -10,5 +10,6 @@ public interface IHEAD {
     HashMap<String, String> getCommitFiles();
 
     String getActiveBranchHash();
+
     String getActiveBranchName();
 }
