@@ -2,7 +2,10 @@ package gitlet;
 
 import gitlet.interfaces.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -350,6 +353,45 @@ public class App {
             System.out.println(currentCommit.getMessage() + "\n");
 
             currentCommit = Commit.getCommit(currentCommit.getParent(), utilities);
+        }
+    }
+
+    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#global-log
+     *
+     *   - Like log, except displays information about all commits ever made. The order of the commits does not matter. [DONE]
+     *   - There is a useful method in gitlet.Utils that will help you iterate over files within a directory. [DONE]
+     *   - Merge field. TODO
+     * */
+    public static void logAll() {
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        Path objectsDirectory = gitletPaths.getObjects();
+
+        // If no objects directory just exit and don't do anything
+        if (!Files.exists(objectsDirectory)) {
+            System.exit(0);
+        }
+
+        // Loop over objects directory, and read all serialized objects
+        for (String objectHash : utilities.plainFilenamesIn(objectsDirectory.toFile())) {
+            Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
+
+            try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
+                Object rowObject = reader.readObject();
+
+                // If you found any object of type Commit print it
+                if (rowObject instanceof Commit commit) {
+                    System.out.println("===");
+                    System.out.println("commit " + commit.getHash());
+                    System.out.println("Date: " + Commit.formatCommitData(commit.getDate()));
+                    System.out.println(commit.getMessage() + "\n");
+                }
+
+            } catch (FileNotFoundException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
