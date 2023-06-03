@@ -532,7 +532,6 @@ public class App {
         repository.removeBranch(branchName);
     }
 
-
     /* checkout: https://sp21.datastructur.es/materials/proj/proj2/proj2#checkout
      *
      * - However, that you poke around in a .git directory (specifically, .git/objects) and see how it manages to speed up its search. You will perhaps recognize a familiar data structure implemented with the file system rather than pointers. TODO
@@ -655,6 +654,54 @@ public class App {
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
             repository.updateBranch(head.getActiveBranchName(), commitHash);
         }
+    }
+
+    /* reset: https://sp21.datastructur.es/materials/proj/proj2/proj2#reset
+     *
+     * - Checks out all the files tracked by the given commit. Removes tracked files that are not present in that commit. [DONE]
+     *
+     * - Also moves the current branch’s head to that commit node. See the intro for an example of what happens to the head pointer after using reset. [DONE]
+     *
+     * -  The [commit id] may be abbreviated as for checkout. TODO
+     *
+     * - The staging area is cleared. [DONE]
+     *
+     * -  If no commit with the given id exists, print No commit with that id exists. [DONE]
+     *
+     * -  If a working file is untracked in the current branch and would be overwritten by the reset, print `There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. [DONE]
+     * */
+    public static void reset(String[] args) {
+        IUtilitiesWrapper utilities = new UtilitiesWrapper();
+        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
+        Repository repository = Repository.create(utilities, gitletPaths);
+        HEAD head = new HEAD(utilities, gitletPaths);
+        WorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+        StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+
+        String hash = args[1];
+        if (!Repository.isInRepository(hash, gitletPaths)) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+
+        if (workingArea.hasUntrackedFile(stagingArea)) {
+            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            System.exit(0);
+        }
+
+        workingArea.clear();
+
+        List<Object> blobs = Commit.getBlobs(hash, utilities);
+        for (Object rowBlob : blobs) {
+            String blobHash = (String) rowBlob;
+            Blob blob = Blob.getBlob(blobHash, utilities);
+            Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
+
+            utilities.writeContents(file.toFile(), blob.getContent());
+            stagingArea.stagManually(blob.getFileName(), blob.getHash());
+        }
+
+        repository.updateBranch(head.getActiveBranchName(), hash);
     }
 
     static void debug() {
