@@ -27,8 +27,18 @@ public class FakeRepository implements IRepository {
     }
 
     @Override
+    public boolean hasBranch(String branchName) {
+        return false;
+    }
+
+    @Override
     public String updateBranch(String name, String commitHash) {
         return null;
+    }
+
+    @Override
+    public String getBranchHash(String name) {
+        return "fake branch hash";
     }
 
     @Override

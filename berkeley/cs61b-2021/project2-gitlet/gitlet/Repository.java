@@ -65,8 +65,22 @@ public class Repository implements IRepository {
     }
 
     @Override
+    public boolean hasBranch(String branchName) {
+        return Files.exists(Path.of(gitletPaths.getRefs().toString(), branchName));
+    }
+
+    @Override
     public String updateBranch(String name, String commitHash) {
         return createBranch(name, commitHash);
+    }
+
+    @Override
+    public String getBranchHash(String name) {
+        if (hasBranch(name)) {
+            Path branchPath = Path.of(gitletPaths.getRefs().toString(), name);
+            return utilities.readContentsAsString(branchPath.toFile());
+        }
+        return null;
     }
 
     @Override

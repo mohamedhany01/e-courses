@@ -14,4 +14,10 @@ public interface IWorkingArea {
     String getFileHash(File targetFile);
 
     boolean isFileExist(String file);
+
+    void clear();
+
+    boolean removeFile(String file);
+
+    boolean hasUntrackedFile(IStagingArea stagingArea);
 }

@@ -83,4 +83,16 @@ public class RepositoryTest {
 
         Assert.assertFalse(expected);
     }
+
+    @Test
+    public void Repository_hasBranch_returnBoolean() {
+        FakeUtilitiesWrapper stubUtilities = new FakeUtilitiesWrapper();
+        FakeGitletPathsWrapper stubGitletPaths = new FakeGitletPathsWrapper();
+        stubGitletPaths.fakePath = Path.of(System.getProperty("user.dir"));
+        Repository repository = Repository.create(stubUtilities, stubGitletPaths);
+
+        boolean expected = repository.hasBranch("Foo");
+
+        Assert.assertFalse(expected);
+    }
 }

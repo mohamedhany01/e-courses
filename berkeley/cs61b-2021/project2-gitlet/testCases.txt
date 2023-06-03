@@ -9,3 +9,13 @@
 - Stage it again
 - Now, try to check the `status`
 - Bug: Can't show status of "foo.txt"!
+
+[2]
+Checkout commit hash and file
+
+commit                                 | file
+817b5a854bb36106a301bb50ad71623262749c49 foo
+
+d5ba45777d44bede6d187e3dde9ed1a97258f8c3 fooA
+
+69871a175eee0b6de14f070988e7cd0d9a431084 fooB

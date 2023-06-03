@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class Commit implements ICommit, Serializable {
     /**
@@ -83,6 +84,24 @@ public class Commit implements ICommit, Serializable {
         }
         Commit commit = utilities.readObject(commitFullPath.toFile(), Commit.class);
         return commit;
+    }
+
+    public static Blob hasFile(String file, String hash, IUtilitiesWrapper utilities) {
+        Commit commit = Commit.getCommit(hash, utilities);
+        Tree commitTree = Tree.getTree(commit.getTree(), utilities);
+        for (Object blobHash : commitTree.getContent()) {
+            Blob blob = Blob.getBlob((String) blobHash, utilities);
+            if (blob.getFileName().equals(file)) {
+                return blob;
+            }
+        }
+        return null;
+    }
+
+    public static List<Object> getBlobs(String hash, IUtilitiesWrapper utilities) {
+        Commit commit = Commit.getCommit(hash, utilities);
+        Tree commitTree = Tree.getTree(commit.getTree(), utilities);
+        return commitTree.getContent();
     }
 
     @Override

@@ -519,7 +519,7 @@ public class App {
             System.exit(0);
         }
 
-        if (!Files.exists(Path.of(branches.toString(), branchName))) {
+        if (!repository.hasBranch(branchName)) {
             System.out.println("A branch with that name does not exist.");
             System.exit(0);
         }
@@ -532,62 +532,129 @@ public class App {
         repository.removeBranch(branchName);
     }
 
-    // TODO: move it to working directory class
-    public static Blob findBlob(String fileName, Tree tree, IUtilitiesWrapper utilities) {
-        List<Object> blobsInTree = tree.getContent();
-        for (int i = 0; i < blobsInTree.size(); i++) {
-            Blob blob = Blob.getBlob((String) blobsInTree.get(i), utilities);
-            if (blob.getFileName().equals(fileName)) {
-                return blob;
-            }
-        }
 
-        return null;
-    }
-
+    /* checkout: https://sp21.datastructur.es/materials/proj/proj2/proj2#checkout
+     *
+     * - However, that you poke around in a .git directory (specifically, .git/objects) and see how it manages to speed up its search. You will perhaps recognize a familiar data structure implemented with the file system rather than pointers. TODO
+     *
+     * - Only version 3 (checkout of a full branch) modifies the staging area: otherwise files scheduled for addition or removal remain so. TODO
+     * */
     public static void checkout(String[] args) {
-        String fileName = args[2];
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IHEAD head = new HEAD(utilities, gitletPaths);
-        Commit currentCommit = Commit.getCommit(head.getActiveBranchHash(), utilities);
 
-        if (currentCommit == null) {
-            return;
-        }
+        Repository repository = Repository.create(utilities, gitletPaths);
+        HEAD head = new HEAD(utilities, gitletPaths);
 
-        Tree tree = Tree.getTree(currentCommit.getTree(), utilities);
-        Blob targetBlob = findBlob(fileName, tree, utilities);
+        /*
+         * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
+         *
+         * - Also, at the end of this command, the given branch will now be considered the current branch (HEAD). [DONE]
+         *
+         * - Any files that are tracked in the current branch but are not present in the checked-out branch are deleted. [DONE]
+         *
+         * - The staging area is cleared, unless the checked-out branch is the current branch [DONE]
+         *
+         * - If no branch with that name exists, print No such branch exists. [DONE]
+         *
+         * - If that branch is the current branch, print No need to checkout the current branch. [DONE]
+         *
+         * -  If a working file is untracked in the current branch and would be overwritten by the checkout, print There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. Do not change the CWD. [DONE]
+         * */
 
-        if (targetBlob != null) {
-            // Remove the file from working directory if exist
-            Path filePath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), fileName);
+        // Checkout branch
+        if (args.length == 2) {
 
-            try {
-                Files.deleteIfExists(filePath);
-            } catch (IOException e) {
-                System.out.println("file not found...but continue anyway");
+            String branchName = args[1];
+
+            if (!repository.hasBranch(branchName)) {
+                System.out.println("No such branch exists.");
+                System.exit(0);
             }
 
-            utilities.writeContents(filePath.toFile(), targetBlob.getContent());
+            if (head.getActiveBranchName().equals(branchName)) {
+                System.out.println("No need to checkout the current branch.");
+                System.exit(0);
+            }
+
+            List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName), utilities);
+            WorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+            StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+
+
+            if (workingArea.hasUntrackedFile(stagingArea)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+
+            workingArea.clear();
+
+            for (Object rowBlob : blobs) {
+                String blobHash = (String) rowBlob;
+                Blob blob = Blob.getBlob(blobHash, utilities);
+                Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
+
+                utilities.writeContents(file.toFile(), blob.getContent());
+                stagingArea.stagManually(blob.getFileName(), blob.getHash());
+            }
+
+            head.updateHEAD(branchName);
         }
 
-        // Brunt-force logic to remove all file in working directory
-//        Tree tree = Tree.getTree(nextCommit.getTree(), utilities);
-//        String [] treeBlobs = tree.getContent();
-//        for (int i = 0; i < treeBlobs.length; i++) {
-//            Blob blob = Blob.getBlob(treeBlobs[i], utilities);
-//            if (blob.getFileName().equals(fileName)) {
-//
-//                // Delete working directory content "files only"
-//                File workingDirectory = GitletPaths.WORKING_DIRECTORY.toFile();
-//                List<String> fileNames = utilities.plainFilenamesIn(workingDirectory);
-//
-//                for (String file : fileNames) {
-//                    System.out.println(file);
-//                }
-//            }
-//        }
+        /*
+         * - Takes the version of the file as it exists in the head commit and puts it in the working directory, overwriting the version of the file that’s already there if there is one. [DONE]
+         *
+         * - The new version of the file is not staged. [DONE]
+         *
+         * - If the file does not exist in the previous commit, abort, printing the error message File does not exist in that commit. Do not change the CWD. [DONE]
+         * */
+
+        // Checkout file
+        if (args.length == 3 && args[1].equals("--")) {
+            String fileName = args[2];
+
+            Blob blob = Commit.hasFile(fileName, head.getActiveBranchHash(), utilities);
+            if (blob == null) {
+                System.out.println("File does not exist in that commit.");
+                System.exit(0);
+            }
+
+            // Start restoring the file
+            Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
+            utilities.writeContents(fileFullPath.toFile(), blob.getContent());
+        }
+
+        /*
+         * - Takes the version of the file as it exists in the commit with the given id, and puts it in the working directory, overwriting the version of the file that’s already there if there is one. [DONE]
+         *
+         * - The new version of the file is not staged. [DONE]
+         *
+         * - if the file does not exist in the given commit, print File does not exist in that commit. Do not change the CWD.[DONE]
+         * */
+
+        // Checkout commit hash and file
+        if (args.length == 4 && args[2].equals("--")) {
+            StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+            String commitHash = args[1];
+            String fileName = args[3];
+
+            if (!Repository.isInRepository(commitHash, gitletPaths)) {
+                System.out.println("No commit with that id exists.");
+                System.exit(0);
+            }
+
+            Blob blob = Commit.hasFile(fileName, commitHash, utilities);
+            if (blob == null) {
+                System.out.println("File does not exist in that commit.");
+                System.exit(0);
+            }
+
+            // Start restoring the file
+            Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
+            utilities.writeContents(fileFullPath.toFile(), blob.getContent());
+//            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
+            repository.updateBranch(head.getActiveBranchName(), commitHash);
+        }
     }
 
     static void debug() {
