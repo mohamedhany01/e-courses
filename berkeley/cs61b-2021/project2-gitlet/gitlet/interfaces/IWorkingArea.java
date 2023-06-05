@@ -17,7 +17,5 @@ public interface IWorkingArea {
 
     void clear();
 
-    boolean removeFile(String file);
-
     boolean hasUntrackedFile(IStagingArea stagingArea);
 }

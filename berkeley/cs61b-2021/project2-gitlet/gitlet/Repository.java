@@ -7,8 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.TreeMap;
 
 public class Repository implements IRepository {
+    public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
+    public final static String INDEX = Path.of(GITLET, "index").toString();
+    public final static String OBJECTS = Path.of(GITLET, "objects").toString();
+    public final static String HEAD_POINTER = Path.of(GITLET, "HEAD").toString();
+    public final static String BRANCHES = Path.of(GITLET, "refs", "heads").toString();
     private static Repository instance;
     private final IUtilitiesWrapper utilities;
     private final IGitletPathsWrapper gitletPaths;
@@ -28,6 +34,20 @@ public class Repository implements IRepository {
     public static boolean isInRepository(String hash, IGitletPathsWrapper gitletPaths) {
         Path objectPath = Paths.get(gitletPaths.getObjects().toString(), hash);
         return Files.exists(objectPath);
+    }
+
+    public static TreeMap<String, String> getLastCommitFiles() {
+        TreeMap<String, String> lastCommitFiles = new TreeMap<>();
+        String hash = HEAD.getBranchHash();
+        Commit lastCommit = Commit.getCommit(hash, new UtilitiesWrapper());
+        Tree tree = Tree.getTree(lastCommit.getTree(), new UtilitiesWrapper());
+
+        // Load last commit files using its hash from HEAD pointer
+        for (Object object : tree.getContent()) {
+            Blob blob = Blob.getBlob((String) object, new UtilitiesWrapper());
+            lastCommitFiles.put(blob.getFileName(), blob.getHash());
+        }
+        return lastCommitFiles;
     }
 
     @Override

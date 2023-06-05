@@ -20,6 +20,22 @@ public class HEAD implements IHEAD {
         this.gitletPaths = gitletPaths;
     }
 
+    public static String getBranchName() {
+        // https://stackoverflow.com/a/28630124
+        String pathSeparatorPattern = Pattern.quote(File.separator);
+        String headData = Utils.readContentsAsString(new File(Repository.HEAD_POINTER));
+        String[] branch = headData.split(pathSeparatorPattern);
+        return branch[2];
+    }
+
+    public static String getBranchHash() {
+        return Utils.readContentsAsString(
+                new File(
+                        Repository.BRANCHES,
+                        HEAD.getBranchName())
+        );
+    }
+
     @Override
     public String updateHEAD(String branchName) {
         if (!Files.exists(gitletPaths.getHead())) {
@@ -41,9 +57,9 @@ public class HEAD implements IHEAD {
     @Override
     public HashMap<String, String> getCommitFiles() {
         String commitHash = getActiveBranchHash();
+        HashMap<String, String> commitFiles = new HashMap<>();
         Commit currentCommit = Commit.getCommit(commitHash, utilities);
         Tree currentTree = Tree.getTree(currentCommit.getTree(), utilities);
-        HashMap<String, String> commitFiles = new HashMap<>();
 
         currentTree.getContent().forEach((Object blobHash) -> {
             Blob blob = Blob.getBlob((String) blobHash, utilities);

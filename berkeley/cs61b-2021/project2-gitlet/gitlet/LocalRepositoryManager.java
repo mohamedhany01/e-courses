@@ -82,8 +82,9 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
         utilities.writeObject(treePath.toFile(), tree);
         utilities.writeObject(commitPath.toFile(), commit);
 
-        stagingArea.writeStagingArea();
-
+        // TODO: remove
+//        stagingArea.writeStagingArea();
+        GLStagingArea.initialize();
         head.updateHEAD(commit.getHash());
 
         return commit;

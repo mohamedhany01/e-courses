@@ -25,7 +25,7 @@ public class Main {
                 App.status();
                 break;
             case "add":
-                App.stage(args);
+                App.add(args);
                 break;
             case "commit":
                 App.commit(args);
@@ -37,7 +37,7 @@ public class Main {
                 App.logAll();
                 break;
             case "rm":
-                App.unstage(args);
+                App.rm(args);
                 break;
             case "find":
                 App.find(args);

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class WorkingArea implements IWorkingArea {
+    public final static String WD = Path.of(System.getProperty("user.dir")).toString();
     private final static List<String> excludedFiles = new ArrayList<>() {
         {
             add(".gitlet");
@@ -33,10 +34,29 @@ public class WorkingArea implements IWorkingArea {
     private final IGitletPathsWrapper gitletPaths;
     private final String currentWorkingDirectory;
 
+
     public WorkingArea(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
         this.utilities = utilities;
         this.gitletPaths = gitletPaths;
         this.currentWorkingDirectory = gitletPaths.getWorkingDirectory().toString();
+    }
+
+    public static List<String> getWorkingFiles() {
+        return Utils.plainFilenamesIn(WorkingArea.WD);
+    }
+
+    public static boolean exists(String fileName) {
+        Path filePath = Path.of(WD, fileName);
+        return Files.exists(filePath);
+    }
+
+    public static void remove(String file) {
+        Path filePath = Path.of(WD, file);
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -87,18 +107,8 @@ public class WorkingArea implements IWorkingArea {
         List<String> workingDirectoryFiles = utilities.plainFilenamesIn(gitletPaths.getWorkingDirectory().toFile());
         for (String file : workingDirectoryFiles) {
             if (excludedFiles.contains(file)) continue;
-            removeFile(file);
+            WorkingArea.remove(file);
         }
-    }
-
-    @Override
-    public boolean removeFile(String file) {
-        try {
-            Files.delete(Path.of(gitletPaths.getWorkingDirectory().toString(), file));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
     }
 
     @Override
