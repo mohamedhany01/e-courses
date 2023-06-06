@@ -122,7 +122,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
     @Override
     public Path verifyFile(String fileName) {
-        Path fullPath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), fileName);
+        Path fullPath = Paths.get(WorkingArea.WD, fileName);
         if (!Files.exists(fullPath)) {
             throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!");
         }

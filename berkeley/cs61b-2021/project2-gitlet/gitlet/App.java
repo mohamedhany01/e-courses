@@ -40,7 +40,7 @@ public class App {
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+        IStagingArea stagingArea = new StagingArea();
         IHEAD head = new HEAD(utilities, gitletPaths);
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
@@ -551,7 +551,7 @@ public class App {
 
             List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea();
-            StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+            StagingArea stagingArea = new StagingArea();
 
 
             if (workingArea.hasUntrackedFile(stagingArea)) {
@@ -564,7 +564,7 @@ public class App {
             for (Object rowBlob : blobs) {
                 String blobHash = (String) rowBlob;
                 Blob blob = Blob.getBlob(blobHash);
-                Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
+                Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
                 utilities.writeContents(file.toFile(), blob.getFileContent());
                 stagingArea.stagManually(blob.getFileName(), blob.getHash());
@@ -592,7 +592,7 @@ public class App {
             }
 
             // Start restoring the file
-            Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
+            Path fileFullPath = Path.of(WorkingArea.WD, fileName);
             utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
         }
 
@@ -606,7 +606,7 @@ public class App {
 
         // Checkout commit hash and file
         if (args.length == 4 && args[2].equals("--")) {
-            StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+            StagingArea stagingArea = new StagingArea();
             String commitHash = args[1];
             String fileName = args[3];
 
@@ -622,7 +622,7 @@ public class App {
             }
 
             // Start restoring the file
-            Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
+            Path fileFullPath = Path.of(WorkingArea.WD, fileName);
             utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
             repository.updateBranch(head.getActiveBranchName(), commitHash);
@@ -649,7 +649,7 @@ public class App {
         Repository repository = Repository.create(utilities, gitletPaths);
         HEAD head = new HEAD(utilities, gitletPaths);
         WorkingArea workingArea = new WorkingArea();
-        StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
+        StagingArea stagingArea = new StagingArea();
 
         String hash = args[1];
         if (!Repository.isInRepository(hash, gitletPaths)) {
@@ -668,7 +668,7 @@ public class App {
         for (Object rowBlob : blobs) {
             String blobHash = (String) rowBlob;
             Blob blob = Blob.getBlob(blobHash);
-            Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
+            Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
             utilities.writeContents(file.toFile(), blob.getFileContent());
             stagingArea.stagManually(blob.getFileName(), blob.getHash());
@@ -678,7 +678,7 @@ public class App {
     }
 
     static void debug() {
-        IStagingArea stagingArea = new StagingArea(new UtilitiesWrapper(), new GitletPathsWrapper());
+        IStagingArea stagingArea = new StagingArea();
         System.out.println(stagingArea.loadStagingArea());
     }
 }

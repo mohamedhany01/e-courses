@@ -38,20 +38,20 @@ public class HEAD implements IHEAD {
 
     @Override
     public String updateHEAD(String branchName) {
-        if (!Files.exists(gitletPaths.getHead())) {
+        if (!Files.exists(Path.of(Repository.HEAD_POINTER))) {
             throw new RuntimeException("HEAD file not found");
         }
 
         String symbolicName = Path.of("refs", "heads", branchName).toString();
 
-        this.utilities.writeContents(gitletPaths.getHead().toFile(), symbolicName);
+        this.utilities.writeContents(new File(Repository.HEAD_POINTER), symbolicName);
 
         return getHEAD();
     }
 
     @Override
     public String getHEAD() {
-        return this.utilities.readContentsAsString(gitletPaths.getHead().toFile());
+        return this.utilities.readContentsAsString(new File(Repository.HEAD_POINTER));
     }
 
     @Override

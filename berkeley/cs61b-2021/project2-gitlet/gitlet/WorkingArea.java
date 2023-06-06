@@ -28,7 +28,8 @@ public class WorkingArea implements IWorkingArea {
         }
     };
 
-    public WorkingArea() {}
+    public WorkingArea() {
+    }
 
     public static List<String> getWorkingFiles() {
         return Utils.plainFilenamesIn(WD);

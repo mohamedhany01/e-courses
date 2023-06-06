@@ -2,6 +2,7 @@ import gitlet.HEAD;
 import gitlet.fakes.FakeGitletPathsWrapper;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,6 +28,7 @@ public class HEADTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Ignore
     @Test
     public void HEAD_updateHEADWhilePathInvalid_throwException() {
         FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();

@@ -2,6 +2,7 @@ package gitlet;
 
 import gitlet.interfaces.*;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,40 +10,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StagingArea implements IStagingArea {
-    private final IUtilitiesWrapper utilities;
-    private final IGitletPathsWrapper gitletPaths;
 
-    public StagingArea(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
-        this.utilities = utilities;
-        this.gitletPaths = gitletPaths;
+    public StagingArea() {
     }
 
     @Override
     public void writeStagingArea() {
-        if (!Files.exists(gitletPaths.getIndex())) {
+        if (!Files.exists(Path.of(Repository.INDEX))) {
             throw new RuntimeException("index file not found");
         }
-        this.utilities.writeObject(gitletPaths.getIndex().toFile(), new HashMap<String, String>());
+        Utils.writeObject(new File(Repository.INDEX), new HashMap<String, String>());
     }
 
     public void writeStagingArea(HashMap<String, String> stagingArea) {
-        if (!Files.exists(gitletPaths.getIndex())) {
+        if (!Files.exists(Path.of(Repository.INDEX))) {
             throw new RuntimeException("index file not found");
         }
-        this.utilities.writeObject(gitletPaths.getIndex().toFile(), stagingArea);
+        Utils.writeObject(new File(Repository.INDEX), stagingArea);
     }
 
     @Override
     public HashMap<String, String> loadStagingArea() {
-        if (!Files.exists(gitletPaths.getIndex())) {
+        if (!Files.exists(Path.of(Repository.INDEX))) {
             throw new RuntimeException("index file not found");
         }
-        return (HashMap<String, String>) this.utilities.readObject(gitletPaths.getIndex().toFile(), HashMap.class);
+        return (HashMap<String, String>) Utils.readObject(new File(Repository.INDEX), HashMap.class);
     }
 
     @Override
     public HashMap<String, String> updateStagingArea(HashMap<String, String> newStagingArea) {
-        if (!Files.exists(gitletPaths.getIndex())) {
+        if (!Files.exists(Path.of(Repository.INDEX))) {
             throw new RuntimeException("index file not found");
         }
         writeStagingArea(newStagingArea);
@@ -161,7 +158,7 @@ public class StagingArea implements IStagingArea {
         HashMap<String, String> stagingArea = loadStagingArea();
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
             String committedCommitHash = entry.getValue();
-            Path committedCommitFullPath = Path.of(gitletPaths.getObjects().toString(), committedCommitHash);
+            Path committedCommitFullPath = Path.of(Repository.OBJECTS, committedCommitHash);
 
             // The OR "||" condition is in case a hash of a file is empty "" using stagManually(), process it as a dirty state
             if (stagingArea.size() != 0 && !Files.exists(committedCommitFullPath) || entry.getValue().isEmpty()) {
@@ -176,7 +173,7 @@ public class StagingArea implements IStagingArea {
         HashMap<String, String> stagingArea = loadStagingArea();
         HashMap<String, String> readyBlobs = new HashMap<>();
         for (Map.Entry<String, String> entry : stagingArea.entrySet()) {
-            Path fileInWorkingDirectory = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
+            Path fileInWorkingDirectory = Paths.get(WorkingArea.WD, entry.getKey());
             boolean isFileAlreadyExist = Files.exists(fileInWorkingDirectory);
 //            boolean isBlobAlreadyCommitted = Files.exists(Paths.get(gitletPaths.getObjects().toString(), entry.getValue()));
             if (isFileAlreadyExist) {
