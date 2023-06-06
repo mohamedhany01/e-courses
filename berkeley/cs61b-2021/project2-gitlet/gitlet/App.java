@@ -35,6 +35,7 @@ public class App {
      *
      *   - Line count: ~15
      * */
+    // DONE
     public static void init() {
         Repository.initialize();
     }
