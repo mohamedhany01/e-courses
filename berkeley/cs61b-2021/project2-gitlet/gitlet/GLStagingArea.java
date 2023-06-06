@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class GLStagingArea implements IGLStagingArea, Serializable {
-    private TreeMap<String, String> additions;
-    private Set<String> removals;
+    private final TreeMap<String, IGLStagingEntry> additions;
+    private final Set<String> removals;
 
     public GLStagingArea() {
         GLStagingArea loadedStagingArea = GLStagingArea.load();
@@ -65,7 +65,7 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
     }
 
     @Override
-    public TreeMap<String, String> getAdditions() {
+    public TreeMap<String, IGLStagingEntry> getAdditions() {
         return additions;
     }
 
@@ -75,18 +75,23 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
     }
 
     @Override
-    public void stageForAddition(String fileName, String fileHash) {
-        additions.put(fileName, fileHash);
+    public void stageForAddition(String fileName, IGLStagingEntry file) {
+        additions.put(fileName, file);
     }
 
     @Override
     public void stageForRemoval(String fileName) {
-
+        removals.add(fileName);
     }
 
     @Override
     public boolean hasFileInAdditions(String key) {
         return additions.containsKey(key);
+    }
+
+    @Override
+    public boolean hasFileInRemovals(String key) {
+        return removals.contains(key);
     }
 
     @Override
@@ -128,17 +133,21 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
         LinkedList<String> stagedFiles = new LinkedList<>();
 
         // Files in the staging area "additions"
-        for (Map.Entry<String, String> entry : additions.entrySet()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : additions.entrySet()) {
             String fileName = entry.getKey();
+            Status status = entry.getValue().getStatus();
 
-            String filePath = Path.of(WorkingArea.WD, fileName).toString();
-            String fileHash = Utils.sha1(
-                    Utils.readContents(
-                            new File(filePath)
-                    )
-            );
+            Path filePath = Path.of(WorkingArea.WD, fileName);
 
-            if (hasFileInAdditions(fileName) && !Repository.isInRepository(fileHash, new GitletPathsWrapper())) {
+            if (!Files.exists(filePath)) continue;
+//            String fileHash = Utils.sha1(
+//                    Utils.readContents(
+//                            new File(filePath)
+//                    )
+//            );
+
+//            if (hasFileInAdditions(fileName) && !Repository.isInRepository(fileHash, new GitletPathsWrapper()))
+            if (status.equals(Status.STAGED)) {
                 stagedFiles.add(fileName);
             }
         }
@@ -196,22 +205,25 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
         TreeMap<String, String> lastCommitFiles = Repository.getLastCommitFiles();
 
         // Files in the staging area "additions"
-        for (Map.Entry<String, String> entry : additions.entrySet()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : additions.entrySet()) {
             String file = entry.getKey();
             String workingDirectoryFile = Path.of(WorkingArea.WD, file).toString();
+            Status fileStatus = entry.getValue().getStatus();
+
+            // Isn't represented in the working directory, then it's deleted
+            if (lastCommitFiles.containsKey(file) && !WorkingArea.exists(file) || !WorkingArea.exists(file)) {
+                modifiedFiles.put(file, "(deleted)");
+                continue;
+            }
+
             String workingDirectoryFileHash = Utils.sha1(
                     Utils.readContents(
                             new File(workingDirectoryFile)
                     )
             );
 
-            // Isn't represented in the working directory, then it's deleted
-            if (lastCommitFiles.containsKey(file) && !WorkingArea.exists(file) || !WorkingArea.exists(file)) {
-                modifiedFiles.put(file, "(deleted)");
-            }
-
             // If not the same hash then it's modified
-            if (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).equals(workingDirectoryFileHash)) {
+            if (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).equals(workingDirectoryFileHash) && !fileStatus.equals(Status.STAGED)) {
                 modifiedFiles.put(file, "(modified)");
             }
         }

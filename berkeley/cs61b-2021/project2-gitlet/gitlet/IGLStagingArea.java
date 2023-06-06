@@ -6,33 +6,35 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public interface IGLStagingArea {
-    public void saveChanges();
+    void saveChanges();
 
-    public void clearAdditions();
+    void clearAdditions();
 
-    public void clearRemovals();
+    void clearRemovals();
 
-    public void deleteAdditionsEntry(String key);
+    void deleteAdditionsEntry(String key);
 
-    public void deleteRemovalsEntry(String key);
+    void deleteRemovalsEntry(String key);
 
-    public TreeMap<String, String> getAdditions();
+    TreeMap<String, IGLStagingEntry> getAdditions();
 
-    public Set<String> getRemovals();
+    Set<String> getRemovals();
 
-    public void stageForAddition(String fileName, String fileHash);
+    void stageForAddition(String fileName, IGLStagingEntry file);
 
-    public void stageForRemoval(String fileName);
+    void stageForRemoval(String fileName);
 
-    public LinkedList<String> getUntrackedFiles();
+    LinkedList<String> getUntrackedFiles();
 
-    public LinkedList<String> getStagedFiles();
+    LinkedList<String> getStagedFiles();
 
-    public LinkedList<String> getRemovedFiles();
+    LinkedList<String> getRemovedFiles();
 
-    public Set<Map.Entry<String, String>> getModifiedFiles();
+    Set<Map.Entry<String, String>> getModifiedFiles();
 
-    public boolean hasFileInAdditions(String key);
+    boolean hasFileInAdditions(String key);
 
-    public boolean isClean();
+    boolean hasFileInRemovals(String key);
+
+    boolean isClean();
 }

@@ -14,6 +14,7 @@ import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class App {
 
@@ -51,8 +52,8 @@ public class App {
         Blob blob = new Blob(
                 utilities,
                 new byte[]{},
-                new String(),
-                new String()
+                "",
+                ""
         );
         Tree tree = new Tree();
         tree.setBlob(blob.getHash());
@@ -85,9 +86,11 @@ public class App {
      *
      *   - The staging area should be somewhere in .gitlet [DONE]
      *
-     *   - If the current working version of the file is identical to the version in the current commit, do not stage it to be added, and remove it from the staging area if it is already there (as can happen when a file is changed, added, and then changed back to it’s original version) TODO
+     *   - If the current working version of the file is identical to the version in the current commit, do not stage
+     *      it to be added, and remove it from the staging area if it is already there
+     *      (as can happen when a file is changed, added, and then changed back to it’s original version) [DONE]
      *
-     *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. TODO
+     *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. [DONE]
      *
      *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
      *
@@ -97,6 +100,7 @@ public class App {
         GLStagingArea stagingArea = new GLStagingArea();
 
         String fileName = args[1];
+
         Path fullPath = Path.of(WorkingArea.WD, fileName);
 
         if (!Files.exists(fullPath)) {
@@ -110,7 +114,11 @@ public class App {
          * */
         byte[] fileContent = Utils.readContents(fullPath.toFile());
         Blob newBlob = new Blob(new UtilitiesWrapper(), fileContent, fileName, fullPath.toString());
-        stagingArea.stageForAddition(newBlob.getFileName(), newBlob.getHash());
+
+        // Label the blob as staged entry in the staging area
+        GLStagingEntry fileEntry = new GLStagingEntry(newBlob.getHash());
+        fileEntry.setStatus(Status.STAGED);
+        stagingArea.stageForAddition(newBlob.getFileName(), fileEntry);
 
         // Store the changes to the disk
         stagingArea.saveChanges();
@@ -180,7 +188,11 @@ public class App {
             );
             committedBlobs.add(blob);
             tree.setBlob(blob.getHash());
-            glStagingArea.stageForAddition(blob.getFileName(), blob.getHash());
+
+            // Since these files will be committed, label them as not staged
+            IGLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+            stagingEntry.setStatus(Status.NOT_STAGED);
+            glStagingArea.stageForAddition(file, stagingEntry);
         }
 
         tree.calculateContentHash(new UtilitiesWrapper());
@@ -195,6 +207,9 @@ public class App {
                 Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
         );
 
+        // Clear files staged to be removed if any
+        glStagingArea.clearRemovals();
+
         Repository repository = Repository.create(new UtilitiesWrapper(), new GitletPathsWrapper());
         ICommit committedObject = repository.commitObjects(commit, tree, committedBlobs);
 
@@ -202,116 +217,20 @@ public class App {
                 HEAD.getBranchName(),
                 committedObject.getHash()
         );
-
-        // If there is file staged for removal
-        for (String file : glStagingArea.getRemovals()) {
-            glStagingArea.deleteAdditionsEntry(file);
-        }
-        glStagingArea.clearRemovals();
-//        glStagingArea.clearAdditions();// SA: clear
         glStagingArea.saveChanges();
-
-
-//        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-//        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-//        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
-//        IHEAD head = new HEAD(utilities, gitletPaths);
-//
-//        if (stagingArea.isStagingAreaInCleanState()) {
-//            System.out.print("No changes added to the commit.");
-//            System.exit(0);
-//        }
-//
-//        // TODO: remove this log
-//        System.out.println("The content of Staging Tree are:");
-//        System.out.println(stagingArea.loadStagingArea());
-
-//        // Get the commit message and load the staging area
-//        String commitMessage = args[1].trim();
-
-//        if (commitMessage.isEmpty()) {
-//            System.out.print("Please enter a commit message.");
-//            System.exit(0);
-//        }
-
-//        HashMap<String, String> readyBlobs = stagingArea.getBlobsReadyToBeCommitted();
-//
-//        // TODO: remove this log
-//        System.out.println("The content will be committed: ");
-//        System.out.println(readyBlobs);
-//
-//        List<IBlob> blobs = new LinkedList<>();
-//
-//        Tree tree = new Tree();
-//        for (Map.Entry<String, String> entry : readyBlobs.entrySet()) {
-//            Path blobPathInRepo = Paths.get(gitletPaths.getObjects().toString(), entry.getValue());
-//
-//            // If file in staging area isn't exist in the repo area "changed for example" then we need to create a new blob
-//            if (!Files.exists(blobPathInRepo)) {
-//                Path filePath = Paths.get(gitletPaths.getWorkingDirectory().toString(), entry.getKey());
-//                Blob newBlob = new Blob(
-//                        utilities,
-//                        utilities.readContents(filePath.toFile()),
-//                        filePath.getFileName().toString(),
-//                        entry.getKey());
-//
-//                blobs.add(newBlob);
-//                tree.setBlob(newBlob.getHash());
-//            } else {
-//                // No new blob needed since this blobs already in the repo "objects directory"
-//                tree.setBlob(entry.getValue());
-//            }
-//
-//        }
-//
-//        tree.calculateContentHash(utilities);
-//
-//        String parentHash = head.getActiveBranchHash();
-//        Commit commit = new Commit(
-//                commitMessage,
-//                LocalDateTime.now(),
-//                "foo", // TODO: change this
-//                "foo@foo.foo", // TODO: change this
-//                tree.getHash(),
-//                parentHash,
-//                utilities.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
-//        );
-//
-//        Repository repository = Repository.create(utilities, gitletPaths);
-//        ICommit committedObject = repository.commitObjects(commit, tree, blobs);
-//
-//        repository.updateBranch(
-//                head.getActiveBranchName(),
-//                committedObject.getHash()
-//        );
-//
-//        // Clean staging area from deleted files
-//        for (Map.Entry<String, String> entry : stagingArea.loadStagingArea().entrySet()) {
-//            if (entry.getValue().isEmpty()) {
-//                HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
-//                currentStagingArea.remove(entry.getKey(), entry.getValue());
-//                stagingArea.updateStagingArea(currentStagingArea);
-//                System.out.println("[X] " + entry.getKey() + " removed from Staging Area");
-//            }
-//        }
     }
 
     /*
      *   rm: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm
      *   - Unstage the file if it is currently staged for addition. [DONE]
-     *   - If the file is tracked in the current commit, stage it for removal and remove the file from the working directory if the user has not already done so [DONE]
+     *   - If the file is tracked in the current commit, stage it for removal
+     *      and remove the file from the working directory if the user has not already done so [DONE]
      *   - If the file is neither staged nor tracked by the head commit, print the error message No reason to remove the file. [DONE]
      * */
     public static void rm(String[] args) {
 
         String fileName = args[1];
-        Path filePath = Path.of(WorkingArea.WD, fileName);
         GLStagingArea glStagingArea = new GLStagingArea();
-
-        // No file with this name in the Working Area
-        if (!Files.exists(filePath)) {
-            System.exit(0);
-        }
 
         // This file untracked by Gitlet yet
         if (!glStagingArea.hasFileInAdditions(fileName)) {
@@ -319,65 +238,30 @@ public class App {
             System.exit(0);
         }
 
-        // Stage the file for removal
-        glStagingArea.stageForRemoval(fileName);
+        /*
+         *   We have two cases here
+         *   - The file is staged (exist in staging area),
+         *       then this will be deleted from staging area, to be untracked.
+         *   - The file is in the current commit (exist in last commit),
+         *       then it will be added to removals (staged for to be removed in the next commit),
+         *       and remove it from working directory
+         * */
 
-        WorkingArea.remove(fileName);
+        // Unstage the file to be untracked
+        // TODO: in condition add, and if STAGED
+        if (glStagingArea.hasFileInAdditions(fileName)) {
+            glStagingArea.deleteAdditionsEntry(fileName);
+        }
+
+        // Stage it to be removed in the next commit
+        TreeMap<String, String> lastCommitFiles = Repository.getLastCommitFiles();
+
+        if (lastCommitFiles.containsKey(fileName)) {
+            glStagingArea.stageForRemoval(fileName);
+            WorkingArea.remove(fileName);
+        }
 
         glStagingArea.saveChanges();
-
-        // TODO: this operation supports only one file per-time, so maybe supporting multiple file if possible
-//        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-//        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-//        IStagingArea stagingArea = new StagingArea(utilities, gitletPaths);
-//        HashMap<String, String> currentStagingArea = stagingArea.loadStagingArea();
-//
-//        String fileToBeRemoved = args[1];
-//
-//        Path fullPath = Paths.get(GitletPaths.WORKING_DIRECTORY.toString(), fileToBeRemoved);
-//
-//        // TODO: remove this condition
-//        if (!Files.exists(fullPath)) {
-//            throw new RuntimeException("Can't handle {" + fullPath.getFileName() + "} it isn't exist!");
-//        }
-//
-//        if (!stagingArea.hasFileName(fileToBeRemoved)) {
-//            System.out.print("No reason to remove the file.");
-//            System.exit(0);
-//        }
-//
-//        // Extract file info
-//        String fileHash = utilities.sha1(
-//                utilities.readContentsAsString(
-//                        fullPath.toFile()
-//                )
-//        );
-//
-//        // TODO: this condition is handle only files in current working directory, no nesting "sub-directories" is supported yet
-//        // If the file in the staging area then gitlet knows something about it
-//        if (currentStagingArea.containsKey(fileToBeRemoved)) {
-//
-//            // Stage it to be removed if it is in the repo
-//            if (Repository.isInRepository(fileHash, gitletPaths)) {
-//                stagingArea.stagManually(fileToBeRemoved, "");
-//
-//                // Remove the file from the working directory
-//                try {
-//                    Files.deleteIfExists(fullPath);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                // Need to load updated staging area, to stage deleted file
-//                currentStagingArea = stagingArea.loadStagingArea();
-//            }
-//
-//            // If the file is in the staging area and not tracked by the current commit "not in the repo" then remove it "unstage"
-//            if (!Repository.isInRepository(fileHash, gitletPaths) && currentStagingArea.containsKey(fileToBeRemoved) && currentStagingArea.get(fileToBeRemoved).equals(fileHash)) {
-//                currentStagingArea.remove(fileToBeRemoved);
-//            }
-//
-//            stagingArea.updateStagingArea(currentStagingArea);
-//        }
     }
 
     /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
@@ -511,7 +395,7 @@ public class App {
      *
      * - Displays what branches currently exist, and marks the current branch with a *. [DONE]
      *
-     * - Displays what files have been staged for addition or removal. TODO
+     * - Displays what files have been staged for addition or removal. [DONE]
      *
      * - The last two sections (modifications not staged and untracked files) are extra credit, worth 32 points. Feel free to leave them blank (leaving just the headers). TODO
      *
