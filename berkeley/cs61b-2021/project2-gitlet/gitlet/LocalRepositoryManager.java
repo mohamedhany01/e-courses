@@ -8,29 +8,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LocalRepositoryManager implements ILocalRepositoryManager {
-    private final Path gitlet;
-    private final Path INDEX;
-    private final Path OBJECTS;
-    private final Path HEAD;
-    private final Path BRANCHES;
-    private final IUtilitiesWrapper utilities;
-
-    private final IStagingArea stagingArea;
-
     private final IHEAD head;
 
-    public LocalRepositoryManager(IUtilitiesWrapper utilities, IStagingArea stagingArea, IHEAD head) {
-        gitlet = initializePath(WorkingArea.WD, ".gitlet", 'D');
-        INDEX = initializePath(Repository.GITLET, "index", 'F');
-        OBJECTS = initializePath(Repository.GITLET, "objects", 'D');
-        HEAD = initializePath(Repository.GITLET, "HEAD", 'F');
-        BRANCHES = initializePath(Repository.GITLET, Path.of(
+    public LocalRepositoryManager(IHEAD head) {
+        initializePath(WorkingArea.WD, ".gitlet", 'D');
+        initializePath(Repository.GITLET, "index", 'F');
+        initializePath(Repository.GITLET, "objects", 'D');
+        initializePath(Repository.GITLET, "HEAD", 'F');
+        initializePath(Repository.GITLET, Path.of(
                 "refs",
                 "heads"
         ).toString(), 'D');
 
-        this.utilities = utilities;
-        this.stagingArea = stagingArea;
         this.head = head;
     }
 
@@ -82,7 +71,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
     @Override
     public Path getgitlet() {
-        return gitlet;
+        return Path.of(Repository.GITLET);
     }
 
     @Override
@@ -103,11 +92,6 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
     @Override
     public Path getRefs() {
         return Path.of(Repository.BRANCHES);
-    }
-
-    @Override
-    public void showStatus() {
-        stagingArea.getFilesStatus();
     }
 
     @Override

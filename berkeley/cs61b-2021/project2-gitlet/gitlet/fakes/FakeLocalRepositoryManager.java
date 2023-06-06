@@ -39,11 +39,6 @@ public class FakeLocalRepositoryManager implements ILocalRepositoryManager {
     }
 
     @Override
-    public void showStatus() {
-
-    }
-
-    @Override
     public Path verifyFile(String fileName) {
         return null;
     }

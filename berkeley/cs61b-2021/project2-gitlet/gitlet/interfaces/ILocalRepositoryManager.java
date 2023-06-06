@@ -15,7 +15,5 @@ public interface ILocalRepositoryManager {
 
     Path getRefs();
 
-    void showStatus();
-
     Path verifyFile(String fileName);
 }
