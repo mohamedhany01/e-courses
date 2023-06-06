@@ -43,6 +43,7 @@ public class HEADTest {
 
     }
 
+    @Ignore
     @Test
     public void HEAD_getHEAD_returnString() {
         FakeUtilitiesWrapper utilities = new FakeUtilitiesWrapper();

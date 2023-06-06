@@ -43,7 +43,7 @@ public class App {
         IStagingArea stagingArea = new StagingArea();
         IHEAD head = new HEAD();
 
-        LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
+        LocalRepositoryManager manager = new LocalRepositoryManager(utilities, stagingArea, head);
 
         // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
         LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();

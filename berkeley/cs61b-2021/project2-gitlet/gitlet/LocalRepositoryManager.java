@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LocalRepositoryManager implements ILocalRepositoryManager {
-    public final static Path WORKING_DIRECTORY = Path.of(System.getProperty("user.dir"));
-    private static LocalRepositoryManager instance;
     private final Path gitlet;
     private final Path INDEX;
     private final Path OBJECTS;
@@ -21,12 +19,12 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
     private final IHEAD head;
 
-    private LocalRepositoryManager(IUtilitiesWrapper utilities, IStagingArea stagingArea, IHEAD head) {
-        gitlet = initializePath(WORKING_DIRECTORY.toString(), ".gitlet", 'D');
-        INDEX = initializePath(gitlet.toString(), "index", 'F');
-        OBJECTS = initializePath(gitlet.toString(), "objects", 'D');
-        HEAD = initializePath(gitlet.toString(), "HEAD", 'F');
-        BRANCHES = initializePath(gitlet.toString(), Path.of(
+    public LocalRepositoryManager(IUtilitiesWrapper utilities, IStagingArea stagingArea, IHEAD head) {
+        gitlet = initializePath(WorkingArea.WD, ".gitlet", 'D');
+        INDEX = initializePath(Repository.GITLET, "index", 'F');
+        OBJECTS = initializePath(Repository.GITLET, "objects", 'D');
+        HEAD = initializePath(Repository.GITLET, "HEAD", 'F');
+        BRANCHES = initializePath(Repository.GITLET, Path.of(
                 "refs",
                 "heads"
         ).toString(), 'D');
@@ -60,30 +58,22 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
     }
 
     public static boolean isgitletExists() {
-        return Files.exists(Paths.get(WORKING_DIRECTORY.toString(), ".gitlet"));
-    }
-
-    public static LocalRepositoryManager create(IUtilitiesWrapper utilities, IStagingArea stagingArea, IHEAD head) {
-        if (instance == null) {
-            return instance = new LocalRepositoryManager(utilities, stagingArea, head);
-        }
-        return instance;
+        return Files.exists(Path.of(WorkingArea.WD, ".gitlet"));
     }
 
     @Override
     public ICommit commitRootCommit(IBlob blob, ITree tree, ICommit commit) {
 
         // Store the root commit
-        Path commitPath = Path.of(OBJECTS.toString(), commit.getHash());
-        Path treePath = Path.of(OBJECTS.toString(), tree.getHash());
-        Path blobPath = Path.of(OBJECTS.toString(), blob.getHash());
+        Path commitPath = Path.of(Repository.OBJECTS, commit.getHash());
+        Path treePath = Path.of(Repository.OBJECTS, tree.getHash());
+        Path blobPath = Path.of(Repository.OBJECTS, blob.getHash());
 
-        utilities.writeObject(blobPath.toFile(), blob);
-        utilities.writeObject(treePath.toFile(), tree);
-        utilities.writeObject(commitPath.toFile(), commit);
+        Utils.writeObject(blobPath.toFile(), blob);
+        Utils.writeObject(treePath.toFile(), tree);
+        Utils.writeObject(commitPath.toFile(), commit);
 
         // TODO: remove
-//        stagingArea.writeStagingArea();
         GLStagingArea.initialize();
         head.updateHEAD(commit.getHash());
 
@@ -97,22 +87,22 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
     @Override
     public Path getINDEX() {
-        return INDEX;
+        return Path.of(Repository.INDEX);
     }
 
     @Override
     public Path getOBJECTS() {
-        return OBJECTS;
+        return Path.of(Repository.OBJECTS);
     }
 
     @Override
     public Path getHEAD() {
-        return HEAD;
+        return Path.of(Repository.HEAD_POINTER);
     }
 
     @Override
     public Path getRefs() {
-        return BRANCHES;
+        return Path.of(Repository.BRANCHES);
     }
 
     @Override

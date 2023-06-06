@@ -1,6 +1,6 @@
-import gitlet.GitletPathsWrapper;
 import gitlet.LocalRepositoryManager;
 import gitlet.StagingArea;
+import gitlet.WorkingArea;
 import gitlet.fakes.*;
 import gitlet.interfaces.*;
 import org.junit.*;
@@ -16,7 +16,7 @@ public class LocalRepositoryManagerTest {
 
     @AfterClass
     public static void clean() {
-        Path repoPath = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitletx");
+        Path repoPath = Path.of(WorkingArea.WD, ".gitletx");
 
         File[] files = repoPath.toFile().listFiles();
         if (files != null) {
@@ -34,11 +34,10 @@ public class LocalRepositoryManagerTest {
     @Before
     public void setup() {
         IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IStagingArea stagingArea = new StagingArea();
         IHEAD head = new FakeHEAD();
 
-        manager = LocalRepositoryManager.create(utilities, stagingArea, head);
+        manager = new LocalRepositoryManager(utilities, stagingArea, head);
     }
 
     @Test
@@ -50,7 +49,7 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_getGitletx_returnPath() {
-        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet");
+        Path expected = Path.of(WorkingArea.WD, ".gitlet");
 
         Path actual = manager.getgitlet();
 
@@ -59,7 +58,7 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_getIndex_returnPath() {
-        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet", "INDEX");
+        Path expected = Path.of(WorkingArea.WD, ".gitlet", "INDEX");
 
         Path actual = manager.getINDEX();
 
@@ -68,7 +67,7 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_getObjects_returnPath() {
-        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet", "objects");
+        Path expected = Path.of(WorkingArea.WD, ".gitlet", "objects");
 
         Path actual = manager.getOBJECTS();
 
@@ -77,7 +76,7 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_getHead_returnPath() {
-        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet", "HEAD");
+        Path expected = Path.of(WorkingArea.WD, ".gitlet", "HEAD");
 
         Path actual = manager.getHEAD();
 
@@ -86,7 +85,7 @@ public class LocalRepositoryManagerTest {
 
     @Test
     public void LocalRepositoryManager_getRefs_returnPath() {
-        Path expected = Path.of(LocalRepositoryManager.WORKING_DIRECTORY.toString(), ".gitlet", "refs", "heads");
+        Path expected = Path.of(WorkingArea.WD, ".gitlet", "refs", "heads");
 
         Path actual = manager.getRefs();
 
