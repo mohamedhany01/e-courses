@@ -1,8 +1,6 @@
 package gitlet;
 
-import gitlet.interfaces.IGitletPathsWrapper;
 import gitlet.interfaces.IHEAD;
-import gitlet.interfaces.IUtilitiesWrapper;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,13 +9,8 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class HEAD implements IHEAD {
+    public HEAD() {
 
-    private final IUtilitiesWrapper utilities;
-    private final IGitletPathsWrapper gitletPaths;
-
-    public HEAD(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
-        this.utilities = utilities;
-        this.gitletPaths = gitletPaths;
     }
 
     public static String getBranchName() {
@@ -44,14 +37,14 @@ public class HEAD implements IHEAD {
 
         String symbolicName = Path.of("refs", "heads", branchName).toString();
 
-        this.utilities.writeContents(new File(Repository.HEAD_POINTER), symbolicName);
+        Utils.writeContents(new File(Repository.HEAD_POINTER), symbolicName);
 
         return getHEAD();
     }
 
     @Override
     public String getHEAD() {
-        return this.utilities.readContentsAsString(new File(Repository.HEAD_POINTER));
+        return Utils.readContentsAsString(new File(Repository.HEAD_POINTER));
     }
 
     @Override
@@ -71,8 +64,8 @@ public class HEAD implements IHEAD {
     @Override
     public String getActiveBranchHash() {
         String activeBranchName = getActiveBranchName();
-        String branchPath = Path.of(gitletPaths.getRefs().toString(), activeBranchName).toString();
-        return utilities.readContentsAsString(new File(branchPath));
+        String branchPath = Path.of(Repository.BRANCHES, activeBranchName).toString();
+        return Utils.readContentsAsString(new File(branchPath));
     }
 
     @Override

@@ -41,7 +41,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IStagingArea stagingArea = new StagingArea();
-        IHEAD head = new HEAD(utilities, gitletPaths);
+        IHEAD head = new HEAD();
 
         LocalRepositoryManager manager = LocalRepositoryManager.create(utilities, stagingArea, head);
 
@@ -279,7 +279,7 @@ public class App {
     public static void log() {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IHEAD head = new HEAD(utilities, gitletPaths);
+        IHEAD head = new HEAD();
 
         String currentHead = head.getActiveBranchHash();
         Commit currentCommit = Commit.getCommit(currentHead);
@@ -451,7 +451,7 @@ public class App {
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        HEAD head = new HEAD(utilities, gitletPaths);
+        HEAD head = new HEAD();
         Repository repository = Repository.create(utilities, gitletPaths);
 
         Path branches = gitletPaths.getRefs();
@@ -483,7 +483,7 @@ public class App {
 
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        HEAD head = new HEAD(utilities, gitletPaths);
+        HEAD head = new HEAD();
         Repository repository = Repository.create(utilities, gitletPaths);
 
         Path branches = gitletPaths.getRefs();
@@ -516,7 +516,7 @@ public class App {
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
 
         Repository repository = Repository.create(utilities, gitletPaths);
-        HEAD head = new HEAD(utilities, gitletPaths);
+        HEAD head = new HEAD();
 
         /*
          * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
@@ -647,7 +647,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         Repository repository = Repository.create(utilities, gitletPaths);
-        HEAD head = new HEAD(utilities, gitletPaths);
+        HEAD head = new HEAD();
         WorkingArea workingArea = new WorkingArea();
         StagingArea stagingArea = new StagingArea();
 
