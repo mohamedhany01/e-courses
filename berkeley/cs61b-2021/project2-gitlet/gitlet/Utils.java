@@ -178,7 +178,7 @@ public class Utils {
     /**
      * Write OBJ to FILE.
      */
-    static void writeObject(File file, Serializable obj) {
+    public static void writeObject(File file, Serializable obj) {
         writeContents(file, serialize(obj));
     }
 
@@ -263,5 +263,10 @@ public class Utils {
     static void message(String msg, Object... args) {
         System.out.printf(msg, args);
         System.out.println();
+    }
+
+    public static void exit(String message) {
+        System.out.println(message);
+        System.exit(0);
     }
 }

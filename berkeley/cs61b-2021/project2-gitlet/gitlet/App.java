@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,56 +23,20 @@ public class App {
      *
      *   - A commit that contains no files and has the commit message initial commit [DONE]
      *
-     *   - It will have a single branch: master, which initially points to this initial commit, and master will be the current branch [DONE]
+     *   - It will have a single branch: master, which initially points to this initial commit,
+     *      and master will be the current branch [DONE]
      *
      *   - The timestamp for this initial commit will be 00:00:00 UTC, Thursday, 1 January 1970} [DONE]
      *
      *   - If there is already a Gitlet version-control system in the current directory, it should abort [DONE]
      *
-     *   - It should NOT overwrite the existing system with a new one, Should print the error message A Gitlet version-control system already exists in the current directory. [DONE]
+     *   - It should NOT overwrite the existing system with a new one,
+     *      Should print the error message A Gitlet version-control system already exists in the current directory. [DONE]
      *
      *   - Line count: ~15
      * */
     public static void init() {
-        if (LocalRepositoryManager.isgitletExists()) {
-            System.out.print("A Gitlet version-control system already exists in the current directory.");
-            System.exit(0);
-        }
-
-        IHEAD head = new HEAD();
-
-        LocalRepositoryManager manager = new LocalRepositoryManager();
-
-        // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
-        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        // Root commit
-        Blob blob = new Blob(
-                new byte[]{},
-                "",
-                ""
-        );
-        Tree tree = new Tree();
-        tree.setBlob(blob.getHash());
-        tree.calculateContentHash();
-        Commit commit = new Commit(
-                "initial commit",
-                zeroDate,
-                "foo",
-                "foo@foo.foo",
-                tree.getHash(),
-                null,
-                Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
-        );
-
-        manager.commitRootCommit(blob, tree, commit);
-
-        String defaultBranch = "master";
-
-        Repository repository = new Repository();
-        repository.createBranch(defaultBranch, commit.getHash());
-
-        HEAD.move(defaultBranch);
+        Repository.initialize();
     }
 
     /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add

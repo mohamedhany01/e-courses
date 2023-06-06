@@ -1,6 +1,10 @@
-package gitlet;
+package gitlet.deprecated;
 
-import gitlet.interfaces.*;
+import gitlet.*;
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.ILocalRepositoryManager;
+import gitlet.interfaces.ITree;
 
 import java.io.IOException;
 import java.nio.file.Files;

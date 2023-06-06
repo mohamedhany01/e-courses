@@ -7,9 +7,13 @@ import gitlet.interfaces.ITree;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -21,6 +25,81 @@ public class Repository implements IRepository {
     public final static String BRANCHES = Path.of(GITLET, "refs", "heads").toString();
 
     public Repository() {
+    }
+
+    public static void initialize() {
+        Repository.checkGitletRepository();
+        Repository.initializeCorePaths();
+        GLStagingArea.initialize();
+
+        // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
+        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        // Prepare root commit
+        Blob blob = new Blob(
+                new byte[]{},
+                "",
+                ""
+        );
+        Tree tree = new Tree();
+        tree.setBlob(blob.getHash());
+        tree.calculateContentHash();
+        Commit commit = new Commit(
+                "initial commit",
+                zeroDate,
+                "foo",
+                "foo@foo.foo",
+                tree.getHash(),
+                null,
+                Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
+        );
+        Repository.commit(blob, tree, commit);
+        Repository.newBranch("master", commit.getHash());
+        HEAD.move("master");
+    }
+
+    private static void newBranch(String name, String hash) {
+        String branch = Path.of(Repository.BRANCHES, name).toString();
+        Utils.writeContents(new File(branch), hash);
+    }
+
+    public static void commit(IBlob blob, ITree tree, ICommit commit) {
+        storeObject(blob.getHash(), blob);
+        storeObject(tree.getHash(), tree);
+        storeObject(commit.getHash(), commit);
+    }
+
+    private static void storeObject(String hash, Serializable object) {
+        String path = Path.of(Repository.OBJECTS, hash).toString();
+        Utils.writeObject(new File(path), object);
+    }
+
+    private static void initializeCorePaths() {
+        try {
+            Files.createDirectory(
+                    Path.of(Repository.GITLET)
+            );
+            Files.createDirectory(
+                    Path.of(Repository.OBJECTS)
+            );
+            Files.createDirectories(
+                    Path.of(Repository.BRANCHES)
+            );
+            Files.createFile(
+                    Path.of(Repository.HEAD_POINTER)
+            );
+            Files.createFile(
+                    Path.of(Repository.INDEX)
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void checkGitletRepository() {
+        if (Files.exists(Path.of(Repository.GITLET))) {
+            Utils.exit("A Gitlet version-control system already exists in the current directory.");
+        }
     }
 
     public static boolean isInRepository(String hash) {
