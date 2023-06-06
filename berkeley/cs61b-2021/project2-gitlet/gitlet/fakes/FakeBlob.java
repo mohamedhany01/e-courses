@@ -5,12 +5,7 @@ import gitlet.interfaces.IBlob;
 public class FakeBlob implements IBlob {
 
     @Override
-    public String getType() {
-        return "blob";
-    }
-
-    @Override
-    public byte[] getContent() {
+    public byte[] getFileContent() {
         return new byte[]{};
     }
 

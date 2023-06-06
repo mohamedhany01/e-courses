@@ -1,4 +1,5 @@
 import gitlet.Blob;
+import gitlet.UtilitiesWrapper;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
@@ -13,41 +14,25 @@ public class BlobTest {
      * */
 
     @Test
-    public void Blob_getType_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-        byte[] dummyBytes = new byte[]{77, 120, -20};
-        String dummyFileName = "foo.txt";
-        String dummyFilePath = System.getProperty("user.dir");
-        Blob blob = new Blob(utilities, dummyBytes, dummyFileName, dummyFilePath);
-        String expected = "blob";
-
-        String actual = blob.getType();
-
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
     public void Blob_getContent_returnArrayOfBytes() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte[] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
-        Blob blob = new Blob(utilities, dummyBytes, dummyFileName, dummyFilePath);
+        Blob blob = new Blob(dummyBytes, dummyFileName, dummyFilePath);
         byte[] expected = new byte[]{77, 120, -20};
 
-        byte[] actual = blob.getContent();
+        byte[] actual = blob.getFileContent();
 
         Assert.assertArrayEquals(expected, actual);
     }
 
     @Test
     public void Blob_getHash_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte[] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
-        Blob blob = new Blob(utilities, dummyBytes, dummyFileName, dummyFilePath);
-        String expected = "sha1";
+        Blob blob = new Blob(dummyBytes, dummyFileName, dummyFilePath);
+        String expected = new UtilitiesWrapper().sha1(dummyBytes);
 
         String actual = blob.getHash();
 
@@ -56,11 +41,10 @@ public class BlobTest {
 
     @Test
     public void Blob_getFileName_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte[] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
-        Blob blob = new Blob(utilities, dummyBytes, dummyFileName, dummyFilePath);
+        Blob blob = new Blob(dummyBytes, dummyFileName, dummyFilePath);
         String expected = "foo.txt";
 
         String actual = blob.getFileName();
@@ -70,11 +54,10 @@ public class BlobTest {
 
     @Test
     public void Blob_getFilePath_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         byte[] dummyBytes = new byte[]{77, 120, -20};
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
-        Blob blob = new Blob(utilities, dummyBytes, dummyFileName, dummyFilePath);
+        Blob blob = new Blob(dummyBytes, dummyFileName, dummyFilePath);
         String expected = System.getProperty("user.dir");
 
         String actual = blob.getFilePath();

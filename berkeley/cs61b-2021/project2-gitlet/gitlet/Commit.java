@@ -90,7 +90,7 @@ public class Commit implements ICommit, Serializable {
         Commit commit = Commit.getCommit(hash, utilities);
         Tree commitTree = Tree.getTree(commit.getTree(), utilities);
         for (Object blobHash : commitTree.getContent()) {
-            Blob blob = Blob.getBlob((String) blobHash, utilities);
+            Blob blob = Blob.getBlob((String) blobHash);
             if (blob.getFileName().equals(file)) {
                 return blob;
             }

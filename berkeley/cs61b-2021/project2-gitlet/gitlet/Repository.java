@@ -44,7 +44,7 @@ public class Repository implements IRepository {
 
         // Load last commit files using its hash from HEAD pointer
         for (Object object : tree.getContent()) {
-            Blob blob = Blob.getBlob((String) object, new UtilitiesWrapper());
+            Blob blob = Blob.getBlob((String) object);
             lastCommitFiles.put(blob.getFileName(), blob.getHash());
         }
         return lastCommitFiles;

@@ -50,7 +50,6 @@ public class App {
 
         // Root commit
         Blob blob = new Blob(
-                utilities,
                 new byte[]{},
                 "",
                 ""
@@ -113,7 +112,7 @@ public class App {
          * in case the blob updated and then re-staged then the entries we be overwritten
          * */
         byte[] fileContent = Utils.readContents(fullPath.toFile());
-        Blob newBlob = new Blob(new UtilitiesWrapper(), fileContent, fileName, fullPath.toString());
+        Blob newBlob = new Blob(fileContent, fileName, fullPath.toString());
 
         // Label the blob as staged entry in the staging area
         GLStagingEntry fileEntry = new GLStagingEntry(newBlob.getHash());
@@ -181,7 +180,6 @@ public class App {
             byte[] fileContent = Utils.readContents(filePath.toFile());
 
             Blob blob = new Blob(
-                    new UtilitiesWrapper(),
                     fileContent,
                     file,
                     filePath.toString()
@@ -565,10 +563,10 @@ public class App {
 
             for (Object rowBlob : blobs) {
                 String blobHash = (String) rowBlob;
-                Blob blob = Blob.getBlob(blobHash, utilities);
+                Blob blob = Blob.getBlob(blobHash);
                 Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
 
-                utilities.writeContents(file.toFile(), blob.getContent());
+                utilities.writeContents(file.toFile(), blob.getFileContent());
                 stagingArea.stagManually(blob.getFileName(), blob.getHash());
             }
 
@@ -595,7 +593,7 @@ public class App {
 
             // Start restoring the file
             Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
-            utilities.writeContents(fileFullPath.toFile(), blob.getContent());
+            utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
         }
 
         /*
@@ -625,7 +623,7 @@ public class App {
 
             // Start restoring the file
             Path fileFullPath = Path.of(gitletPaths.getWorkingDirectory().toString(), fileName);
-            utilities.writeContents(fileFullPath.toFile(), blob.getContent());
+            utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
             repository.updateBranch(head.getActiveBranchName(), commitHash);
         }
@@ -669,10 +667,10 @@ public class App {
         List<Object> blobs = Commit.getBlobs(hash, utilities);
         for (Object rowBlob : blobs) {
             String blobHash = (String) rowBlob;
-            Blob blob = Blob.getBlob(blobHash, utilities);
+            Blob blob = Blob.getBlob(blobHash);
             Path file = Path.of(gitletPaths.getWorkingDirectory().toString(), blob.getFileName());
 
-            utilities.writeContents(file.toFile(), blob.getContent());
+            utilities.writeContents(file.toFile(), blob.getFileContent());
             stagingArea.stagManually(blob.getFileName(), blob.getHash());
         }
 
