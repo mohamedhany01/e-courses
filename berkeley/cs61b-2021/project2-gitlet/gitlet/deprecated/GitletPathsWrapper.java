@@ -1,5 +1,7 @@
-package gitlet;
+package gitlet.deprecated;
 
+import gitlet.Repository;
+import gitlet.WorkingArea;
 import gitlet.interfaces.IGitletPathsWrapper;
 
 import java.nio.file.Path;

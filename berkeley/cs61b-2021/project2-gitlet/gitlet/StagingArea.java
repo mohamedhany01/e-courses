@@ -49,8 +49,6 @@ public class StagingArea implements IStagingArea {
     @Override
     public void getFilesStatus() {
         // TODO: Make this logic more simple
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD();
         IWorkingArea workingArea = new WorkingArea();
         Repository repository = new Repository();

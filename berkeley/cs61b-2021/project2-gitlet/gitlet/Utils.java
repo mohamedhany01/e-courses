@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author P. N. Hilfinger
  */
-class Utils {
+public class Utils {
 
     /**
      * The length of a complete SHA-1 UID as a hexadecimal numeral.
@@ -42,7 +42,7 @@ class Utils {
      * Returns the SHA-1 hash of the concatenation of VALS, which may
      * be any mixture of byte arrays and Strings.
      */
-    static String sha1(Object... vals) {
+    public static String sha1(Object... vals) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             for (Object val : vals) {
@@ -70,7 +70,7 @@ class Utils {
      * Returns the SHA-1 hash of the concatenation of the strings in
      * VALS.
      */
-    static String sha1(List<Object> vals) {
+    public static String sha1(List<Object> vals) {
         return sha1(vals.toArray(new Object[vals.size()]));
     }
 

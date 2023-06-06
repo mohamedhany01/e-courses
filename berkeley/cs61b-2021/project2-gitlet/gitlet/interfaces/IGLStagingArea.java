@@ -1,4 +1,4 @@
-package gitlet;
+package gitlet.interfaces;
 
 import java.util.LinkedList;
 import java.util.Map;

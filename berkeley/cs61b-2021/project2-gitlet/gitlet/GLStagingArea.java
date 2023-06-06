@@ -1,5 +1,8 @@
 package gitlet;
 
+import gitlet.interfaces.IGLStagingArea;
+import gitlet.interfaces.IGLStagingEntry;
+
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;

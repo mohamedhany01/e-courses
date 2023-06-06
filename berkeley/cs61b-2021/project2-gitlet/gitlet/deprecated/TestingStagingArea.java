@@ -1,4 +1,6 @@
-package gitlet;
+package gitlet.deprecated;
+
+import gitlet.GLStagingArea;
 
 public class TestingStagingArea {
     public static void main(String[] args) {

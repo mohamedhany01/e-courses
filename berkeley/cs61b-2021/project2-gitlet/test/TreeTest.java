@@ -1,5 +1,5 @@
 import gitlet.Tree;
-import gitlet.UtilitiesWrapper;
+import gitlet.Utils;
 import gitlet.fakes.FakeBlob;
 import gitlet.interfaces.IBlob;
 import org.junit.Assert;
@@ -46,7 +46,7 @@ public class TreeTest {
             tree.setBlob(sha);
             blobsSHA.add(sha);
         }
-        String expected = new UtilitiesWrapper().sha1(blobsSHA);
+        String expected = Utils.sha1(blobsSHA);
         tree.calculateContentHash();
 
         String actual = tree.getHash();

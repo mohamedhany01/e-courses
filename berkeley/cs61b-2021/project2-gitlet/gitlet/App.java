@@ -38,9 +38,6 @@ public class App {
             System.exit(0);
         }
 
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        IStagingArea stagingArea = new StagingArea();
         IHEAD head = new HEAD();
 
         LocalRepositoryManager manager = new LocalRepositoryManager(head);
@@ -64,7 +61,7 @@ public class App {
                 "foo@foo.foo",
                 tree.getHash(),
                 null,
-                utilities.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
+                Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
         );
 
         manager.commitRootCommit(blob, tree, commit);
@@ -277,8 +274,6 @@ public class App {
      * - Merge field. TODO
      * */
     public static void log() {
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD();
 
         String currentHead = head.getActiveBranchHash();
@@ -307,9 +302,7 @@ public class App {
      *   - Merge field. TODO
      * */
     public static void logAll() {
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        Path objectsDirectory = gitletPaths.getObjects();
+        Path objectsDirectory = Path.of(Repository.OBJECTS);
 
         // If no objects directory just exit and don't do anything
         if (!Files.exists(objectsDirectory)) {
@@ -317,7 +310,7 @@ public class App {
         }
 
         // Loop over objects directory, and read all serialized objects
-        for (String objectHash : utilities.plainFilenamesIn(objectsDirectory.toFile())) {
+        for (String objectHash : Utils.plainFilenamesIn(objectsDirectory.toFile())) {
             Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
 
             try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
@@ -354,10 +347,7 @@ public class App {
     public static void find(String[] args) {
         String commitMassage = args[1];
         boolean commitFound = false;
-
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        Path objectsDirectory = gitletPaths.getObjects();
+        Path objectsDirectory = Path.of(Repository.OBJECTS);
 
         // If no objects directory just exit and don't do anything
         if (!Files.exists(objectsDirectory)) {
@@ -365,7 +355,7 @@ public class App {
         }
 
         // Loop over objects directory, and read all serialized objects
-        for (String objectHash : utilities.plainFilenamesIn(objectsDirectory.toFile())) {
+        for (String objectHash : Utils.plainFilenamesIn(objectsDirectory.toFile())) {
             Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
 
             try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
@@ -449,12 +439,10 @@ public class App {
     public static void branch(String[] args) {
         String branchName = args[1];
 
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         HEAD head = new HEAD();
         Repository repository = new Repository();
 
-        Path branches = gitletPaths.getRefs();
+        Path branches = Path.of(Repository.BRANCHES);
 
         if (!Files.exists(branches)) {
             System.exit(0);
@@ -481,12 +469,10 @@ public class App {
     public static void removeBranch(String[] args) {
         String branchName = args[1];
 
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         HEAD head = new HEAD();
         Repository repository = new Repository();
 
-        Path branches = gitletPaths.getRefs();
+        Path branches = Path.of(Repository.BRANCHES);
 
         if (!Files.exists(branches)) {
             System.exit(0);
@@ -512,9 +498,6 @@ public class App {
      * - Only version 3 (checkout of a full branch) modifies the staging area: otherwise files scheduled for addition or removal remain so. TODO
      * */
     public static void checkout(String[] args) {
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-
         Repository repository = new Repository();
         HEAD head = new HEAD();
 
@@ -566,7 +549,7 @@ public class App {
                 Blob blob = Blob.getBlob(blobHash);
                 Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
-                utilities.writeContents(file.toFile(), blob.getFileContent());
+                Utils.writeContents(file.toFile(), blob.getFileContent());
                 stagingArea.stagManually(blob.getFileName(), blob.getHash());
             }
 
@@ -593,7 +576,7 @@ public class App {
 
             // Start restoring the file
             Path fileFullPath = Path.of(WorkingArea.WD, fileName);
-            utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
+            Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
         }
 
         /*
@@ -623,7 +606,7 @@ public class App {
 
             // Start restoring the file
             Path fileFullPath = Path.of(WorkingArea.WD, fileName);
-            utilities.writeContents(fileFullPath.toFile(), blob.getFileContent());
+            Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
             repository.updateBranch(head.getActiveBranchName(), commitHash);
         }
@@ -644,8 +627,6 @@ public class App {
      * -  If a working file is untracked in the current branch and would be overwritten by the reset, print `There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. [DONE]
      * */
     public static void reset(String[] args) {
-        IUtilitiesWrapper utilities = new UtilitiesWrapper();
-        IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         Repository repository = new Repository();
         HEAD head = new HEAD();
         WorkingArea workingArea = new WorkingArea();
@@ -670,7 +651,7 @@ public class App {
             Blob blob = Blob.getBlob(blobHash);
             Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
-            utilities.writeContents(file.toFile(), blob.getFileContent());
+            Utils.writeContents(file.toFile(), blob.getFileContent());
             stagingArea.stagManually(blob.getFileName(), blob.getHash());
         }
 

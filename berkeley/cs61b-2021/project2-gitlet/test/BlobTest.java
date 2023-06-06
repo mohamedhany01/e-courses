@@ -1,5 +1,5 @@
 import gitlet.Blob;
-import gitlet.UtilitiesWrapper;
+import gitlet.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +30,8 @@ public class BlobTest {
         String dummyFileName = "foo.txt";
         String dummyFilePath = System.getProperty("user.dir");
         Blob blob = new Blob(dummyBytes, dummyFileName, dummyFilePath);
-        String expected = new UtilitiesWrapper().sha1(dummyBytes);
+        String expected = Utils.sha1(dummyBytes);
+
 
         String actual = blob.getHash();
 

@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.interfaces.IGLStagingEntry;
+
 import java.io.Serializable;
 
 public class GLStagingEntry implements IGLStagingEntry, Serializable {

@@ -1,4 +1,6 @@
-package gitlet;
+package gitlet.interfaces;
+
+import gitlet.Status;
 
 public interface IGLStagingEntry {
     String getHash();
