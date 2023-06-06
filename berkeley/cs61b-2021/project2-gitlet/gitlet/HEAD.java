@@ -29,6 +29,11 @@ public class HEAD implements IHEAD {
         );
     }
 
+    public static void move(String branch) {
+        String branchPath = Path.of(Repository.BRANCHES, branch).toString();
+        Utils.writeContents(new File(Repository.HEAD_POINTER), branchPath);
+    }
+
     @Override
     public String updateHEAD(String branchName) {
         if (!Files.exists(Path.of(Repository.HEAD_POINTER))) {

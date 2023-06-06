@@ -23,7 +23,7 @@ public class HEADTest {
         HEAD head = new HEAD();
         String expected = "refs\\heads\\foo";
 
-        String actual = head.updateHEAD("foo");
+        String actual = head.getHEAD();
 
         Assert.assertEquals(expected, actual);
     }
@@ -39,7 +39,7 @@ public class HEADTest {
         exceptionRule.expect(RuntimeException.class);
         exceptionRule.expectMessage("HEAD file not found");
 
-        String actual = head.updateHEAD("foo");
+        String actual = head.getHEAD();
 
     }
 

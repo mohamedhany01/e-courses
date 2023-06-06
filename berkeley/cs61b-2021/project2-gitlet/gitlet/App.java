@@ -1,6 +1,9 @@
 package gitlet;
 
-import gitlet.interfaces.*;
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.IGLStagingEntry;
+import gitlet.interfaces.IHEAD;
+import gitlet.interfaces.IStagingArea;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,7 +43,7 @@ public class App {
 
         IHEAD head = new HEAD();
 
-        LocalRepositoryManager manager = new LocalRepositoryManager(head);
+        LocalRepositoryManager manager = new LocalRepositoryManager();
 
         // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
         LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -71,7 +74,7 @@ public class App {
         Repository repository = new Repository();
         repository.createBranch(defaultBranch, commit.getHash());
 
-        head.updateHEAD(defaultBranch);
+        HEAD.move(defaultBranch);
     }
 
     /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add
@@ -553,7 +556,7 @@ public class App {
                 stagingArea.stagManually(blob.getFileName(), blob.getHash());
             }
 
-            head.updateHEAD(branchName);
+            HEAD.move(branchName);
         }
 
         /*

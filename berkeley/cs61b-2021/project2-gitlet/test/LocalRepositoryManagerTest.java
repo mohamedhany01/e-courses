@@ -37,7 +37,7 @@ public class LocalRepositoryManagerTest {
         IStagingArea stagingArea = new StagingArea();
         IHEAD head = new FakeHEAD();
 
-        manager = new LocalRepositoryManager(head);
+        manager = new LocalRepositoryManager();
     }
 
     @Test

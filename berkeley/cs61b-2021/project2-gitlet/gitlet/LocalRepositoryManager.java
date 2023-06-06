@@ -8,9 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LocalRepositoryManager implements ILocalRepositoryManager {
-    private final IHEAD head;
 
-    public LocalRepositoryManager(IHEAD head) {
+    public LocalRepositoryManager() {
         initializePath(WorkingArea.WD, ".gitlet", 'D');
         initializePath(Repository.GITLET, "index", 'F');
         initializePath(Repository.GITLET, "objects", 'D');
@@ -19,8 +18,6 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
                 "refs",
                 "heads"
         ).toString(), 'D');
-
-        this.head = head;
     }
 
     private static Path initializePath(String parent, String pathName, char type) {
@@ -64,7 +61,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
 
         // TODO: remove
         GLStagingArea.initialize();
-        head.updateHEAD(commit.getHash());
+        HEAD.move("master");
 
         return commit;
     }

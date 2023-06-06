@@ -1,6 +1,9 @@
 package gitlet;
 
-import gitlet.interfaces.*;
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.IHEAD;
+import gitlet.interfaces.IStagingArea;
+import gitlet.interfaces.IWorkingArea;
 
 import java.io.File;
 import java.nio.file.Files;
