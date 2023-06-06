@@ -550,7 +550,7 @@ public class App {
             }
 
             List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
-            WorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+            WorkingArea workingArea = new WorkingArea();
             StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
 
 
@@ -648,7 +648,7 @@ public class App {
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         Repository repository = Repository.create(utilities, gitletPaths);
         HEAD head = new HEAD(utilities, gitletPaths);
-        WorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+        WorkingArea workingArea = new WorkingArea();
         StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
 
         String hash = args[1];

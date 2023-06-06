@@ -1,11 +1,8 @@
 package gitlet;
 
-import gitlet.interfaces.IGitletPathsWrapper;
 import gitlet.interfaces.IStagingArea;
-import gitlet.interfaces.IUtilitiesWrapper;
 import gitlet.interfaces.IWorkingArea;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,19 +27,11 @@ public class WorkingArea implements IWorkingArea {
             add("foo-bar-buz.zip");
         }
     };
-    private final IUtilitiesWrapper utilities;
-    private final IGitletPathsWrapper gitletPaths;
-    private final String currentWorkingDirectory;
 
-
-    public WorkingArea(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
-        this.utilities = utilities;
-        this.gitletPaths = gitletPaths;
-        this.currentWorkingDirectory = gitletPaths.getWorkingDirectory().toString();
-    }
+    public WorkingArea() {}
 
     public static List<String> getWorkingFiles() {
-        return Utils.plainFilenamesIn(WorkingArea.WD);
+        return Utils.plainFilenamesIn(WD);
     }
 
     public static boolean exists(String fileName) {
@@ -60,51 +49,26 @@ public class WorkingArea implements IWorkingArea {
     }
 
     @Override
-    public List<String> getFiles() {
-        return utilities.plainFilenamesIn(new File(currentWorkingDirectory));
-    }
-
-    @Override
     public String getFileHash(String targetFile) {
-        Path path = Paths.get(currentWorkingDirectory, targetFile);
+        Path path = Paths.get(WD, targetFile);
 
         if (Files.exists(path)) {
-            byte[] pathContent = utilities.readContents(path.toFile());
-            return utilities.sha1(pathContent);
+            byte[] pathContent = Utils.readContents(path.toFile());
+            return Utils.sha1(pathContent);
         }
 
-        throw new RuntimeException("Can't find " + targetFile);
-    }
-
-    @Override
-    public String getFileHash(Path targetFile) {
-        if (Files.exists(targetFile)) {
-            byte[] pathContent = utilities.readContents(targetFile.toFile());
-            return utilities.sha1(pathContent);
-        }
-
-        throw new RuntimeException("Can't find " + targetFile);
-    }
-
-    @Override
-    public String getFileHash(File targetFile) {
-        if (targetFile.exists()) {
-            byte[] pathContent = utilities.readContents(targetFile);
-            return utilities.sha1(pathContent);
-        }
-
-        throw new RuntimeException("Can't find " + targetFile);
+        return null;
     }
 
     @Override
     public boolean isFileExist(String file) {
-        Path path = Paths.get(currentWorkingDirectory, file);
+        Path path = Paths.get(WD, file);
         return Files.exists(path);
     }
 
     @Override
     public void clear() {
-        List<String> workingDirectoryFiles = utilities.plainFilenamesIn(gitletPaths.getWorkingDirectory().toFile());
+        List<String> workingDirectoryFiles = WorkingArea.getWorkingFiles();
         for (String file : workingDirectoryFiles) {
             if (excludedFiles.contains(file)) continue;
             WorkingArea.remove(file);
@@ -115,7 +79,7 @@ public class WorkingArea implements IWorkingArea {
     public boolean hasUntrackedFile(IStagingArea stagingArea) {
         HashMap<String, String> stagingAreaMap = stagingArea.loadStagingArea();
 
-        for (String file : getFiles()) {
+        for (String file : WorkingArea.getWorkingFiles()) {
 
             // Don't scan excluded files
             if (excludedFiles.contains(file)) continue;

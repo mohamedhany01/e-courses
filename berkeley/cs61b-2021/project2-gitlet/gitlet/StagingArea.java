@@ -55,7 +55,7 @@ public class StagingArea implements IStagingArea {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD(utilities, gitletPaths);
-        IWorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
+        IWorkingArea workingArea = new WorkingArea();
         Repository repository = Repository.create(utilities, gitletPaths);
         HashMap<String, String> HEADFiles = head.getCommitFiles();
         HashMap<String, String> stagingArea = loadStagingArea();
@@ -91,7 +91,7 @@ public class StagingArea implements IStagingArea {
         }
 
         System.out.println("\n=== Modifications Not Staged For Commit ===");
-        for (String fileName : workingArea.getFiles()) {
+        for (String fileName : WorkingArea.getWorkingFiles()) {
             String fileHash = workingArea.getFileHash(fileName);
             if (stagingArea.containsKey(fileName) && !stagingArea.get(fileName).equals(fileHash)) {
                 if (stagingArea.containsKey(fileName) && !stagingArea.get(fileName).equals(fileHash)) {
@@ -103,7 +103,7 @@ public class StagingArea implements IStagingArea {
         }
 
         System.out.println("\n=== Untracked Files ===");
-        for (String fileName : workingArea.getFiles()) {
+        for (String fileName : WorkingArea.getWorkingFiles()) {
             if (!containsPair(fileName, workingArea.getFileHash(fileName))) {
                 System.out.println(fileName);
             }
