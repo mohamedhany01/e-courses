@@ -56,7 +56,7 @@ public class App {
         );
         Tree tree = new Tree();
         tree.setBlob(blob.getHash());
-        tree.calculateContentHash(utilities);
+        tree.calculateContentHash();
         Commit commit = new Commit(
                 "initial commit",
                 zeroDate,
@@ -193,7 +193,7 @@ public class App {
             glStagingArea.stageForAddition(file, stagingEntry);
         }
 
-        tree.calculateContentHash(new UtilitiesWrapper());
+        tree.calculateContentHash();
 
         Commit commit = new Commit(
                 commitMessage,

@@ -1,4 +1,6 @@
+import gitlet.Blob;
 import gitlet.Tree;
+import gitlet.UtilitiesWrapper;
 import gitlet.fakes.FakeBlob;
 import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IBlob;
@@ -10,26 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TreeTest {
-
-    @Test
-    public void Tree_getType_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-        IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
-        Tree tree = new Tree();
-        for (IBlob blob : blobs) {
-            tree.setBlob(blob.getHash());
-        }
-        tree.calculateContentHash(utilities);
-        String expected = "tree";
-
-        String actual = tree.getType();
-
-        Assert.assertEquals(expected, actual);
-    }
-
     @Test
     public void Tree_getContent_returnArrayOfString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
         IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
         Tree tree = new Tree();
         for (IBlob blob : blobs) {
@@ -38,7 +22,7 @@ public class TreeTest {
         tree.setBlob("hash");
         tree.setBlob("hash");
         tree.setBlob("hash");
-        tree.calculateContentHash(utilities);
+        tree.calculateContentHash();
         List<Object> expected = new LinkedList<>();
         expected.add("hash");
         expected.add("hash");
@@ -53,14 +37,20 @@ public class TreeTest {
 
     @Test
     public void Tree_getHash_returnString() {
-        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-        IBlob[] blobs = new FakeBlob[]{new FakeBlob(), new FakeBlob(), new FakeBlob()};
+        List<Object> blobs = new LinkedList<>(){{
+            add(new FakeBlob());
+            add(new FakeBlob());
+            add(new FakeBlob());
+        }};
+        List<Object> blobsSHA = new LinkedList<>();
         Tree tree = new Tree();
-        for (IBlob blob : blobs) {
-            tree.setBlob(blob.getHash());
+        for (Object blob : blobs) {
+            String sha = ((FakeBlob) blob).getHash();
+            tree.setBlob(sha);
+            blobsSHA.add(sha);
         }
-        String expected = "sha1";
-        tree.calculateContentHash(utilities);
+        String expected = new UtilitiesWrapper().sha1(blobsSHA);
+        tree.calculateContentHash();
 
         String actual = tree.getHash();
 

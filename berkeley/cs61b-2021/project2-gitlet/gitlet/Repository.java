@@ -40,7 +40,7 @@ public class Repository implements IRepository {
         TreeMap<String, String> lastCommitFiles = new TreeMap<>();
         String hash = HEAD.getBranchHash();
         Commit lastCommit = Commit.getCommit(hash, new UtilitiesWrapper());
-        Tree tree = Tree.getTree(lastCommit.getTree(), new UtilitiesWrapper());
+        Tree tree = Tree.getTree(lastCommit.getTree());
 
         // Load last commit files using its hash from HEAD pointer
         for (Object object : tree.getContent()) {

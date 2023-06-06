@@ -7,11 +7,6 @@ import java.util.List;
 
 public class FakeTree implements ITree {
     @Override
-    public String getType() {
-        return "tree";
-    }
-
-    @Override
     public List<Object> getContent() {
         return new LinkedList<>();
     }

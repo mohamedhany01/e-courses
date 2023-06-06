@@ -88,7 +88,7 @@ public class Commit implements ICommit, Serializable {
 
     public static Blob hasFile(String file, String hash, IUtilitiesWrapper utilities) {
         Commit commit = Commit.getCommit(hash, utilities);
-        Tree commitTree = Tree.getTree(commit.getTree(), utilities);
+        Tree commitTree = Tree.getTree(commit.getTree());
         for (Object blobHash : commitTree.getContent()) {
             Blob blob = Blob.getBlob((String) blobHash);
             if (blob.getFileName().equals(file)) {
@@ -100,7 +100,7 @@ public class Commit implements ICommit, Serializable {
 
     public static List<Object> getBlobs(String hash, IUtilitiesWrapper utilities) {
         Commit commit = Commit.getCommit(hash, utilities);
-        Tree commitTree = Tree.getTree(commit.getTree(), utilities);
+        Tree commitTree = Tree.getTree(commit.getTree());
         return commitTree.getContent();
     }
 

@@ -1,17 +1,14 @@
 package gitlet;
 
 import gitlet.interfaces.ITree;
-import gitlet.interfaces.IUtilitiesWrapper;
 
+import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Tree implements ITree, Serializable {
-    private final static String type = "tree";
     private final List<Object> content;
     private String hash;
 
@@ -19,18 +16,14 @@ public class Tree implements ITree, Serializable {
         this.content = new LinkedList<>();
     }
 
-    public static Tree getTree(String hash, IUtilitiesWrapper utilities) {
-        Path treeFullPath = Paths.get(GitletPaths.OBJECTS.toString(), hash);
-        if (!Files.exists(treeFullPath)) {
-            throw new RuntimeException("Tree with " + hash + " not found");
-        }
-        Tree tree = utilities.readObject(treeFullPath.toFile(), Tree.class);
-        return tree;
-    }
+    public static Tree getTree(String hash) {
+        String tree = Path.of(Repository.OBJECTS, hash).toString();
 
-    @Override
-    public String getType() {
-        return type;
+        if (!Repository.isInRepository(hash, new GitletPathsWrapper())) {
+            return null;
+        }
+
+        return Utils.readObject(new File(tree), Tree.class);
     }
 
     @Override
@@ -42,8 +35,8 @@ public class Tree implements ITree, Serializable {
         this.content.add(hash);
     }
 
-    public void calculateContentHash(IUtilitiesWrapper utilities) {
-        this.hash = utilities.sha1(this.content);
+    public void calculateContentHash() {
+        this.hash = Utils.sha1(this.content);
     }
 
     @Override
