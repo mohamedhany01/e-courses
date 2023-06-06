@@ -1,7 +1,11 @@
 package gitlet;
 
-import gitlet.interfaces.*;
+import gitlet.interfaces.IBlob;
+import gitlet.interfaces.ICommit;
+import gitlet.interfaces.IRepository;
+import gitlet.interfaces.ITree;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,24 +19,12 @@ public class Repository implements IRepository {
     public final static String OBJECTS = Path.of(GITLET, "objects").toString();
     public final static String HEAD_POINTER = Path.of(GITLET, "HEAD").toString();
     public final static String BRANCHES = Path.of(GITLET, "refs", "heads").toString();
-    private static Repository instance;
-    private final IUtilitiesWrapper utilities;
-    private final IGitletPathsWrapper gitletPaths;
 
-    private Repository(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
-        this.utilities = utilities;
-        this.gitletPaths = gitletPaths;
+    public Repository() {
     }
 
-    public static Repository create(IUtilitiesWrapper utilities, IGitletPathsWrapper gitletPaths) {
-        if (instance == null) {
-            return instance = new Repository(utilities, gitletPaths);
-        }
-        return instance;
-    }
-
-    public static boolean isInRepository(String hash, IGitletPathsWrapper gitletPaths) {
-        Path objectPath = Paths.get(gitletPaths.getObjects().toString(), hash);
+    public static boolean isInRepository(String hash) {
+        Path objectPath = Paths.get(Repository.OBJECTS, hash);
         return Files.exists(objectPath);
     }
 
@@ -54,29 +46,29 @@ public class Repository implements IRepository {
     public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
 
         for (IBlob blob : blobs) {
-            Path blobPath = Path.of(gitletPaths.getObjects().toString(), blob.getHash());
-            utilities.writeObject(blobPath.toFile(), blob);
+            Path blobPath = Path.of(Repository.OBJECTS, blob.getHash());
+            Utils.writeObject(blobPath.toFile(), blob);
         }
 
-        Path treePath = Path.of(gitletPaths.getObjects().toString(), tree.getHash());
-        Path commitPath = Path.of(gitletPaths.getObjects().toString(), commit.getHash());
+        Path treePath = Path.of(Repository.OBJECTS, tree.getHash());
+        Path commitPath = Path.of(Repository.OBJECTS, commit.getHash());
 
-        utilities.writeObject(treePath.toFile(), tree);
-        utilities.writeObject(commitPath.toFile(), commit);
+        Utils.writeObject(treePath.toFile(), tree);
+        Utils.writeObject(commitPath.toFile(), commit);
 
         return commit;
     }
 
     @Override
     public String createBranch(String name, String commitHash) {
-        Path branchFullPath = Path.of(gitletPaths.getRefs().toString(), name);
-        utilities.writeContents(branchFullPath.toFile(), commitHash);
-        return utilities.readContentsAsString(branchFullPath.toFile());
+        Path branchFullPath = Path.of(Repository.BRANCHES, name);
+        Utils.writeContents(branchFullPath.toFile(), commitHash);
+        return Utils.readContentsAsString(branchFullPath.toFile());
     }
 
     @Override
     public boolean removeBranch(String name) {
-        Path branchFullPath = Path.of(gitletPaths.getRefs().toString(), name);
+        Path branchFullPath = Path.of(Repository.BRANCHES, name);
         try {
             return Files.deleteIfExists(branchFullPath);
         } catch (IOException e) {
@@ -86,7 +78,7 @@ public class Repository implements IRepository {
 
     @Override
     public boolean hasBranch(String branchName) {
-        return Files.exists(Path.of(gitletPaths.getRefs().toString(), branchName));
+        return Files.exists(Path.of(Repository.BRANCHES, branchName));
     }
 
     @Override
@@ -97,19 +89,19 @@ public class Repository implements IRepository {
     @Override
     public String getBranchHash(String name) {
         if (hasBranch(name)) {
-            Path branchPath = Path.of(gitletPaths.getRefs().toString(), name);
-            return utilities.readContentsAsString(branchPath.toFile());
+            Path branchPath = Path.of(Repository.BRANCHES, name);
+            return Utils.readContentsAsString(branchPath.toFile());
         }
         return null;
     }
 
     @Override
     public List<String> getAllBranches() {
-        Path branches = gitletPaths.getRefs();
+        Path branches = Path.of(Repository.BRANCHES);
         if (!Files.exists(branches)) {
             System.exit(0);
         }
 
-        return utilities.plainFilenamesIn(branches.toFile());
+        return Utils.plainFilenamesIn(new File(Repository.BRANCHES));
     }
 }

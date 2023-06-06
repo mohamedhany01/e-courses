@@ -53,7 +53,7 @@ public class StagingArea implements IStagingArea {
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         IHEAD head = new HEAD();
         IWorkingArea workingArea = new WorkingArea();
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
         HashMap<String, String> HEADFiles = head.getCommitFiles();
         HashMap<String, String> stagingArea = loadStagingArea();
 

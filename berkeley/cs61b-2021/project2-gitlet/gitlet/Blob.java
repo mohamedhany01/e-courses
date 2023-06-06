@@ -23,7 +23,7 @@ public class Blob implements IBlob, Serializable {
     public static Blob getBlob(String hash) {
         String blob = Paths.get(Repository.OBJECTS, hash).toString();
 
-        if (!Repository.isInRepository(hash, new GitletPathsWrapper())) {
+        if (!Repository.isInRepository(hash)) {
             return null;
         }
 

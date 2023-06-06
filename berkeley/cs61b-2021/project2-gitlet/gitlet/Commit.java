@@ -75,7 +75,7 @@ public class Commit implements ICommit, Serializable {
 
         String commitPath = Path.of(Repository.OBJECTS, hash).toString();
 
-        if (!Repository.isInRepository(hash, new GitletPathsWrapper())) {
+        if (!Repository.isInRepository(hash)) {
             return null;
         }
 

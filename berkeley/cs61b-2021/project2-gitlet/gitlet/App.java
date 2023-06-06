@@ -71,7 +71,7 @@ public class App {
 
         String defaultBranch = "master";
 
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
         repository.createBranch(defaultBranch, commit.getHash());
 
         head.updateHEAD(defaultBranch);
@@ -208,7 +208,7 @@ public class App {
         // Clear files staged to be removed if any
         glStagingArea.clearRemovals();
 
-        Repository repository = Repository.create(new UtilitiesWrapper(), new GitletPathsWrapper());
+        Repository repository = new Repository();
         ICommit committedObject = repository.commitObjects(commit, tree, committedBlobs);
 
         repository.updateBranch(
@@ -452,7 +452,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         HEAD head = new HEAD();
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
 
         Path branches = gitletPaths.getRefs();
 
@@ -484,7 +484,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
         HEAD head = new HEAD();
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
 
         Path branches = gitletPaths.getRefs();
 
@@ -515,7 +515,7 @@ public class App {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
 
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
         HEAD head = new HEAD();
 
         /*
@@ -610,7 +610,7 @@ public class App {
             String commitHash = args[1];
             String fileName = args[3];
 
-            if (!Repository.isInRepository(commitHash, gitletPaths)) {
+            if (!Repository.isInRepository(commitHash)) {
                 System.out.println("No commit with that id exists.");
                 System.exit(0);
             }
@@ -646,13 +646,13 @@ public class App {
     public static void reset(String[] args) {
         IUtilitiesWrapper utilities = new UtilitiesWrapper();
         IGitletPathsWrapper gitletPaths = new GitletPathsWrapper();
-        Repository repository = Repository.create(utilities, gitletPaths);
+        Repository repository = new Repository();
         HEAD head = new HEAD();
         WorkingArea workingArea = new WorkingArea();
         StagingArea stagingArea = new StagingArea();
 
         String hash = args[1];
-        if (!Repository.isInRepository(hash, gitletPaths)) {
+        if (!Repository.isInRepository(hash)) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }

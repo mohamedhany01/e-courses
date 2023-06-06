@@ -19,7 +19,7 @@ public class Tree implements ITree, Serializable {
     public static Tree getTree(String hash) {
         String tree = Path.of(Repository.OBJECTS, hash).toString();
 
-        if (!Repository.isInRepository(hash, new GitletPathsWrapper())) {
+        if (!Repository.isInRepository(hash)) {
             return null;
         }
 
