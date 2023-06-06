@@ -1,7 +1,5 @@
 import gitlet.Blob;
 import gitlet.UtilitiesWrapper;
-import gitlet.fakes.FakeUtilitiesWrapper;
-import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 

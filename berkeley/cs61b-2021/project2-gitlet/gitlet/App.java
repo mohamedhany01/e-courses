@@ -282,7 +282,7 @@ public class App {
         IHEAD head = new HEAD(utilities, gitletPaths);
 
         String currentHead = head.getActiveBranchHash();
-        Commit currentCommit = Commit.getCommit(currentHead, utilities);
+        Commit currentCommit = Commit.getCommit(currentHead);
 
         while (true) {
             if (currentCommit == null) {
@@ -296,7 +296,7 @@ public class App {
             ));
             System.out.println(currentCommit.getMessage() + "\n");
 
-            currentCommit = Commit.getCommit(currentCommit.getParent(), utilities);
+            currentCommit = Commit.getCommit(currentCommit.getParent());
         }
     }
 
@@ -549,7 +549,7 @@ public class App {
                 System.exit(0);
             }
 
-            List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName), utilities);
+            List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea(utilities, gitletPaths);
             StagingArea stagingArea = new StagingArea(utilities, gitletPaths);
 
@@ -585,7 +585,7 @@ public class App {
         if (args.length == 3 && args[1].equals("--")) {
             String fileName = args[2];
 
-            Blob blob = Commit.hasFile(fileName, head.getActiveBranchHash(), utilities);
+            Blob blob = Commit.hasFile(fileName, head.getActiveBranchHash());
             if (blob == null) {
                 System.out.println("File does not exist in that commit.");
                 System.exit(0);
@@ -615,7 +615,7 @@ public class App {
                 System.exit(0);
             }
 
-            Blob blob = Commit.hasFile(fileName, commitHash, utilities);
+            Blob blob = Commit.hasFile(fileName, commitHash);
             if (blob == null) {
                 System.out.println("File does not exist in that commit.");
                 System.exit(0);
@@ -664,7 +664,7 @@ public class App {
 
         workingArea.clear();
 
-        List<Object> blobs = Commit.getBlobs(hash, utilities);
+        List<Object> blobs = Commit.getBlobs(hash);
         for (Object rowBlob : blobs) {
             String blobHash = (String) rowBlob;
             Blob blob = Blob.getBlob(blobHash);

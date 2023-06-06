@@ -1,12 +1,10 @@
 package gitlet;
 
 import gitlet.interfaces.ICommit;
-import gitlet.interfaces.IUtilitiesWrapper;
 
+import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -14,10 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Commit implements ICommit, Serializable {
-    /**
-     * The type of this commit.
-     */
-    private final static String type = "commit";
     /**
      * The message of this Commit.
      */
@@ -60,9 +54,9 @@ public class Commit implements ICommit, Serializable {
     /*
      * The root commit hash is always predictable, so we can use it to build the linked list history
      * */
-    public static Commit getRootCommit(IUtilitiesWrapper utilities) {
+    public static Commit getRootCommit() {
         String rootCommitHash = "3e6c06b1a28a035e21aa0a736ef80afadc43122c";
-        return getCommit(rootCommitHash, utilities);
+        return getCommit(rootCommitHash);
     }
 
     public static String formatCommitData(LocalDateTime rowData) {
@@ -74,20 +68,22 @@ public class Commit implements ICommit, Serializable {
         return result;
     }
 
-    public static Commit getCommit(String hash, IUtilitiesWrapper utilities) {
+    public static Commit getCommit(String hash) {
         if (hash == null) {
             return null;
         }
-        Path commitFullPath = Paths.get(GitletPaths.OBJECTS.toString(), hash);
-        if (!Files.exists(commitFullPath)) {
-            throw new RuntimeException("Commit with " + hash + " not found");
+        
+        String commitPath = Path.of(Repository.OBJECTS, hash).toString();
+
+        if (!Repository.isInRepository(hash, new GitletPathsWrapper())) {
+            return null;
         }
-        Commit commit = utilities.readObject(commitFullPath.toFile(), Commit.class);
-        return commit;
+
+        return Utils.readObject(new File(commitPath), Commit.class);
     }
 
-    public static Blob hasFile(String file, String hash, IUtilitiesWrapper utilities) {
-        Commit commit = Commit.getCommit(hash, utilities);
+    public static Blob hasFile(String file, String hash) {
+        Commit commit = Commit.getCommit(hash);
         Tree commitTree = Tree.getTree(commit.getTree());
         for (Object blobHash : commitTree.getContent()) {
             Blob blob = Blob.getBlob((String) blobHash);
@@ -98,8 +94,8 @@ public class Commit implements ICommit, Serializable {
         return null;
     }
 
-    public static List<Object> getBlobs(String hash, IUtilitiesWrapper utilities) {
-        Commit commit = Commit.getCommit(hash, utilities);
+    public static List<Object> getBlobs(String hash) {
+        Commit commit = Commit.getCommit(hash);
         Tree commitTree = Tree.getTree(commit.getTree());
         return commitTree.getContent();
     }

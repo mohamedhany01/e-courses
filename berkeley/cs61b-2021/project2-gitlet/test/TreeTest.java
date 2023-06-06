@@ -1,10 +1,7 @@
-import gitlet.Blob;
 import gitlet.Tree;
 import gitlet.UtilitiesWrapper;
 import gitlet.fakes.FakeBlob;
-import gitlet.fakes.FakeUtilitiesWrapper;
 import gitlet.interfaces.IBlob;
-import gitlet.interfaces.IUtilitiesWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +34,7 @@ public class TreeTest {
 
     @Test
     public void Tree_getHash_returnString() {
-        List<Object> blobs = new LinkedList<>(){{
+        List<Object> blobs = new LinkedList<>() {{
             add(new FakeBlob());
             add(new FakeBlob());
             add(new FakeBlob());
