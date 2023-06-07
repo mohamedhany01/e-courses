@@ -484,7 +484,7 @@ public class App {
                 Utils.exit("No need to checkout the current branch.");
             }
 
-            List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
+            List<Object> blobs = Repository.getBlobs(repository.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea();
             GLStagingArea stagingArea = new GLStagingArea();
 
@@ -522,7 +522,7 @@ public class App {
         if (args.length == 3 && args[1].equals("--")) {
             String fileName = args[2];
 
-            Blob blob = Commit.hasFile(fileName, head.getActiveBranchHash());
+            Blob blob = Repository.getBlob(fileName, head.getActiveBranchHash());
             if (blob == null) {
                 Utils.exit("File does not exist in that commit.");
             }
@@ -549,7 +549,7 @@ public class App {
                 Utils.exit("No commit with that id exists.");
             }
 
-            Blob blob = Commit.hasFile(fileName, commitHash);
+            Blob blob = Repository.getBlob(fileName, commitHash);
             if (blob == null) {
                 Utils.exit("File does not exist in that commit.");
             }
@@ -593,7 +593,7 @@ public class App {
 
         workingArea.clear();
 
-        List<Object> blobs = Commit.getBlobs(hash);
+        List<Object> blobs = Repository.getBlobs(hash);
         for (Object rowBlob : blobs) {
             String blobHash = (String) rowBlob;
             Blob blob = Repository.getObject(blobHash, Blob.class);

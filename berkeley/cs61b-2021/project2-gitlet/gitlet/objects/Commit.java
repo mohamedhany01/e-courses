@@ -2,10 +2,8 @@ package gitlet.objects;
 
 import gitlet.Utils;
 import gitlet.interfaces.ICommit;
-import gitlet.trees.Repository;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Commit implements ICommit, Serializable {
     /**
@@ -42,31 +40,6 @@ public class Commit implements ICommit, Serializable {
         this.authorEmail = "";
     }
 
-    /*
-     * The root commit hash is always predictable, so we can use it to build the linked list history
-     * */
-    public static Commit getRootCommit() {
-        return Repository.getObject("f3d664d3d0be025b6747ee19e4eef90bf22528e8", Commit.class);
-    }
-
-    public static Blob hasFile(String file, String hash) {
-        Commit commit = Repository.getObject(hash, Commit.class);
-        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
-        for (Object blobHash : commitTree.getBlobs()) {
-            Blob blob = Repository.getObject((String) blobHash, Blob.class);
-            if (blob.getFileName().equals(file)) {
-                return blob;
-            }
-        }
-        return null;
-    }
-
-    public static List<Object> getBlobs(String hash) {
-        Commit commit = Repository.getObject(hash, Commit.class);
-        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
-        return commitTree.getBlobs();
-    }
-
     public static String calculateHash(ICommit commit) {
         StringBuilder builder = new StringBuilder();
         builder.append(commit.getMessage());
@@ -83,6 +56,7 @@ public class Commit implements ICommit, Serializable {
         return message;
     }
 
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }
@@ -92,6 +66,7 @@ public class Commit implements ICommit, Serializable {
         return date;
     }
 
+    @Override
     public void setDate(String date) {
         this.date = date;
     }
@@ -111,6 +86,7 @@ public class Commit implements ICommit, Serializable {
         return tree;
     }
 
+    @Override
     public void setTree(String tree) {
         this.tree = tree;
     }
@@ -120,6 +96,7 @@ public class Commit implements ICommit, Serializable {
         return parent;
     }
 
+    @Override
     public void setParent(String parent) {
         this.parent = parent;
     }
@@ -129,6 +106,7 @@ public class Commit implements ICommit, Serializable {
         return hash;
     }
 
+    @Override
     public void setHash(String hash) {
         this.hash = hash;
     }

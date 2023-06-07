@@ -10,7 +10,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class HEAD implements IHEAD {
     public HEAD() {

@@ -76,6 +76,24 @@ public class Repository implements IRepository {
         HEAD.move("master");
     }
 
+    public static Blob getBlob(String file, String hash) {
+        Commit commit = Repository.getObject(hash, Commit.class);
+        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
+        for (Object blobHash : commitTree.getBlobs()) {
+            Blob blob = Repository.getObject((String) blobHash, Blob.class);
+            if (blob.getHash().equals(file)) {
+                return blob;
+            }
+        }
+        return null;
+    }
+
+    public static List<Object> getBlobs(String hash) {
+        Commit commit = Repository.getObject(hash, Commit.class);
+        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
+        return commitTree.getBlobs();
+    }
+
     private static void newBranch(String name, String hash) {
         String branch = Path.of(Repository.BRANCHES, name).toString();
         Utils.writeContents(new File(branch), hash);
