@@ -58,7 +58,7 @@ public class HEAD implements IHEAD {
         Commit currentCommit = Commit.getCommit(commitHash);
         Tree currentTree = Tree.getTree(currentCommit.getTree());
 
-        currentTree.getContent().forEach((Object blobHash) -> {
+        currentTree.getBlobs().forEach((Object blobHash) -> {
             Blob blob = Blob.getBlob((String) blobHash);
             commitFiles.put(blob.getFileName(), blob.getHash());
         });

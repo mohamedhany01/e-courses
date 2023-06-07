@@ -29,15 +29,12 @@ public class Tree implements ITree, Serializable {
     }
 
     @Override
-    public List<Object> getContent() {
+    public List<Object> getBlobs() {
         return this.content;
     }
 
-    public void setBlob(String hash) {
+    public void addBlob(String hash) {
         this.content.add(hash);
-    }
-
-    public void calculateContentHash() {
         this.hash = Utils.sha1(this.content);
     }
 

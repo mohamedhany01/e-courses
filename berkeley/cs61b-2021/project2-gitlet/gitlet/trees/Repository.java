@@ -45,8 +45,7 @@ public class Repository implements IRepository {
         );
         blob.setFileName("");
         Tree tree = new Tree();
-        tree.setBlob(blob.getHash());
-        tree.calculateContentHash();
+        tree.addBlob(blob.getHash());
         Commit commit = new Commit(
                 "initial commit",
                 zeroDate,
@@ -117,7 +116,7 @@ public class Repository implements IRepository {
         Tree tree = Tree.getTree(lastCommit.getTree());
 
         // Load last commit files using its hash from HEAD pointer
-        for (Object object : tree.getContent()) {
+        for (Object object : tree.getBlobs()) {
             Blob blob = Blob.getBlob((String) object);
             lastCommitFiles.put(blob.getFileName(), blob.getHash());
         }

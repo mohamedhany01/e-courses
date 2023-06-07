@@ -147,15 +147,13 @@ public class App {
             );
             blob.setFileName(file);
             committedBlobs.add(blob);
-            tree.setBlob(blob.getHash());
+            tree.addBlob(blob.getHash());
 
             // Since these files will be committed, label them as not staged
             IGLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
             stagingEntry.setStatus(Status.NOT_STAGED);
             glStagingArea.stageForAddition(file, stagingEntry);
         }
-
-        tree.calculateContentHash();
 
         Commit commit = new Commit(
                 commitMessage,

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface ITree extends Serializable {
-    List<Object> getContent();
+    List<Object> getBlobs();
 
     String getHash();
 }

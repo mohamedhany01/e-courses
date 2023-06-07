@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FakeTree implements ITree {
     @Override
-    public List<Object> getContent() {
+    public List<Object> getBlobs() {
         return new LinkedList<>();
     }
 
