@@ -164,10 +164,9 @@ public class App {
         // Clear files staged to be removed if any
         glStagingArea.clearRemovals();
 
-        Repository repository = new Repository();
-        ICommit committedObject = repository.commitObjects(commit, tree, committedBlobs);
+        ICommit committedObject = Repository.commit(commit, tree, committedBlobs);
 
-        repository.updateBranch(
+        Branch.update(
                 HEAD.getName(),
                 committedObject.getHash()
         );
@@ -404,7 +403,7 @@ public class App {
             Utils.exit("A branch with that name already exists.");
         }
 
-        repository.createBranch(branchName, HEAD.getHash());
+        Branch.create(branchName, HEAD.getHash());
     }
 
     /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
@@ -428,7 +427,7 @@ public class App {
             System.exit(0);
         }
 
-        if (!repository.hasBranch(branchName)) {
+        if (!Branch.exists(branchName)) {
             Utils.exit("A branch with that name does not exist.");
         }
 
@@ -436,7 +435,7 @@ public class App {
             Utils.exit("Cannot remove the current branch.");
         }
 
-        repository.removeBranch(branchName);
+        Branch.remove(branchName);
     }
 
     /* checkout: https://sp21.datastructur.es/materials/proj/proj2/proj2#checkout
@@ -468,7 +467,7 @@ public class App {
 
             String branchName = args[1];
 
-            if (!repository.hasBranch(branchName)) {
+            if (!Branch.exists(branchName)) {
                 Utils.exit("No such branch exists.");
             }
 
@@ -476,7 +475,7 @@ public class App {
                 Utils.exit("No need to checkout the current branch.");
             }
 
-            List<Object> blobs = Repository.getBlobs(repository.getBranchHash(branchName));
+            List<Object> blobs = Repository.getBlobs(Branch.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea();
             GLStagingArea stagingArea = new GLStagingArea();
 
@@ -537,7 +536,7 @@ public class App {
             String commitHash = args[1];
             String fileName = args[3];
 
-            if (!Repository.isInRepository(commitHash)) {
+            if (!Repository.exists(commitHash)) {
                 Utils.exit("No commit with that id exists.");
             }
 
@@ -550,7 +549,7 @@ public class App {
             Path fileFullPath = Path.of(WorkingArea.WD, fileName);
             Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
-            repository.updateBranch(HEAD.getName(), commitHash);
+            Branch.update(HEAD.getName(), commitHash);
         }
     }
 
@@ -574,7 +573,7 @@ public class App {
         GLStagingArea stagingArea = new GLStagingArea();
 
         String hash = args[1];
-        if (!Repository.isInRepository(hash)) {
+        if (!Repository.exists(hash)) {
             Utils.exit("No commit with that id exists.");
         }
 
@@ -597,6 +596,6 @@ public class App {
             stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
         }
 
-        repository.updateBranch(HEAD.getName(), hash);
+        Branch.update(HEAD.getName(), hash);
     }
 }

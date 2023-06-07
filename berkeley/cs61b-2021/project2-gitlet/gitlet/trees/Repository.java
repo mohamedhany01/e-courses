@@ -1,5 +1,6 @@
 package gitlet.trees;
 
+import gitlet.Branch;
 import gitlet.HEAD;
 import gitlet.Utils;
 import gitlet.interfaces.IBlob;
@@ -16,29 +17,26 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.TreeMap;
 
-public class Repository implements IRepository {
+public class Repository {
     public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
     public final static String INDEX = Path.of(GITLET, "index").toString();
     public final static String OBJECTS = Path.of(GITLET, "objects").toString();
     public final static String HEAD_POINTER = Path.of(GITLET, "HEAD").toString();
     public final static String BRANCHES = Path.of(GITLET, "refs", "heads").toString();
 
-    public Repository() {
-    }
 
     public static <T extends Serializable> T getObject(String hash, Class<T> type) {
         if (hash == null) {
             return null;
         }
 
-        if (!Repository.isInRepository(hash)) {
+        if (!Repository.exists(hash)) {
             return null;
         }
 
@@ -84,7 +82,7 @@ public class Repository implements IRepository {
         commit.setHash(Commit.calculateHash(commit));
 
         Repository.commit(blob, tree, commit);
-        Repository.newBranch("master", commit.getHash());
+        Branch.create("master", commit.getHash());
         HEAD.move("master");
     }
 
@@ -106,15 +104,21 @@ public class Repository implements IRepository {
         return commitTree.getBlobs();
     }
 
-    private static void newBranch(String name, String hash) {
-        String branch = Path.of(Repository.BRANCHES, name).toString();
-        Utils.writeContents(new File(branch), hash);
-    }
-
     public static void commit(IBlob blob, ITree tree, ICommit commit) {
         storeObject(blob.getHash(), blob);
         storeObject(tree.getHash(), tree);
         storeObject(commit.getHash(), commit);
+    }
+
+    public static ICommit commit(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
+        for (IBlob blob : blobs) {
+            storeObject(blob.getHash(), blob);
+        }
+
+        storeObject(tree.getHash(), tree);
+        storeObject(commit.getHash(), commit);
+
+        return commit;
     }
 
     private static void storeObject(String hash, Serializable object) {
@@ -150,9 +154,8 @@ public class Repository implements IRepository {
         }
     }
 
-    public static boolean isInRepository(String hash) {
-        Path objectPath = Paths.get(Repository.OBJECTS, hash);
-        return Files.exists(objectPath);
+    public static boolean exists(String objectHash) {
+        return Files.exists(getObjectPath(objectHash));
     }
 
     public static TreeMap<String, String> getLastCommitFiles() {
@@ -167,68 +170,5 @@ public class Repository implements IRepository {
             lastCommitFiles.put(blob.getFileName(), blob.getHash());
         }
         return lastCommitFiles;
-    }
-
-    @Override
-    public ICommit commitObjects(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
-
-        for (IBlob blob : blobs) {
-            Path blobPath = Path.of(Repository.OBJECTS, blob.getHash());
-            Utils.writeObject(blobPath.toFile(), blob);
-        }
-
-        Path treePath = Path.of(Repository.OBJECTS, tree.getHash());
-        Path commitPath = Path.of(Repository.OBJECTS, commit.getHash());
-
-        Utils.writeObject(treePath.toFile(), tree);
-        Utils.writeObject(commitPath.toFile(), commit);
-
-        return commit;
-    }
-
-    @Override
-    public String createBranch(String name, String commitHash) {
-        Path branchFullPath = Path.of(Repository.BRANCHES, name);
-        Utils.writeContents(branchFullPath.toFile(), commitHash);
-        return Utils.readContentsAsString(branchFullPath.toFile());
-    }
-
-    @Override
-    public boolean removeBranch(String name) {
-        Path branchFullPath = Path.of(Repository.BRANCHES, name);
-        try {
-            return Files.deleteIfExists(branchFullPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public boolean hasBranch(String branchName) {
-        return Files.exists(Path.of(Repository.BRANCHES, branchName));
-    }
-
-    @Override
-    public String updateBranch(String name, String commitHash) {
-        return createBranch(name, commitHash);
-    }
-
-    @Override
-    public String getBranchHash(String name) {
-        if (hasBranch(name)) {
-            Path branchPath = Path.of(Repository.BRANCHES, name);
-            return Utils.readContentsAsString(branchPath.toFile());
-        }
-        return null;
-    }
-
-    @Override
-    public List<String> getAllBranches() {
-        Path branches = Path.of(Repository.BRANCHES);
-        if (!Files.exists(branches)) {
-            System.exit(0);
-        }
-
-        return Utils.plainFilenamesIn(new File(Repository.BRANCHES));
     }
 }
