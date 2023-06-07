@@ -155,15 +155,12 @@ public class App {
             glStagingArea.stageForAddition(file, stagingEntry);
         }
 
-        Commit commit = new Commit(
-                commitMessage,
-                LocalDateTime.now(),
-                "foo",
-                "foo@foo.foo",
-                tree.getHash(),
-                HEAD.getBranchHash(),
-                Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
-        );
+        Commit commit = new Commit();
+        commit.setMessage(commitMessage);
+        commit.setDate(Utils.getFormattedDate(LocalDateTime.now()));
+        commit.setTree(tree.getHash());
+        commit.setParent(HEAD.getBranchHash());
+        commit.setHash(Utils.sha1(Commit.calculateHash(commit)));
 
         // Clear files staged to be removed if any
         glStagingArea.clearRemovals();
@@ -248,9 +245,7 @@ public class App {
 
             System.out.println("===");
             System.out.println("commit " + currentCommit.getHash());
-            System.out.println("Date: " + Commit.formatCommitData(
-                    currentCommit.getDate()
-            ));
+            System.out.println("Date: " + currentCommit.getDate());
             System.out.println(currentCommit.getMessage() + "\n");
 
             currentCommit = Commit.getCommit(currentCommit.getParent());
@@ -282,7 +277,7 @@ public class App {
                 if (rowObject instanceof Commit commit) {
                     System.out.println("===");
                     System.out.println("commit " + commit.getHash());
-                    System.out.println("Date: " + Commit.formatCommitData(commit.getDate()));
+                    System.out.println("Date: " + commit.getDate());
                     System.out.println(commit.getMessage() + "\n");
                 }
 

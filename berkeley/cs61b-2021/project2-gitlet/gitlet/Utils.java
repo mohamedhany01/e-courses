@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
@@ -268,5 +272,14 @@ public class Utils {
     public static void exit(String message) {
         System.out.println(message);
         System.exit(0);
+    }
+
+    public static String getFormattedDate(LocalDateTime date) {
+        ZoneOffset offset = ZoneOffset.ofHours(-8);
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss uuuu Z");
+
+        OffsetDateTime offsetDateTime = OffsetDateTime.of(date, offset);
+        String result = offsetDateTime.format(pattern);
+        return result;
     }
 }

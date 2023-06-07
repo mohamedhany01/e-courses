@@ -7,50 +7,61 @@ import gitlet.trees.Repository;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Commit implements ICommit, Serializable {
     /**
      * The message of this Commit.
      */
-    private final String message;
+    private String message;
     /**
      * When this commit is created.
      */
-    private final LocalDateTime date;
+    private String date;
     /**
      * Who created this commit.
      */
-    private final String authorName;
+    private String authorName;
     /**
      * The email author of this commit.
      */
-    private final String authorEmail;
+    private String authorEmail;
     /**
      * The tree hash of this commit.
      */
-    private final String tree;
+    private String tree;
     /**
      * The parent hash of this commit.
      */
-    private final String parent;
+    private String parent;
     /**
      * The hash of this commit.
      */
-    private final String hash;
+    private String hash;
 
-    public Commit(String message, LocalDateTime date, String authorName, String authorEmail, String tree, String parent, String hash) {
-        this.message = message;
-        this.date = date;
-        this.authorName = authorName;
-        this.authorEmail = authorEmail;
-        this.tree = tree;
-        this.parent = parent;
+    public Commit() {
+        this.authorName = "";
+        this.authorEmail = "";
+    }
+
+    public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTree(String tree) {
+        this.tree = tree;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     /*
@@ -59,15 +70,6 @@ public class Commit implements ICommit, Serializable {
     public static Commit getRootCommit() {
         String rootCommitHash = "3e6c06b1a28a035e21aa0a736ef80afadc43122c";
         return getCommit(rootCommitHash);
-    }
-
-    public static String formatCommitData(LocalDateTime rowData) {
-        ZoneOffset offset = ZoneOffset.ofHours(-8);
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss uuuu Z");
-
-        OffsetDateTime offsetDateTime = OffsetDateTime.of(rowData, offset);
-        String result = offsetDateTime.format(pattern);
-        return result;
     }
 
     public static Commit getCommit(String hash) {
@@ -108,7 +110,7 @@ public class Commit implements ICommit, Serializable {
     }
 
     @Override
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -137,16 +139,14 @@ public class Commit implements ICommit, Serializable {
         return hash;
     }
 
-    @Override
-    public String toString() {
-        return "Commit{" +
-                "message='" + message + '\'' +
-                ", date=" + date +
-                ", authorName='" + authorName + '\'' +
-                ", authorEmail='" + authorEmail + '\'' +
-                ", tree='" + tree + '\'' +
-                ", parent='" + parent + '\'' +
-                ", hash='" + hash + '\'' +
-                '}';
+    public static String calculateHash(ICommit commit) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(commit.getMessage());
+        builder.append(commit.getDate());
+        builder.append(commit.getAuthorName());
+        builder.append(commit.getAuthorName());
+        builder.append(commit.getTree());
+        builder.append(commit.getParent());
+        return Utils.sha1(builder);
     }
 }

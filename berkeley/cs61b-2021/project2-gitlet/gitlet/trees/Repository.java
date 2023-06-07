@@ -41,20 +41,19 @@ public class Repository implements IRepository {
         LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         // Prepare root commit
-        Blob blob = new Blob(
-        );
+        Blob blob = new Blob();
         blob.setFileName("");
+
         Tree tree = new Tree();
         tree.addBlob(blob.getHash());
-        Commit commit = new Commit(
-                "initial commit",
-                zeroDate,
-                "foo",
-                "foo@foo.foo",
-                tree.getHash(),
-                null,
-                Utils.sha1(tree.getHash()) // TODO: find is this the right way to calculate hash for a commit?
-        );
+
+        Commit commit = new Commit();
+        commit.setMessage("initial commit");
+        commit.setDate(Utils.getFormattedDate(zeroDate));
+        commit.setTree(tree.getHash());
+        commit.setParent(null);
+        commit.setHash(Commit.calculateHash(commit));
+
         Repository.commit(blob, tree, commit);
         Repository.newBranch("master", commit.getHash());
         HEAD.move("master");

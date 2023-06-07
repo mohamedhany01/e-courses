@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public interface ICommit extends Serializable {
     String getMessage();
 
-    LocalDateTime getDate();
+    String getDate();
 
     String getAuthorName();
 

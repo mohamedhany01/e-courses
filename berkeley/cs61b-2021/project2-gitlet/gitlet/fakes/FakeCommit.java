@@ -13,9 +13,9 @@ public class FakeCommit implements ICommit {
     }
 
     @Override
-    public LocalDateTime getDate() {
+    public String getDate() {
         LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.of("UTC")).toLocalDateTime();
-        return zeroDate;
+        return zeroDate.toString();
     }
 
     @Override
