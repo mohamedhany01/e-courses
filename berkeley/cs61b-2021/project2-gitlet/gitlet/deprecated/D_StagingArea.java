@@ -1,6 +1,6 @@
 //package gitlet.deprecated;
 //
-//import gitlet.HEAD;
+//import gitlet.trees.extra.HEAD;
 //import gitlet.Utils;
 //import gitlet.interfaces.IBlob;
 //import gitlet.interfaces.IHEAD;

@@ -1,4 +1,4 @@
-//import gitlet.HEAD;
+//import gitlet.trees.extra.HEAD;
 //import gitlet.fakes.FakeGitletPathsWrapper;
 //import gitlet.fakes.FakeUtilitiesWrapper;
 //import org.junit.Assert;

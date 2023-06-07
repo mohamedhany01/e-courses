@@ -1,6 +1,5 @@
 package gitlet.deprecated;
 
-import gitlet.HEAD;
 import gitlet.Utils;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
@@ -8,6 +7,7 @@ import gitlet.interfaces.ILocalRepositoryManager;
 import gitlet.interfaces.ITree;
 import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
+import gitlet.trees.extra.HEAD;
 import gitlet.trees.staging.GLStagingArea;
 
 import java.io.IOException;

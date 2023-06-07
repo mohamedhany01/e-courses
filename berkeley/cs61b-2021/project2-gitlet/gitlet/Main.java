@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.app.App;
+
 import java.util.Arrays;
 
 /**

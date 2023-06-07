@@ -1,5 +1,6 @@
-package gitlet;
+package gitlet.trees.extra;
 
+import gitlet.Utils;
 import gitlet.trees.Repository;
 
 import java.io.File;

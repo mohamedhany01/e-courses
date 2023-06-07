@@ -1,5 +1,6 @@
-package gitlet;
+package gitlet.app;
 
+import gitlet.Utils;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IGLStagingEntry;
 import gitlet.objects.Blob;
@@ -7,11 +8,16 @@ import gitlet.objects.Commit;
 import gitlet.objects.Tree;
 import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
+import gitlet.trees.extra.Branch;
+import gitlet.trees.extra.HEAD;
 import gitlet.trees.staging.GLStagingArea;
 import gitlet.trees.staging.GLStagingEntry;
 import gitlet.trees.staging.Status;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -65,7 +71,6 @@ public class App {
         GLStagingArea stagingArea = new GLStagingArea();
 
         String fileName = args[1];
-        String fullPath = WorkingArea.getPath(fileName).toString();
 
         if (!WorkingArea.exists(fileName)) {
             Utils.exit("File does not exist.");
@@ -75,7 +80,6 @@ public class App {
          * Staging "add to additions" to be committed next time,
          * in case the blob updated and then re-staged then the entries we be overwritten
          * */
-        byte[] fileContent = Utils.readContents(new File(fullPath));
         Blob newBlob = new Blob();
         newBlob.setFileName(fileName);
 
@@ -139,11 +143,8 @@ public class App {
         List<Blob> committedBlobs = new LinkedList<>();
         Tree tree = new Tree();
         for (String file : glStagingArea.getStagedFiles()) {
-            Path filePath = Path.of(WorkingArea.WD, file);
-            byte[] fileContent = Utils.readContents(filePath.toFile());
 
-            Blob blob = new Blob(
-            );
+            Blob blob = new Blob();
             blob.setFileName(file);
             committedBlobs.add(blob);
             tree.addBlob(blob.getHash());
@@ -303,7 +304,7 @@ public class App {
 
         // If no objects directory just exit and don't do anything
         if (!Files.exists(objectsDirectory)) {
-            System.exit(0);
+            Utils.exit("");
         }
 
         // Loop over objects directory, and read all serialized objects
@@ -391,8 +392,6 @@ public class App {
     public static void branch(String[] args) {
         String branchName = args[1];
 
-        Repository repository = new Repository();
-
         Path branches = Path.of(Repository.BRANCHES);
 
         if (!Files.exists(branches)) {
@@ -419,12 +418,10 @@ public class App {
     public static void removeBranch(String[] args) {
         String branchName = args[1];
 
-        Repository repository = new Repository();
-
         Path branches = Path.of(Repository.BRANCHES);
 
         if (!Files.exists(branches)) {
-            System.exit(0);
+            Utils.exit("");
         }
 
         if (!Branch.exists(branchName)) {
@@ -445,7 +442,6 @@ public class App {
      * - Only version 3 (checkout of a full branch) modifies the staging area: otherwise files scheduled for addition or removal remain so. TODO
      * */
     public static void checkout(String[] args) {
-        Repository repository = new Repository();
         /*
          * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
          *
@@ -568,7 +564,6 @@ public class App {
      * -  If a working file is untracked in the current branch and would be overwritten by the reset, print `There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. [DONE]
      * */
     public static void reset(String[] args) {
-        Repository repository = new Repository();
         WorkingArea workingArea = new WorkingArea();
         GLStagingArea stagingArea = new GLStagingArea();
 
