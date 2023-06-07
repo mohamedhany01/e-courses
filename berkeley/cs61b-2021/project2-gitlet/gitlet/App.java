@@ -3,7 +3,14 @@ package gitlet;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IGLStagingEntry;
 import gitlet.interfaces.IHEAD;
-import gitlet.interfaces.IStagingArea;
+import gitlet.objects.Blob;
+import gitlet.objects.Commit;
+import gitlet.objects.Tree;
+import gitlet.trees.staging.GLStagingArea;
+import gitlet.trees.Repository;
+import gitlet.trees.WorkingArea;
+import gitlet.trees.staging.GLStagingEntry;
+import gitlet.trees.staging.Status;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

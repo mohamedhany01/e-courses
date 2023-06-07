@@ -1,4 +1,4 @@
-import gitlet.Blob;
+import gitlet.objects.Blob;
 import gitlet.Utils;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 //import gitlet.deprecated.LocalRepositoryManager;
 //import gitlet.deprecated.D_StagingArea;
-//import gitlet.WorkingArea;
+//import gitlet.trees.WorkingArea;
 //import gitlet.fakes.*;
 //import gitlet.interfaces.*;
 //import org.junit.*;

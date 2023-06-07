@@ -1,4 +1,4 @@
-package gitlet;
+package gitlet.trees.staging;
 
 import gitlet.interfaces.IGLStagingEntry;
 

@@ -1,6 +1,10 @@
 package gitlet;
 
 import gitlet.interfaces.IHEAD;
+import gitlet.objects.Blob;
+import gitlet.objects.Commit;
+import gitlet.objects.Tree;
+import gitlet.trees.Repository;
 
 import java.io.File;
 import java.nio.file.Files;

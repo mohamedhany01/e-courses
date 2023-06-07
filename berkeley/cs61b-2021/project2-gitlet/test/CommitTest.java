@@ -1,4 +1,4 @@
-import gitlet.Commit;
+import gitlet.objects.Commit;
 import org.junit.Assert;
 import org.junit.Test;
 

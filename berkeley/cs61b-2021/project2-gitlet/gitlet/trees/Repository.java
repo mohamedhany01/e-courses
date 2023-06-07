@@ -1,9 +1,14 @@
-package gitlet;
+package gitlet.trees;
 
+import gitlet.*;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IRepository;
 import gitlet.interfaces.ITree;
+import gitlet.objects.Blob;
+import gitlet.objects.Commit;
+import gitlet.objects.Tree;
+import gitlet.trees.staging.GLStagingArea;
 
 import java.io.File;
 import java.io.IOException;

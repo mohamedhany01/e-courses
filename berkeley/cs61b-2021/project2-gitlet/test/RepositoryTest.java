@@ -1,4 +1,4 @@
-import gitlet.Repository;
+import gitlet.trees.Repository;
 import gitlet.fakes.*;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ITree;

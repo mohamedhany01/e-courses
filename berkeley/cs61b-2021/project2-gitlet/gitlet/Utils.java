@@ -80,7 +80,7 @@ public class Utils {
      * and throws IllegalArgumentException unless the directory designated by
      * FILE also contains a directory named .gitlet.
      */
-    static boolean restrictedDelete(File file) {
+    public static boolean restrictedDelete(File file) {
         if (!(new File(file.getParentFile(), ".gitlet")).isDirectory()) {
             throw new IllegalArgumentException("not .gitlet working directory");
         }
@@ -99,7 +99,7 @@ public class Utils {
      * to delete FILE and throws IllegalArgumentException unless the
      * directory designated by FILE also contains a directory named .gitlet.
      */
-    static boolean restrictedDelete(String file) {
+    public static boolean restrictedDelete(String file) {
         return restrictedDelete(new File(file));
     }
 
@@ -108,7 +108,7 @@ public class Utils {
      * be a normal file.  Throws IllegalArgumentException
      * in case of problems.
      */
-    static byte[] readContents(File file) {
+    public static byte[] readContents(File file) {
         if (!file.isFile()) {
             throw new IllegalArgumentException("must be a normal file");
         }
@@ -124,7 +124,7 @@ public class Utils {
      * be a normal file.  Throws IllegalArgumentException
      * in case of problems.
      */
-    static String readContentsAsString(File file) {
+    public static String readContentsAsString(File file) {
         return new String(readContents(file), StandardCharsets.UTF_8);
     }
 
@@ -134,7 +134,7 @@ public class Utils {
      * either a String or a byte array.  Throws IllegalArgumentException
      * in case of problems.
      */
-    static void writeContents(File file, Object... contents) {
+    public static void writeContents(File file, Object... contents) {
         try {
             if (file.isDirectory()) {
                 throw
@@ -187,7 +187,7 @@ public class Utils {
      * lexicographic order as Java Strings.  Returns null if DIR does
      * not denote a directory.
      */
-    static List<String> plainFilenamesIn(File dir) {
+    public static List<String> plainFilenamesIn(File dir) {
         String[] files = dir.list(PLAIN_FILES);
         if (files == null) {
             return null;
@@ -202,7 +202,7 @@ public class Utils {
      * lexicographic order as Java Strings.  Returns null if DIR does
      * not denote a directory.
      */
-    static List<String> plainFilenamesIn(String dir) {
+    public static List<String> plainFilenamesIn(String dir) {
         return plainFilenamesIn(new File(dir));
     }
 
@@ -213,7 +213,7 @@ public class Utils {
      * analogous to the {@link java.nio.file.Paths.#get(String, String[])}
      * method.
      */
-    static File join(String first, String... others) {
+    public static File join(String first, String... others) {
         return Paths.get(first, others).toFile();
     }
 
@@ -222,7 +222,7 @@ public class Utils {
      * analogous to the {@link java.nio.file.Paths.#get(String, String[])}
      * method.
      */
-    static File join(File first, String... others) {
+    public static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();
     }
 
@@ -232,7 +232,7 @@ public class Utils {
     /**
      * Returns a byte array containing the serialized contents of OBJ.
      */
-    static byte[] serialize(Serializable obj) {
+    public static byte[] serialize(Serializable obj) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ObjectOutputStream objectStream = new ObjectOutputStream(stream);
@@ -252,7 +252,7 @@ public class Utils {
      * Return a GitletException whose message is composed from MSG and ARGS as
      * for the String.format method.
      */
-    static GitletException error(String msg, Object... args) {
+    public static GitletException error(String msg, Object... args) {
         return new GitletException(String.format(msg, args));
     }
 
@@ -260,7 +260,7 @@ public class Utils {
      * Print a message composed from MSG and ARGS as for the String.format
      * method, followed by a newline.
      */
-    static void message(String msg, Object... args) {
+    public static void message(String msg, Object... args) {
         System.out.printf(msg, args);
         System.out.println();
     }

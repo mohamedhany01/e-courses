@@ -5,6 +5,9 @@ import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ILocalRepositoryManager;
 import gitlet.interfaces.ITree;
+import gitlet.trees.staging.GLStagingArea;
+import gitlet.trees.Repository;
+import gitlet.trees.WorkingArea;
 
 import java.io.IOException;
 import java.nio.file.Files;

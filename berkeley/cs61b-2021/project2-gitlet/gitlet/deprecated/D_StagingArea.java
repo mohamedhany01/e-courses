@@ -1,9 +1,9 @@
 package gitlet.deprecated;
 
 import gitlet.HEAD;
-import gitlet.Repository;
+import gitlet.trees.Repository;
 import gitlet.Utils;
-import gitlet.WorkingArea;
+import gitlet.trees.WorkingArea;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IHEAD;
 import gitlet.interfaces.IStagingArea;

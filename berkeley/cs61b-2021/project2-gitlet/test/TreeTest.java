@@ -1,4 +1,4 @@
-import gitlet.Tree;
+import gitlet.objects.Tree;
 import gitlet.Utils;
 import gitlet.fakes.FakeBlob;
 import gitlet.interfaces.IBlob;

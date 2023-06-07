@@ -1,6 +1,8 @@
-package gitlet;
+package gitlet.objects;
 
+import gitlet.Utils;
 import gitlet.interfaces.IBlob;
+import gitlet.trees.Repository;
 
 import java.io.File;
 import java.io.Serializable;

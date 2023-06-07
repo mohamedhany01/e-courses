@@ -1,5 +1,6 @@
-package gitlet;
+package gitlet.trees;
 
+import gitlet.Utils;
 import gitlet.interfaces.IStagingArea;
 import gitlet.interfaces.IWorkingArea;
 

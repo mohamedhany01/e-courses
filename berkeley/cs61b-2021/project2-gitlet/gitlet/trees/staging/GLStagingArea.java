@@ -1,7 +1,10 @@
-package gitlet;
+package gitlet.trees.staging;
 
+import gitlet.Utils;
 import gitlet.interfaces.IGLStagingArea;
 import gitlet.interfaces.IGLStagingEntry;
+import gitlet.trees.Repository;
+import gitlet.trees.WorkingArea;
 
 import java.io.File;
 import java.io.Serializable;
