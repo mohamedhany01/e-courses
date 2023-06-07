@@ -49,6 +49,18 @@ public class Repository implements IRepository {
         return Path.of(Repository.OBJECTS, file);
     }
 
+    public static Path getBranchesPath(String file) {
+        return Path.of(Repository.BRANCHES, file);
+    }
+
+    public static Path getHeadPath(String file) {
+        return Path.of(Repository.HEAD_POINTER, file);
+    }
+
+    public static Path getIndexPath(String file) {
+        return Path.of(Repository.INDEX, file);
+    }
+
     public static void initialize() {
         Repository.checkGitletRepository();
         Repository.initializeCorePaths();
@@ -145,7 +157,7 @@ public class Repository implements IRepository {
 
     public static TreeMap<String, String> getLastCommitFiles() {
         TreeMap<String, String> lastCommitFiles = new TreeMap<>();
-        String hash = HEAD.getBranchHash();
+        String hash = HEAD.getHash();
         Commit lastCommit = Repository.getObject(hash, Commit.class);
         Tree tree = Repository.getObject(lastCommit.getTree(), Tree.class);
 

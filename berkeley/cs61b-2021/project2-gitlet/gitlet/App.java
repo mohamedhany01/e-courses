@@ -2,7 +2,6 @@ package gitlet;
 
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IGLStagingEntry;
-import gitlet.interfaces.IHEAD;
 import gitlet.objects.Blob;
 import gitlet.objects.Commit;
 import gitlet.objects.Tree;
@@ -159,7 +158,7 @@ public class App {
         commit.setMessage(commitMessage);
         commit.setDate(Utils.getFormattedDate(LocalDateTime.now()));
         commit.setTree(tree.getHash());
-        commit.setParent(HEAD.getBranchHash());
+        commit.setParent(HEAD.getHash());
         commit.setHash(Utils.sha1(Commit.calculateHash(commit)));
 
         // Clear files staged to be removed if any
@@ -169,7 +168,7 @@ public class App {
         ICommit committedObject = repository.commitObjects(commit, tree, committedBlobs);
 
         repository.updateBranch(
-                HEAD.getBranchName(),
+                HEAD.getName(),
                 committedObject.getHash()
         );
         glStagingArea.saveChanges();
@@ -233,10 +232,7 @@ public class App {
      * - Merge field. TODO
      * */
     public static void log() {
-        IHEAD head = new HEAD();
-
-        String currentHead = head.getActiveBranchHash();
-        Commit currentCommit = Repository.getObject(currentHead, Commit.class);
+        Commit currentCommit = Repository.getObject(HEAD.getHash(), Commit.class);
 
         while (true) {
             if (currentCommit == null) {
@@ -396,7 +392,6 @@ public class App {
     public static void branch(String[] args) {
         String branchName = args[1];
 
-        HEAD head = new HEAD();
         Repository repository = new Repository();
 
         Path branches = Path.of(Repository.BRANCHES);
@@ -409,7 +404,7 @@ public class App {
             Utils.exit("A branch with that name already exists.");
         }
 
-        repository.createBranch(branchName, head.getActiveBranchHash());
+        repository.createBranch(branchName, HEAD.getHash());
     }
 
     /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
@@ -425,7 +420,6 @@ public class App {
     public static void removeBranch(String[] args) {
         String branchName = args[1];
 
-        HEAD head = new HEAD();
         Repository repository = new Repository();
 
         Path branches = Path.of(Repository.BRANCHES);
@@ -438,7 +432,7 @@ public class App {
             Utils.exit("A branch with that name does not exist.");
         }
 
-        if (head.getActiveBranchName().equals(branchName)) {
+        if (HEAD.isPoint(branchName)) {
             Utils.exit("Cannot remove the current branch.");
         }
 
@@ -453,8 +447,6 @@ public class App {
      * */
     public static void checkout(String[] args) {
         Repository repository = new Repository();
-        HEAD head = new HEAD();
-
         /*
          * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
          *
@@ -480,7 +472,7 @@ public class App {
                 Utils.exit("No such branch exists.");
             }
 
-            if (head.getActiveBranchName().equals(branchName)) {
+            if (HEAD.isPoint(branchName)) {
                 Utils.exit("No need to checkout the current branch.");
             }
 
@@ -522,7 +514,7 @@ public class App {
         if (args.length == 3 && args[1].equals("--")) {
             String fileName = args[2];
 
-            Blob blob = Repository.getBlob(fileName, head.getActiveBranchHash());
+            Blob blob = Repository.getBlob(fileName, HEAD.getHash());
             if (blob == null) {
                 Utils.exit("File does not exist in that commit.");
             }
@@ -558,7 +550,7 @@ public class App {
             Path fileFullPath = Path.of(WorkingArea.WD, fileName);
             Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
 //            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
-            repository.updateBranch(head.getActiveBranchName(), commitHash);
+            repository.updateBranch(HEAD.getName(), commitHash);
         }
     }
 
@@ -578,7 +570,6 @@ public class App {
      * */
     public static void reset(String[] args) {
         Repository repository = new Repository();
-        HEAD head = new HEAD();
         WorkingArea workingArea = new WorkingArea();
         GLStagingArea stagingArea = new GLStagingArea();
 
@@ -606,6 +597,6 @@ public class App {
             stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
         }
 
-        repository.updateBranch(head.getActiveBranchName(), hash);
+        repository.updateBranch(HEAD.getName(), hash);
     }
 }
