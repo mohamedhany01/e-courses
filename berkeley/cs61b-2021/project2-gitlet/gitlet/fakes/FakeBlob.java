@@ -20,7 +20,5 @@ public class FakeBlob implements IBlob {
     }
 
     @Override
-    public String getFilePath() {
-        return "path";
-    }
+    public void setFileName(String name) {}
 }

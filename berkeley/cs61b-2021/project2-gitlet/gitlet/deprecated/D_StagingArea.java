@@ -122,18 +122,18 @@ public class D_StagingArea implements IStagingArea {
     @Override
     public void stage(IBlob blob) {
         HashMap<String, String> stagingArea = loadStagingArea();
-
-        if (!stagingArea.containsValue(blob.getHash())) {
-            // Modified and thus it will be updated
-            if (stagingArea.containsKey(blob.getFilePath())) {
-                stagingArea.put(blob.getFileName(), blob.getHash());
-            } else {
-                // It's totally a new entry
-                stagingArea.put(blob.getFileName(), blob.getHash());
-            }
-        }
-
-        updateStagingArea(stagingArea);
+//
+//        if (!stagingArea.containsValue(blob.getHash())) {
+//            // Modified and thus it will be updated
+//            if (stagingArea.containsKey(blob.getFilePath())) {
+//                stagingArea.put(blob.getFileName(), blob.getHash());
+//            } else {
+//                // It's totally a new entry
+//                stagingArea.put(blob.getFileName(), blob.getHash());
+//            }
+//        }
+//
+//        updateStagingArea(stagingArea);
     }
 
     @Override

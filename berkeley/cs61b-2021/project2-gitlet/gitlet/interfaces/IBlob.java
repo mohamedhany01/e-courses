@@ -9,5 +9,5 @@ public interface IBlob extends Serializable {
 
     String getFileName();
 
-    String getFilePath();
+    public void setFileName(String name);
 }

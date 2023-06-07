@@ -42,10 +42,8 @@ public class Repository implements IRepository {
 
         // Prepare root commit
         Blob blob = new Blob(
-                new byte[]{},
-                "",
-                ""
         );
+        blob.setFileName("");
         Tree tree = new Tree();
         tree.setBlob(blob.getHash());
         tree.calculateContentHash();

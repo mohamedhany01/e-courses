@@ -12,10 +12,7 @@ import gitlet.trees.WorkingArea;
 import gitlet.trees.staging.GLStagingEntry;
 import gitlet.trees.staging.Status;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -69,10 +66,9 @@ public class App {
         GLStagingArea stagingArea = new GLStagingArea();
 
         String fileName = args[1];
+        String fullPath = WorkingArea.getPath(fileName).toString();
 
-        Path fullPath = Path.of(WorkingArea.WD, fileName);
-
-        if (!Files.exists(fullPath)) {
+        if (!WorkingArea.exists(fileName)) {
             Utils.exit("File does not exist.");
         }
 
@@ -80,8 +76,9 @@ public class App {
          * Staging "add to additions" to be committed next time,
          * in case the blob updated and then re-staged then the entries we be overwritten
          * */
-        byte[] fileContent = Utils.readContents(fullPath.toFile());
-        Blob newBlob = new Blob(fileContent, fileName, fullPath.toString());
+        byte[] fileContent = Utils.readContents(new File(fullPath));
+        Blob newBlob = new Blob();
+        newBlob.setFileName(fileName);
 
         // Label the blob as staged entry in the staging area
         GLStagingEntry fileEntry = new GLStagingEntry(newBlob.getHash());
@@ -147,10 +144,8 @@ public class App {
             byte[] fileContent = Utils.readContents(filePath.toFile());
 
             Blob blob = new Blob(
-                    fileContent,
-                    file,
-                    filePath.toString()
             );
+            blob.setFileName(file);
             committedBlobs.add(blob);
             tree.setBlob(blob.getHash());
 

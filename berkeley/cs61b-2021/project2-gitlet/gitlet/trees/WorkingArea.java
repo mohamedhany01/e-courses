@@ -36,9 +36,12 @@ public class WorkingArea implements IWorkingArea {
         return Utils.plainFilenamesIn(WD);
     }
 
+    public static Path getPath(String file) {
+        return Path.of(WorkingArea.WD, file);
+    }
+
     public static boolean exists(String fileName) {
-        Path filePath = Path.of(WD, fileName);
-        return Files.exists(filePath);
+        return Files.exists(getPath(fileName));
     }
 
     public static void remove(String file) {
