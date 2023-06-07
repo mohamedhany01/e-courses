@@ -2,11 +2,8 @@ package gitlet.objects;
 
 import gitlet.Utils;
 import gitlet.interfaces.ITree;
-import gitlet.trees.Repository;
 
-import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,16 +13,6 @@ public class Tree implements ITree, Serializable {
 
     public Tree() {
         this.content = new LinkedList<>();
-    }
-
-    public static Tree getTree(String hash) {
-        String tree = Path.of(Repository.OBJECTS, hash).toString();
-
-        if (!Repository.isInRepository(hash)) {
-            return null;
-        }
-
-        return Utils.readObject(new File(tree), Tree.class);
     }
 
     @Override

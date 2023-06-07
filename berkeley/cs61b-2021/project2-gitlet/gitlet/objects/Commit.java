@@ -4,9 +4,7 @@ import gitlet.Utils;
 import gitlet.interfaces.ICommit;
 import gitlet.trees.Repository;
 
-import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.List;
 
 public class Commit implements ICommit, Serializable {
@@ -48,29 +46,14 @@ public class Commit implements ICommit, Serializable {
      * The root commit hash is always predictable, so we can use it to build the linked list history
      * */
     public static Commit getRootCommit() {
-        String rootCommitHash = "3e6c06b1a28a035e21aa0a736ef80afadc43122c";
-        return getCommit(rootCommitHash);
-    }
-
-    public static Commit getCommit(String hash) {
-        if (hash == null) {
-            return null;
-        }
-
-        String commitPath = Path.of(Repository.OBJECTS, hash).toString();
-
-        if (!Repository.isInRepository(hash)) {
-            return null;
-        }
-
-        return Utils.readObject(new File(commitPath), Commit.class);
+        return Repository.getObject("f3d664d3d0be025b6747ee19e4eef90bf22528e8", Commit.class);
     }
 
     public static Blob hasFile(String file, String hash) {
-        Commit commit = Commit.getCommit(hash);
-        Tree commitTree = Tree.getTree(commit.getTree());
+        Commit commit = Repository.getObject(hash, Commit.class);
+        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
         for (Object blobHash : commitTree.getBlobs()) {
-            Blob blob = Blob.getBlob((String) blobHash);
+            Blob blob = Repository.getObject((String) blobHash, Blob.class);
             if (blob.getFileName().equals(file)) {
                 return blob;
             }
@@ -79,8 +62,8 @@ public class Commit implements ICommit, Serializable {
     }
 
     public static List<Object> getBlobs(String hash) {
-        Commit commit = Commit.getCommit(hash);
-        Tree commitTree = Tree.getTree(commit.getTree());
+        Commit commit = Repository.getObject(hash, Commit.class);
+        Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
         return commitTree.getBlobs();
     }
 
@@ -92,7 +75,7 @@ public class Commit implements ICommit, Serializable {
         builder.append(commit.getAuthorName());
         builder.append(commit.getTree());
         builder.append(commit.getParent());
-        return Utils.sha1(builder);
+        return Utils.sha1(builder.toString());
     }
 
     @Override

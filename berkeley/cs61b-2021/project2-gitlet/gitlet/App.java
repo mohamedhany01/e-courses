@@ -236,7 +236,7 @@ public class App {
         IHEAD head = new HEAD();
 
         String currentHead = head.getActiveBranchHash();
-        Commit currentCommit = Commit.getCommit(currentHead);
+        Commit currentCommit = Repository.getObject(currentHead, Commit.class);
 
         while (true) {
             if (currentCommit == null) {
@@ -248,7 +248,7 @@ public class App {
             System.out.println("Date: " + currentCommit.getDate());
             System.out.println(currentCommit.getMessage() + "\n");
 
-            currentCommit = Commit.getCommit(currentCommit.getParent());
+            currentCommit = Repository.getObject(currentCommit.getParent(), Commit.class);
         }
     }
 
@@ -497,7 +497,7 @@ public class App {
 
             for (Object rowBlob : blobs) {
                 String blobHash = (String) rowBlob;
-                Blob blob = Blob.getBlob(blobHash);
+                Blob blob = Repository.getObject(blobHash, Blob.class);
                 Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
                 Utils.writeContents(file.toFile(), blob.getFileContent());
@@ -596,7 +596,7 @@ public class App {
         List<Object> blobs = Commit.getBlobs(hash);
         for (Object rowBlob : blobs) {
             String blobHash = (String) rowBlob;
-            Blob blob = Blob.getBlob(blobHash);
+            Blob blob = Repository.getObject(blobHash, Blob.class);
             Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
             Utils.writeContents(file.toFile(), blob.getFileContent());

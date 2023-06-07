@@ -55,11 +55,11 @@ public class HEAD implements IHEAD {
     public HashMap<String, String> getCommitFiles() {
         String commitHash = getActiveBranchHash();
         HashMap<String, String> commitFiles = new HashMap<>();
-        Commit currentCommit = Commit.getCommit(commitHash);
-        Tree currentTree = Tree.getTree(currentCommit.getTree());
+        Commit currentCommit = Repository.getObject(commitHash, Commit.class);
+        Tree currentTree = Repository.getObject(currentCommit.getTree(), Tree.class);
 
         currentTree.getBlobs().forEach((Object blobHash) -> {
-            Blob blob = Blob.getBlob((String) blobHash);
+            Blob blob = Repository.getObject((String) blobHash, Blob.class);
             commitFiles.put(blob.getFileName(), blob.getHash());
         });
         return commitFiles;
@@ -74,9 +74,6 @@ public class HEAD implements IHEAD {
 
     @Override
     public String getActiveBranchName() {
-        // https://stackoverflow.com/a/28630124
-        String pathSeparatorPattern = Pattern.quote(File.separator);
-        String[] activeBranch = getHEAD().split(pathSeparatorPattern);
-        return activeBranch[2];
+        return getHEAD();
     }
 }

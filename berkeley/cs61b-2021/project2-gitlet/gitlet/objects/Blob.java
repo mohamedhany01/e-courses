@@ -2,12 +2,10 @@ package gitlet.objects;
 
 import gitlet.Utils;
 import gitlet.interfaces.IBlob;
-import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
 
 import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Paths;
 
 public class Blob implements IBlob, Serializable {
     private byte[] fileContent;
@@ -15,16 +13,6 @@ public class Blob implements IBlob, Serializable {
     private String fileName;
 
     public Blob() {
-    }
-
-    public static Blob getBlob(String hash) {
-        String blob = Paths.get(Repository.OBJECTS, hash).toString();
-
-        if (!Repository.isInRepository(hash)) {
-            return null;
-        }
-
-        return Utils.readObject(new File(blob), Blob.class);
     }
 
     @Override

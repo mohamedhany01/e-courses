@@ -33,6 +33,22 @@ public class Repository implements IRepository {
     public Repository() {
     }
 
+    public static <T extends Serializable> T getObject(String hash, Class<T> type) {
+        if (hash == null) {
+            return null;
+        }
+
+        if (!Repository.isInRepository(hash)) {
+            return null;
+        }
+
+        return Utils.readObject(new File(getObjectPath(hash).toString()), type);
+    }
+
+    public static Path getObjectPath(String file) {
+        return Path.of(Repository.OBJECTS, file);
+    }
+
     public static void initialize() {
         Repository.checkGitletRepository();
         Repository.initializeCorePaths();
@@ -112,12 +128,12 @@ public class Repository implements IRepository {
     public static TreeMap<String, String> getLastCommitFiles() {
         TreeMap<String, String> lastCommitFiles = new TreeMap<>();
         String hash = HEAD.getBranchHash();
-        Commit lastCommit = Commit.getCommit(hash);
-        Tree tree = Tree.getTree(lastCommit.getTree());
+        Commit lastCommit = Repository.getObject(hash, Commit.class);
+        Tree tree = Repository.getObject(lastCommit.getTree(), Tree.class);
 
         // Load last commit files using its hash from HEAD pointer
         for (Object object : tree.getBlobs()) {
-            Blob blob = Blob.getBlob((String) object);
+            Blob blob = Repository.getObject((String) object, Blob.class);
             lastCommitFiles.put(blob.getFileName(), blob.getHash());
         }
         return lastCommitFiles;
