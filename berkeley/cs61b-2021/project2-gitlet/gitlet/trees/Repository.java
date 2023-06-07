@@ -9,7 +9,7 @@ import gitlet.objects.Commit;
 import gitlet.objects.Tree;
 import gitlet.trees.extra.Branch;
 import gitlet.trees.extra.HEAD;
-import gitlet.trees.staging.GLStagingArea;
+import gitlet.trees.staging.StagingArea;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class Repository {
     public static void initialize() {
         Repository.checkGitletRepository();
         Repository.initializeCorePaths();
-        GLStagingArea.initialize();
+        StagingArea.initialize();
 
         // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
         LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();

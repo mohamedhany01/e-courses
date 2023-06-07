@@ -12,12 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class GLStagingArea implements IGLStagingArea, Serializable {
+public class StagingArea implements IGLStagingArea, Serializable {
     private final TreeMap<String, IGLStagingEntry> additions;
     private final Set<String> removals;
 
-    public GLStagingArea() {
-        GLStagingArea loadedStagingArea = GLStagingArea.load();
+    public StagingArea() {
+        StagingArea loadedStagingArea = StagingArea.load();
 
         if (loadedStagingArea != null) {
             additions = loadedStagingArea.additions;
@@ -31,16 +31,16 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
     public static void initialize() {
         Utils.writeObject(
                 new File(Repository.INDEX),
-                new GLStagingArea()
+                new StagingArea()
         );
     }
 
-    public static GLStagingArea load() {
+    public static StagingArea load() {
         Path index = Path.of(Repository.INDEX);
         boolean isEmpty = index.toFile().length() == 0;
 
         if (Files.exists(index) && !isEmpty) {
-            return Utils.readObject(new File(Repository.INDEX), GLStagingArea.class);
+            return Utils.readObject(new File(Repository.INDEX), StagingArea.class);
         }
         return null;
     }

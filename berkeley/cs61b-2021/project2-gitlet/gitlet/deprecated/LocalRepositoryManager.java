@@ -8,7 +8,7 @@ import gitlet.interfaces.ITree;
 import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
 import gitlet.trees.extra.HEAD;
-import gitlet.trees.staging.GLStagingArea;
+import gitlet.trees.staging.StagingArea;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,7 +68,7 @@ public class LocalRepositoryManager implements ILocalRepositoryManager {
         Utils.writeObject(commitPath.toFile(), commit);
 
         // TODO: remove
-        GLStagingArea.initialize();
+        StagingArea.initialize();
         HEAD.move("master");
 
         return commit;

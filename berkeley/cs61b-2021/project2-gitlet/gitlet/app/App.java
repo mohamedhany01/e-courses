@@ -10,8 +10,8 @@ import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
 import gitlet.trees.extra.Branch;
 import gitlet.trees.extra.HEAD;
-import gitlet.trees.staging.GLStagingArea;
-import gitlet.trees.staging.GLStagingEntry;
+import gitlet.trees.staging.StagingArea;
+import gitlet.trees.staging.StagingEntry;
 import gitlet.trees.staging.Status;
 
 import java.io.FileInputStream;
@@ -68,7 +68,7 @@ public class App {
      *   - 20 lines
      * */
     public static void add(String[] args) {
-        GLStagingArea stagingArea = new GLStagingArea();
+        StagingArea stagingArea = new StagingArea();
 
         String fileName = args[1];
 
@@ -84,7 +84,7 @@ public class App {
         newBlob.setFileName(fileName);
 
         // Label the blob as staged entry in the staging area
-        GLStagingEntry fileEntry = new GLStagingEntry(newBlob.getHash());
+        StagingEntry fileEntry = new StagingEntry(newBlob.getHash());
         fileEntry.setStatus(Status.STAGED);
         stagingArea.stageForAddition(newBlob.getFileName(), fileEntry);
 
@@ -127,9 +127,9 @@ public class App {
      *  - Line count: ~35
      * */
     public static void commit(String[] args) {
-        GLStagingArea glStagingArea = new GLStagingArea();
+        StagingArea stagingArea = new StagingArea();
 
-        if (glStagingArea.isClean()) {
+        if (stagingArea.isClean()) {
             Utils.exit("No changes added to the commit.");
         }
 
@@ -142,7 +142,7 @@ public class App {
 
         List<Blob> committedBlobs = new LinkedList<>();
         Tree tree = new Tree();
-        for (String file : glStagingArea.getStagedFiles()) {
+        for (String file : stagingArea.getStagedFiles()) {
 
             Blob blob = new Blob();
             blob.setFileName(file);
@@ -150,9 +150,9 @@ public class App {
             tree.addBlob(blob.getHash());
 
             // Since these files will be committed, label them as not staged
-            IGLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+            IGLStagingEntry stagingEntry = new StagingEntry(blob.getHash());
             stagingEntry.setStatus(Status.NOT_STAGED);
-            glStagingArea.stageForAddition(file, stagingEntry);
+            stagingArea.stageForAddition(file, stagingEntry);
         }
 
         Commit commit = new Commit();
@@ -163,7 +163,7 @@ public class App {
         commit.setHash(Utils.sha1(Commit.calculateHash(commit)));
 
         // Clear files staged to be removed if any
-        glStagingArea.clearRemovals();
+        stagingArea.clearRemovals();
 
         ICommit committedObject = Repository.commit(commit, tree, committedBlobs);
 
@@ -171,7 +171,7 @@ public class App {
                 HEAD.getName(),
                 committedObject.getHash()
         );
-        glStagingArea.saveChanges();
+        stagingArea.saveChanges();
     }
 
     /*
@@ -184,10 +184,10 @@ public class App {
     public static void rm(String[] args) {
 
         String fileName = args[1];
-        GLStagingArea glStagingArea = new GLStagingArea();
+        StagingArea stagingArea = new StagingArea();
 
         // This file untracked by Gitlet yet
-        if (!glStagingArea.hasFileInAdditions(fileName)) {
+        if (!stagingArea.hasFileInAdditions(fileName)) {
             Utils.exit("No reason to remove the file.");
         }
 
@@ -202,19 +202,19 @@ public class App {
 
         // Unstage the file to be untracked
         // TODO: in condition add, and if STAGED
-        if (glStagingArea.hasFileInAdditions(fileName)) {
-            glStagingArea.deleteAdditionsEntry(fileName);
+        if (stagingArea.hasFileInAdditions(fileName)) {
+            stagingArea.deleteAdditionsEntry(fileName);
         }
 
         // Stage it to be removed in the next commit
         TreeMap<String, String> lastCommitFiles = Repository.getLastCommitFiles();
 
         if (lastCommitFiles.containsKey(fileName)) {
-            glStagingArea.stageForRemoval(fileName);
+            stagingArea.stageForRemoval(fileName);
             WorkingArea.remove(fileName);
         }
 
-        glStagingArea.saveChanges();
+        stagingArea.saveChanges();
     }
 
     /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
@@ -238,12 +238,7 @@ public class App {
             if (currentCommit == null) {
                 break;
             }
-
-            System.out.println("===");
-            System.out.println("commit " + currentCommit.getHash());
-            System.out.println("Date: " + currentCommit.getDate());
-            System.out.println(currentCommit.getMessage() + "\n");
-
+            AppUtils.formatLog(currentCommit);
             currentCommit = Repository.getObject(currentCommit.getParent(), Commit.class);
         }
     }
@@ -271,10 +266,7 @@ public class App {
 
                 // If you found any object of type Commit print it
                 if (rowObject instanceof Commit commit) {
-                    System.out.println("===");
-                    System.out.println("commit " + commit.getHash());
-                    System.out.println("Date: " + commit.getDate());
-                    System.out.println(commit.getMessage() + "\n");
+                    AppUtils.formatLog(commit);
                 }
 
             } catch (FileNotFoundException | ClassNotFoundException e) {
@@ -349,21 +341,28 @@ public class App {
      * - READ: https://sp21.datastructur.es/materials/proj/proj2/proj2#status for more details
      * */
     public static void status() {
-        GLStagingArea glStagingArea = new GLStagingArea();
+        StagingArea stagingArea = new StagingArea();
         System.out.println("\n=== Branches ===");
+        for (String branch : Branch.getAllBranches()) {
+            if (HEAD.isPoint(branch)) {
+                System.out.println("*" + branch);
+            } else {
+                System.out.println(branch);
+            }
+        }
 
         System.out.println("\n=== Staged Files ===");
-        for (String file : glStagingArea.getStagedFiles()) {
+        for (String file : stagingArea.getStagedFiles()) {
             System.out.println(file);
         }
 
         System.out.println("\n=== Removed Files ===");
-        for (String file : glStagingArea.getRemovedFiles()) {
+        for (String file : stagingArea.getRemovedFiles()) {
             System.out.println(file);
         }
 
         System.out.println("\n=== Modifications Not Staged For Commit ===");
-        for (Map.Entry<String, String> entry : glStagingArea.getModifiedFiles()) {
+        for (Map.Entry<String, String> entry : stagingArea.getModifiedFiles()) {
             String fileName = entry.getKey();
             String fileStatus = entry.getValue();
 
@@ -371,7 +370,7 @@ public class App {
         }
 
         System.out.println("\n=== Untracked Files ===");
-        for (String file : glStagingArea.getUntrackedFiles()) {
+        for (String file : stagingArea.getUntrackedFiles()) {
             System.out.println(file);
         }
 
@@ -473,7 +472,7 @@ public class App {
 
             List<Object> blobs = Repository.getBlobs(Branch.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea();
-            GLStagingArea stagingArea = new GLStagingArea();
+            StagingArea stagingArea = new StagingArea();
 
 
             if (stagingArea.haveUntrackedFiles()) {
@@ -489,7 +488,7 @@ public class App {
 
                 Utils.writeContents(file.toFile(), blob.getFileContent());
 
-                GLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+                StagingEntry stagingEntry = new StagingEntry(blob.getHash());
                 stagingEntry.setStatus(Status.STAGED);
                 stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
             }
@@ -565,7 +564,7 @@ public class App {
      * */
     public static void reset(String[] args) {
         WorkingArea workingArea = new WorkingArea();
-        GLStagingArea stagingArea = new GLStagingArea();
+        StagingArea stagingArea = new StagingArea();
 
         String hash = args[1];
         if (!Repository.exists(hash)) {
@@ -586,7 +585,7 @@ public class App {
 
             Utils.writeContents(file.toFile(), blob.getFileContent());
 
-            GLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+            StagingEntry stagingEntry = new StagingEntry(blob.getHash());
             stagingEntry.setStatus(Status.STAGED);
             stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
         }

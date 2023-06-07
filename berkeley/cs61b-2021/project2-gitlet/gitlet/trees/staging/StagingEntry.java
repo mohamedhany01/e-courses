@@ -4,12 +4,12 @@ import gitlet.interfaces.IGLStagingEntry;
 
 import java.io.Serializable;
 
-public class GLStagingEntry implements IGLStagingEntry, Serializable {
+public class StagingEntry implements IGLStagingEntry, Serializable {
     private final String hash;
     private Status status;
 
 
-    public GLStagingEntry(String hash) {
+    public StagingEntry(String hash) {
         this.hash = hash;
         this.status = Status.NOT_STAGED;
     }

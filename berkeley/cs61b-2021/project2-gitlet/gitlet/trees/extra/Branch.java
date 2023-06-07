@@ -6,6 +6,7 @@ import gitlet.trees.Repository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 public class Branch {
     public static void create(String name, String commitHash) {
@@ -34,5 +35,9 @@ public class Branch {
             return Utils.readContentsAsString(new File(Repository.getBranchesPath(name).toString()));
         }
         return null;
+    }
+
+    public static List<String> getAllBranches() {
+        return Utils.plainFilenamesIn(Repository.BRANCHES);
     }
 }

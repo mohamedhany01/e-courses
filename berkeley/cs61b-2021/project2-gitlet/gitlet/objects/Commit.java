@@ -17,11 +17,11 @@ public class Commit implements ICommit, Serializable {
     /**
      * Who created this commit.
      */
-    private String authorName;
+    private final String authorName;
     /**
      * The email author of this commit.
      */
-    private String authorEmail;
+    private final String authorEmail;
     /**
      * The tree hash of this commit.
      */
@@ -41,14 +41,13 @@ public class Commit implements ICommit, Serializable {
     }
 
     public static String calculateHash(ICommit commit) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(commit.getMessage());
-        builder.append(commit.getDate());
-        builder.append(commit.getAuthorName());
-        builder.append(commit.getAuthorName());
-        builder.append(commit.getTree());
-        builder.append(commit.getParent());
-        return Utils.sha1(builder.toString());
+        String builder = commit.getMessage() +
+                commit.getDate() +
+                commit.getAuthorName() +
+                commit.getAuthorName() +
+                commit.getTree() +
+                commit.getParent();
+        return Utils.sha1(builder);
     }
 
     @Override
