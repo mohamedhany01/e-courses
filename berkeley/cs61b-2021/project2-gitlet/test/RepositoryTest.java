@@ -1,8 +1,8 @@
-import gitlet.trees.Repository;
 import gitlet.fakes.*;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ITree;
 import gitlet.interfaces.IUtilitiesWrapper;
+import gitlet.trees.Repository;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

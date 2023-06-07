@@ -1,13 +1,13 @@
 package gitlet.deprecated;
 
 import gitlet.HEAD;
-import gitlet.trees.Repository;
 import gitlet.Utils;
-import gitlet.trees.WorkingArea;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IHEAD;
 import gitlet.interfaces.IStagingArea;
 import gitlet.interfaces.IWorkingArea;
+import gitlet.trees.Repository;
+import gitlet.trees.WorkingArea;
 
 import java.io.File;
 import java.nio.file.Files;

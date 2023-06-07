@@ -1,7 +1,6 @@
 package gitlet.interfaces;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public interface ICommit extends Serializable {
     String getMessage();

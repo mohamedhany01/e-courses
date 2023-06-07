@@ -1,6 +1,7 @@
 package gitlet.trees;
 
-import gitlet.*;
+import gitlet.HEAD;
+import gitlet.Utils;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.IRepository;

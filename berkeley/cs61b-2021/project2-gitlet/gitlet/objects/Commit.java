@@ -44,26 +44,6 @@ public class Commit implements ICommit, Serializable {
         this.authorEmail = "";
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setTree(String tree) {
-        this.tree = tree;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
     /*
      * The root commit hash is always predictable, so we can use it to build the linked list history
      * */
@@ -104,14 +84,33 @@ public class Commit implements ICommit, Serializable {
         return commitTree.getBlobs();
     }
 
+    public static String calculateHash(ICommit commit) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(commit.getMessage());
+        builder.append(commit.getDate());
+        builder.append(commit.getAuthorName());
+        builder.append(commit.getAuthorName());
+        builder.append(commit.getTree());
+        builder.append(commit.getParent());
+        return Utils.sha1(builder);
+    }
+
     @Override
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public String getDate() {
         return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override
@@ -129,9 +128,17 @@ public class Commit implements ICommit, Serializable {
         return tree;
     }
 
+    public void setTree(String tree) {
+        this.tree = tree;
+    }
+
     @Override
     public String getParent() {
         return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -139,14 +146,7 @@ public class Commit implements ICommit, Serializable {
         return hash;
     }
 
-    public static String calculateHash(ICommit commit) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(commit.getMessage());
-        builder.append(commit.getDate());
-        builder.append(commit.getAuthorName());
-        builder.append(commit.getAuthorName());
-        builder.append(commit.getTree());
-        builder.append(commit.getParent());
-        return Utils.sha1(builder);
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

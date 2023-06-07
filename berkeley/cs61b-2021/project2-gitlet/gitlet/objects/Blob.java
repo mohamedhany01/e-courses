@@ -14,7 +14,8 @@ public class Blob implements IBlob, Serializable {
     private String hash;
     private String fileName;
 
-    public Blob() {}
+    public Blob() {
+    }
 
     public static Blob getBlob(String hash) {
         String blob = Paths.get(Repository.OBJECTS, hash).toString();
@@ -29,6 +30,11 @@ public class Blob implements IBlob, Serializable {
     @Override
     public byte[] getFileContent() {
         return fileContent;
+    }
+
+    private void setFileContent(String fileName) {
+        String fullPath = WorkingArea.getPath(fileName).toString();
+        this.fileContent = fileName.isEmpty() ? "".getBytes() : Utils.readContents(new File(fullPath));
     }
 
     @Override
@@ -46,11 +52,6 @@ public class Blob implements IBlob, Serializable {
         this.fileName = name;
         setFileContent(name);
         setHash();
-    }
-
-    private void setFileContent(String fileName) {
-        String fullPath = WorkingArea.getPath(fileName).toString();
-        this.fileContent = fileName.isEmpty() ? "".getBytes() : Utils.readContents(new File(fullPath));
     }
 
     private void setHash() {

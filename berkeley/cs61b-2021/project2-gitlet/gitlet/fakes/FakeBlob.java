@@ -20,5 +20,6 @@ public class FakeBlob implements IBlob {
     }
 
     @Override
-    public void setFileName(String name) {}
+    public void setFileName(String name) {
+    }
 }
