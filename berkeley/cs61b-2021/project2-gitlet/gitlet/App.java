@@ -66,8 +66,7 @@ public class App {
         Path fullPath = Path.of(WorkingArea.WD, fileName);
 
         if (!Files.exists(fullPath)) {
-            System.out.print("File does not exist.");
-            System.exit(0);
+            Utils.exit("File does not exist.");
         }
 
         /*
@@ -124,16 +123,14 @@ public class App {
         GLStagingArea glStagingArea = new GLStagingArea();
 
         if (glStagingArea.isClean()) {
-            System.out.print("No changes added to the commit.");
-            System.exit(0);
+            Utils.exit("No changes added to the commit.");
         }
 
         // Get the commit message and load the staging area
         String commitMessage = args[1].trim();
 
         if (commitMessage.isEmpty()) {
-            System.out.print("Please enter a commit message.");
-            System.exit(0);
+            Utils.exit("Please enter a commit message.");
         }
 
         List<Blob> committedBlobs = new LinkedList<>();
@@ -195,8 +192,7 @@ public class App {
 
         // This file untracked by Gitlet yet
         if (!glStagingArea.hasFileInAdditions(fileName)) {
-            System.out.print("No reason to remove the file.");
-            System.exit(0);
+            Utils.exit("No reason to remove the file.");
         }
 
         /*
@@ -411,12 +407,11 @@ public class App {
         Path branches = Path.of(Repository.BRANCHES);
 
         if (!Files.exists(branches)) {
-            System.exit(0);
+            Utils.exit("");
         }
 
         if (Files.exists(Path.of(branches.toString(), branchName))) {
-            System.out.println("A branch with that name already exists.");
-            System.exit(0);
+            Utils.exit("A branch with that name already exists.");
         }
 
         repository.createBranch(branchName, head.getActiveBranchHash());
@@ -445,13 +440,11 @@ public class App {
         }
 
         if (!repository.hasBranch(branchName)) {
-            System.out.println("A branch with that name does not exist.");
-            System.exit(0);
+            Utils.exit("A branch with that name does not exist.");
         }
 
         if (head.getActiveBranchName().equals(branchName)) {
-            System.out.println("Cannot remove the current branch.");
-            System.exit(0);
+            Utils.exit("Cannot remove the current branch.");
         }
 
         repository.removeBranch(branchName);
@@ -489,13 +482,11 @@ public class App {
             String branchName = args[1];
 
             if (!repository.hasBranch(branchName)) {
-                System.out.println("No such branch exists.");
-                System.exit(0);
+                Utils.exit("No such branch exists.");
             }
 
             if (head.getActiveBranchName().equals(branchName)) {
-                System.out.println("No need to checkout the current branch.");
-                System.exit(0);
+                Utils.exit("No need to checkout the current branch.");
             }
 
             List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
@@ -504,8 +495,7 @@ public class App {
 
 
             if (workingArea.hasUntrackedFile(stagingArea)) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                System.exit(0);
+                Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
             }
 
             workingArea.clear();
@@ -536,8 +526,7 @@ public class App {
 
             Blob blob = Commit.hasFile(fileName, head.getActiveBranchHash());
             if (blob == null) {
-                System.out.println("File does not exist in that commit.");
-                System.exit(0);
+                Utils.exit("File does not exist in that commit.");
             }
 
             // Start restoring the file
@@ -560,14 +549,12 @@ public class App {
             String fileName = args[3];
 
             if (!Repository.isInRepository(commitHash)) {
-                System.out.println("No commit with that id exists.");
-                System.exit(0);
+                Utils.exit("No commit with that id exists.");
             }
 
             Blob blob = Commit.hasFile(fileName, commitHash);
             if (blob == null) {
-                System.out.println("File does not exist in that commit.");
-                System.exit(0);
+                Utils.exit("File does not exist in that commit.");
             }
 
             // Start restoring the file
@@ -600,13 +587,11 @@ public class App {
 
         String hash = args[1];
         if (!Repository.isInRepository(hash)) {
-            System.out.println("No commit with that id exists.");
-            System.exit(0);
+            Utils.exit("No commit with that id exists.");
         }
 
         if (workingArea.hasUntrackedFile(stagingArea)) {
-            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-            System.exit(0);
+            Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
 
         workingArea.clear();
