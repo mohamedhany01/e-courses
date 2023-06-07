@@ -1,5 +1,5 @@
 //import gitlet.deprecated.LocalRepositoryManager;
-//import gitlet.StagingArea;
+//import gitlet.deprecated.D_StagingArea;
 //import gitlet.WorkingArea;
 //import gitlet.fakes.*;
 //import gitlet.interfaces.*;
@@ -34,7 +34,7 @@
 //    @Before
 //    public void setup() {
 //        IUtilitiesWrapper utilities = new FakeUtilitiesWrapper();
-//        IStagingArea stagingArea = new StagingArea();
+//        IStagingArea stagingArea = new D_StagingArea();
 //        IHEAD head = new FakeHEAD();
 //
 //        manager = new LocalRepositoryManager();

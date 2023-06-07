@@ -14,11 +14,7 @@ public class HEAD implements IHEAD {
     }
 
     public static String getBranchName() {
-        // https://stackoverflow.com/a/28630124
-        String pathSeparatorPattern = Pattern.quote(File.separator);
-        String headData = Utils.readContentsAsString(new File(Repository.HEAD_POINTER));
-        String[] branch = headData.split(pathSeparatorPattern);
-        return branch[2];
+        return Utils.readContentsAsString(new File(Repository.HEAD_POINTER));
     }
 
     public static String getBranchHash() {

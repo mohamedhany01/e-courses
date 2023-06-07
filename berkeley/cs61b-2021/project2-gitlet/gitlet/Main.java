@@ -54,9 +54,6 @@ public class Main {
             case "reset":
                 App.reset(args);
                 break;
-            case "debug":
-                App.debug();
-                break;
         }
     }
 }

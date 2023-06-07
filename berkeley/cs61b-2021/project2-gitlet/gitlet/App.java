@@ -491,10 +491,10 @@ public class App {
 
             List<Object> blobs = Commit.getBlobs(repository.getBranchHash(branchName));
             WorkingArea workingArea = new WorkingArea();
-            StagingArea stagingArea = new StagingArea();
+            GLStagingArea stagingArea = new GLStagingArea();
 
 
-            if (workingArea.hasUntrackedFile(stagingArea)) {
+            if (stagingArea.haveUntrackedFiles()) {
                 Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
             }
 
@@ -506,7 +506,10 @@ public class App {
                 Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
                 Utils.writeContents(file.toFile(), blob.getFileContent());
-                stagingArea.stagManually(blob.getFileName(), blob.getHash());
+
+                GLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+                stagingEntry.setStatus(Status.STAGED);
+                stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
             }
 
             HEAD.move(branchName);
@@ -544,7 +547,6 @@ public class App {
 
         // Checkout commit hash and file
         if (args.length == 4 && args[2].equals("--")) {
-            StagingArea stagingArea = new StagingArea();
             String commitHash = args[1];
             String fileName = args[3];
 
@@ -583,14 +585,14 @@ public class App {
         Repository repository = new Repository();
         HEAD head = new HEAD();
         WorkingArea workingArea = new WorkingArea();
-        StagingArea stagingArea = new StagingArea();
+        GLStagingArea stagingArea = new GLStagingArea();
 
         String hash = args[1];
         if (!Repository.isInRepository(hash)) {
             Utils.exit("No commit with that id exists.");
         }
 
-        if (workingArea.hasUntrackedFile(stagingArea)) {
+        if (stagingArea.haveUntrackedFiles()) {
             Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
 
@@ -603,14 +605,12 @@ public class App {
             Path file = Path.of(WorkingArea.WD, blob.getFileName());
 
             Utils.writeContents(file.toFile(), blob.getFileContent());
-            stagingArea.stagManually(blob.getFileName(), blob.getHash());
+
+            GLStagingEntry stagingEntry = new GLStagingEntry(blob.getHash());
+            stagingEntry.setStatus(Status.STAGED);
+            stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
         }
 
         repository.updateBranch(head.getActiveBranchName(), hash);
-    }
-
-    static void debug() {
-        IStagingArea stagingArea = new StagingArea();
-        System.out.println(stagingArea.loadStagingArea());
     }
 }

@@ -37,4 +37,6 @@ public interface IGLStagingArea {
     boolean hasFileInRemovals(String key);
 
     boolean isClean();
+
+    boolean haveUntrackedFiles();
 }

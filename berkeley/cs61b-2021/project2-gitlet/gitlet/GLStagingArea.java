@@ -102,6 +102,11 @@ public class GLStagingArea implements IGLStagingArea, Serializable {
         return getStagedFiles().size() == 0 && getRemovedFiles().size() == 0;
     }
 
+    @Override
+    public boolean haveUntrackedFiles() {
+        return getUntrackedFiles().size() != 0;
+    }
+
     /*
      * Untracked status
      *

@@ -1,5 +1,9 @@
-package gitlet;
+package gitlet.deprecated;
 
+import gitlet.HEAD;
+import gitlet.Repository;
+import gitlet.Utils;
+import gitlet.WorkingArea;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IHEAD;
 import gitlet.interfaces.IStagingArea;
@@ -12,9 +16,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StagingArea implements IStagingArea {
+public class D_StagingArea implements IStagingArea {
 
-    public StagingArea() {
+    public D_StagingArea() {
     }
 
     @Override
