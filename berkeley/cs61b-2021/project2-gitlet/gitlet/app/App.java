@@ -14,10 +14,7 @@ import gitlet.trees.staging.StagingArea;
 import gitlet.trees.staging.StagingEntry;
 import gitlet.trees.staging.Status;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -417,12 +414,6 @@ public class App {
     public static void removeBranch(String[] args) {
         String branchName = args[1];
 
-        Path branches = Path.of(Repository.BRANCHES);
-
-        if (!Files.exists(branches)) {
-            Utils.exit("");
-        }
-
         if (!Branch.exists(branchName)) {
             Utils.exit("A branch with that name does not exist.");
         }
@@ -579,11 +570,9 @@ public class App {
 
         List<Object> blobs = Repository.getBlobs(hash);
         for (Object rowBlob : blobs) {
-            String blobHash = (String) rowBlob;
-            Blob blob = Repository.getObject(blobHash, Blob.class);
-            Path file = Path.of(WorkingArea.WD, blob.getFileName());
+            Blob blob = Repository.getObject((String) rowBlob, Blob.class);
 
-            Utils.writeContents(file.toFile(), blob.getFileContent());
+            Utils.writeContents(new File(WorkingArea.getPath(blob.getFileName()).toString()), blob.getFileContent());
 
             StagingEntry stagingEntry = new StagingEntry(blob.getHash());
             stagingEntry.setStatus(Status.STAGED);
