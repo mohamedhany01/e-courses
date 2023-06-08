@@ -64,25 +64,19 @@ public class App {
      *
      *   - 20 lines
      * */
+    //DONE
     public static void add(String[] args) {
-        StagingArea stagingArea = new StagingArea();
-
         String fileName = args[1];
 
         if (!WorkingArea.exists(fileName)) {
             Utils.exit("File does not exist.");
         }
 
-        /*
-         * Staging "add to additions" to be committed next time,
-         * in case the blob updated and then re-staged then the entries we be overwritten
-         * */
-        Blob newBlob = new Blob();
-        newBlob.setFileName(fileName);
+        Blob blob = new Blob();
+        blob.setFileName(fileName);
 
-        stagingArea.stageForAddition(newBlob);
-
-        // Store the changes to the disk
+        StagingArea stagingArea = new StagingArea();
+        stagingArea.stageForAddition(blob);
         stagingArea.saveChanges();
     }
 
