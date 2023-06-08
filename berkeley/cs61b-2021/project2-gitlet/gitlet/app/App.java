@@ -9,7 +9,8 @@ import gitlet.trees.extra.Branch;
 import gitlet.trees.extra.HEAD;
 import gitlet.trees.staging.StagingArea;
 
-import java.io.*;
+import java.io.File;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -146,7 +147,6 @@ public class App {
      *   - If the file is neither staged nor tracked by the head commit,
      *      print the error message No reason to remove the file. [DONE]
      * */
-
     // DONE
     public static void rm(String[] args) {
 
@@ -227,43 +227,39 @@ public class App {
 
     /* find: https://sp21.datastructur.es/materials/proj/proj2/proj2#find
      *
-     * - Prints out the ids of all commits that have the given commit message, one per line. [DONE]
+     *  - Prints out the ids of all commits that have the given commit message, one per line. [DONE]
      *
-     * - If there are multiple such commits, it prints the ids out on separate lines. [DONE]
+     *  - If there are multiple such commits, it prints the ids out on separate lines. [DONE]
      *
-     * - The commit message is a single operand; to indicate a multiword message, put the operand in quotation marks, as for the commit command below. Hint: the hint for this command is the same as the one for global-log. [DONE]
+     *  - The commit message is a single operand; to indicate a multiword message,
+     *      put the operand in quotation marks, as for the commit command below.
+     *      Hint: the hint for this command is the same as the one for global-log. [DONE]
      *
-     * - If no such commit exists, prints the error message Found no commit with that message. [DONE]
+     *  - If no such commit exists, prints the error message Found no commit with that message. [DONE]
      *
-     * - Doesn’t exist in real git. Similar effects can be achieved by grepping the output of log. [DONE]
+     *  - Doesn’t exist in real git. Similar effects can be achieved by grepping the output of log. [DONE]
      * */
+    // DONE
     public static void find(String[] args) {
-        String commitMassage = args[1];
+        String message = args[1];
         boolean commitFound = false;
-        Path objectsDirectory = Path.of(Repository.OBJECTS);
+        boolean print = true;
 
-        // If no objects directory just exit and don't do anything
-        if (!Files.exists(objectsDirectory)) {
-            Utils.exit("");
-        }
-
-        // Loop over objects directory, and read all serialized objects
-        for (String objectHash : Utils.plainFilenamesIn(objectsDirectory.toFile())) {
-            Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
-
-            try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
-                Object rowObject = reader.readObject();
-
-                // If you found any object of type Commit print it
-                if (rowObject instanceof Commit commit && commit.getMessage().equals(commitMassage)) {
-                    System.out.println(commit.getHash());
-                    commitFound = true;
+        for (Path path : AppUtils.listDirectoriesOfDirectory(Path.of(Repository.OBJECTS))) {
+            for (String object : Utils.plainFilenamesIn(path.toFile())) {
+                File objectPath = new File(path.toString(), object);
+                Serializable genericObject = Utils.readObject(objectPath);
+                if (Utils.isCommit(genericObject)) {
+                    Commit commit = (Commit) genericObject;
+                    if (commit.getMessage().equals(message)) {
+                        if (print) {
+                            System.out.println(message);
+                            print = false;
+                        }
+                        System.out.println(commit.getHash());
+                        commitFound = true;
+                    }
                 }
-
-            } catch (FileNotFoundException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         }
 
