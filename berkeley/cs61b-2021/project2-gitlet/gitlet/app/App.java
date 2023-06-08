@@ -80,10 +80,7 @@ public class App {
         Blob newBlob = new Blob();
         newBlob.setFileName(fileName);
 
-        // Label the blob as staged entry in the staging area
-        StagingEntry fileEntry = new StagingEntry(newBlob.getHash());
-        fileEntry.setStatus(Status.STAGED);
-        stagingArea.stageForAddition(newBlob.getFileName(), fileEntry);
+        stagingArea.stageForAddition(newBlob);
 
         // Store the changes to the disk
         stagingArea.saveChanges();
@@ -146,10 +143,7 @@ public class App {
             committedBlobs.add(blob);
             tree.addBlob(blob.getHash());
 
-            // Since these files will be committed, label them as not staged
-            IGLStagingEntry stagingEntry = new StagingEntry(blob.getHash());
-            stagingEntry.setStatus(Status.NOT_STAGED);
-            stagingArea.stageForAddition(file, stagingEntry);
+            stagingArea.stageForAddition(blob);
         }
 
         Commit commit = new Commit();
@@ -479,9 +473,7 @@ public class App {
 
                 Utils.writeContents(file.toFile(), blob.getFileContent());
 
-                StagingEntry stagingEntry = new StagingEntry(blob.getHash());
-                stagingEntry.setStatus(Status.STAGED);
-                stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
+                stagingArea.stageForAddition(blob);
             }
 
             HEAD.move(branchName);
@@ -574,9 +566,7 @@ public class App {
 
             Utils.writeContents(new File(WorkingArea.getPath(blob.getFileName()).toString()), blob.getFileContent());
 
-            StagingEntry stagingEntry = new StagingEntry(blob.getHash());
-            stagingEntry.setStatus(Status.STAGED);
-            stagingArea.stageForAddition(blob.getFileName(), stagingEntry);
+            stagingArea.stageForAddition(blob);
         }
 
         Branch.update(HEAD.getName(), hash);

@@ -1,6 +1,7 @@
 package gitlet.trees.staging;
 
 import gitlet.Utils;
+import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IGLStagingArea;
 import gitlet.interfaces.IGLStagingEntry;
 import gitlet.trees.Repository;
@@ -81,8 +82,10 @@ public class StagingArea implements IGLStagingArea, Serializable {
     }
 
     @Override
-    public void stageForAddition(String fileName, IGLStagingEntry file) {
-        additions.put(fileName, file);
+    public void stageForAddition(IBlob blob) {
+        StagingEntry entry = new StagingEntry(blob.getHash());
+        entry.setStatus(Status.STAGED);
+        additions.put(blob.getFileName(), entry);
     }
 
     @Override

@@ -20,7 +20,7 @@ public interface IGLStagingArea {
 
     Set<String> getRemovals();
 
-    void stageForAddition(String fileName, IGLStagingEntry file);
+    void stageForAddition(IBlob blob);
 
     void stageForRemoval(String fileName);
 
