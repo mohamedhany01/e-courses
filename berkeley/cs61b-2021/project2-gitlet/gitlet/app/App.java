@@ -1,10 +1,8 @@
 package gitlet.app;
 
 import gitlet.Utils;
-import gitlet.interfaces.ICommit;
 import gitlet.objects.Blob;
 import gitlet.objects.Commit;
-import gitlet.objects.Tree;
 import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
 import gitlet.trees.extra.Branch;
@@ -14,8 +12,6 @@ import gitlet.trees.staging.StagingArea;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -123,7 +119,6 @@ public class App {
      *
      *  - Line count: ~35 [DONE]
      * */
-
     // DONE
     public static void commit(String[] args) {
         StagingArea stagingArea = new StagingArea();
@@ -143,42 +138,46 @@ public class App {
 
     /*
      *   rm: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm
+     *
      *   - Unstage the file if it is currently staged for addition. [DONE]
+     *
      *   - If the file is tracked in the current commit, stage it for removal
      *      and remove the file from the working directory if the user has not already done so [DONE]
-     *   - If the file is neither staged nor tracked by the head commit, print the error message No reason to remove the file. [DONE]
+     *
+     *   - If the file is neither staged nor tracked by the head commit,
+     *      print the error message No reason to remove the file. [DONE]
      * */
+
+    // DONE
     public static void rm(String[] args) {
 
-        String fileName = args[1];
+        String file = args[1];
         StagingArea stagingArea = new StagingArea();
 
         // This file untracked by Gitlet yet
-        if (!stagingArea.hasFileInAdditions(fileName)) {
+        if (!stagingArea.isTracked(file)) {
             Utils.exit("No reason to remove the file.");
         }
 
         /*
-         *   We have two cases here
+         *   We have two cases
          *   - The file is staged (exist in staging area),
          *       then this will be deleted from staging area, to be untracked.
          *   - The file is in the current commit (exist in last commit),
          *       then it will be added to removals (staged for to be removed in the next commit),
-         *       and remove it from working directory
+         *       and removed from the working directory
          * */
 
-        // Unstage the file to be untracked
-        // TODO: in condition add, and if STAGED
-        if (stagingArea.hasFileInAdditions(fileName)) {
-            stagingArea.deleteAdditionsEntry(fileName);
-        }
+        if (stagingArea.isTracked(file)) {
+            // If the file in last commit stage it to be removed, in next commit
+            // File in the last commit means the staging area is clean, and it has this file "tracked"
+            if (stagingArea.existsInLastCommit(file)) {
+                stagingArea.stageForRemoval(file);
+                WorkingArea.remove(file);
+            }
 
-        // Stage it to be removed in the next commit
-        TreeMap<String, String> lastCommitFiles = Repository.getLastCommitFiles();
-
-        if (lastCommitFiles.containsKey(fileName)) {
-            stagingArea.stageForRemoval(fileName);
-            WorkingArea.remove(fileName);
+            // In both cases we need to remove it form the additions
+            stagingArea.deleteAdditionsEntry(file);
         }
 
         stagingArea.saveChanges();

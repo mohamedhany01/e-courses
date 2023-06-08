@@ -1,5 +1,7 @@
 package gitlet.interfaces;
 
+import gitlet.trees.staging.Status;
+
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,8 @@ public interface IGLStagingArea {
 
     void commitStagedFiles(String message);
 
+    void updatedEntryStatus(String file, Status status);
+
     TreeMap<String, IGLStagingEntry> getAdditions();
 
     Set<String> getRemovals();
@@ -34,7 +38,9 @@ public interface IGLStagingArea {
 
     Set<Map.Entry<String, String>> getModifiedFiles();
 
-    boolean hasFileInAdditions(String key);
+    boolean isTracked(String key);
+
+    boolean existsInLastCommit(String file);
 
     boolean hasFileInRemovals(String key);
 

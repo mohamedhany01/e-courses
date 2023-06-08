@@ -89,6 +89,8 @@ public class StagingArea implements IGLStagingArea, Serializable {
             tree.addBlob(blob.getHash());
 
             Repository.storeObject(blob.getHash(), blob);
+
+            updatedEntryStatus(blob.getFileName(), Status.COMMITTED);
         }
 
         Commit commit = new Commit();
@@ -110,6 +112,13 @@ public class StagingArea implements IGLStagingArea, Serializable {
         clearRemovals();
 
         saveChanges();
+    }
+
+    @Override
+    public void updatedEntryStatus(String file, Status status) {
+        IGLStagingEntry entry = additions.get(file);
+        entry.setStatus(status);
+        additions.put(file, entry);
     }
 
     @Override
@@ -135,8 +144,18 @@ public class StagingArea implements IGLStagingArea, Serializable {
     }
 
     @Override
-    public boolean hasFileInAdditions(String key) {
+    public boolean isTracked(String key) {
         return additions.containsKey(key);
+    }
+
+    @Override
+    public boolean existsInLastCommit(String file) {
+        IGLStagingEntry entry = additions.get(file);
+
+        if (isTracked(file) && entry.getStatus().equals(Status.COMMITTED)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -167,7 +186,7 @@ public class StagingArea implements IGLStagingArea, Serializable {
         for (String file : WorkingArea.getWorkingFiles()) {
 
             // If no file in the additions map, then this file is untracked
-            if (!hasFileInAdditions(file)) {
+            if (!isTracked(file)) {
                 untrackedFiles.add(file);
             }
         }
