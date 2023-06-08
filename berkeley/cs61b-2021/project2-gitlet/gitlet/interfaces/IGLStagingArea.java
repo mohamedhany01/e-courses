@@ -32,6 +32,8 @@ public interface IGLStagingArea {
 
     LinkedList<String> getUntrackedFiles();
 
+    Set<Map.Entry<String, IGLStagingEntry>> getAllFiles();
+
     LinkedList<String> getStagedFiles();
 
     LinkedList<String> getRemovedFiles();

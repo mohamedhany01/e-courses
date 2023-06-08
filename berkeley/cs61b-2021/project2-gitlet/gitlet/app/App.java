@@ -317,7 +317,6 @@ public class App {
         for (String file : stagingArea.getUntrackedFiles()) {
             System.out.println(file);
         }
-
     }
 
     /* branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#branch

@@ -82,7 +82,9 @@ public class StagingArea implements IGLStagingArea, Serializable {
 
         // Prepare staged files to be committed
         Tree tree = new Tree();
-        for (String file : getStagedFiles()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : getAllFiles()) {
+            String file = entry.getKey();
+
             Blob blob = new Blob();
             blob.setFileName(file);
 
@@ -191,6 +193,11 @@ public class StagingArea implements IGLStagingArea, Serializable {
             }
         }
         return untrackedFiles;
+    }
+
+    @Override
+    public Set<Map.Entry<String, IGLStagingEntry>> getAllFiles() {
+        return additions.entrySet();
     }
 
     /*
