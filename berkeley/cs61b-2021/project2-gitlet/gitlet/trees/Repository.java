@@ -35,7 +35,7 @@ public class Repository {
             return null;
         }
 
-        String [] path = Utils.splitHash(hash, 2);
+        String[] path = Utils.splitHash(hash, 2);
         String directory = path[0];
         String object = path[1];
 

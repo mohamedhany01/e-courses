@@ -199,7 +199,7 @@ public class App {
     public static void log() {
         Commit commit = Repository.getObject(HEAD.getHash(), Commit.class);
 
-        while (commit != null){
+        while (commit != null) {
 
             AppUtils.printFormatted(commit);
 

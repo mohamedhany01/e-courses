@@ -7,14 +7,6 @@ import java.io.Serializable;
 
 public class Commit implements ICommit, Serializable {
     /**
-     * The message of this Commit.
-     */
-    private String message;
-    /**
-     * When this commit is created.
-     */
-    private String date;
-    /**
      * Who created this commit.
      */
     private final String authorName;
@@ -22,6 +14,14 @@ public class Commit implements ICommit, Serializable {
      * The email author of this commit.
      */
     private final String authorEmail;
+    /**
+     * The message of this Commit.
+     */
+    private String message;
+    /**
+     * When this commit is created.
+     */
+    private String date;
     /**
      * The tree hash of this commit.
      */

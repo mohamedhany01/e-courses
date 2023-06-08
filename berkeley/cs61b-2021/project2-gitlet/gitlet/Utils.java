@@ -316,14 +316,14 @@ public class Utils {
                 builder.append("_");
             }
 
-            if (i> number) {
+            if (i > number) {
                 builder.append(str.charAt(i));
             }
         }
         return builder.toString();
     }
 
-    public static String [] splitHash(String str, int number) {
+    public static String[] splitHash(String str, int number) {
         return buildSpiltableHash(str, number).split("_");
     }
 
