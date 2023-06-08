@@ -16,6 +16,8 @@ public interface IGLStagingArea {
 
     void deleteRemovalsEntry(String key);
 
+    void commitStagedFiles(String message);
+
     TreeMap<String, IGLStagingEntry> getAdditions();
 
     Set<String> getRemovals();

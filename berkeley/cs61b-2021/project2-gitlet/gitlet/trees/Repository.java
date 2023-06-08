@@ -109,6 +109,11 @@ public class Repository {
         storeObject(commit.getHash(), commit);
     }
 
+    public static void commit(ITree tree, ICommit commit) {
+        storeObject(tree.getHash(), tree);
+        storeObject(commit.getHash(), commit);
+    }
+
     public static ICommit commit(ICommit commit, ITree tree, List<? extends IBlob> blobs) {
         for (IBlob blob : blobs) {
             storeObject(blob.getHash(), blob);
@@ -120,7 +125,7 @@ public class Repository {
         return commit;
     }
 
-    private static void storeObject(String hash, Serializable object) {
+    public static void storeObject(String hash, Serializable object) {
         String[] path = Utils.splitHash(hash, 2);
         String directory = path[0];
         String file = path[1];

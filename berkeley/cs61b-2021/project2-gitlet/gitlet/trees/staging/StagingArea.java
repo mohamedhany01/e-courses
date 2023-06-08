@@ -4,13 +4,19 @@ import gitlet.Utils;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IGLStagingArea;
 import gitlet.interfaces.IGLStagingEntry;
+import gitlet.objects.Blob;
+import gitlet.objects.Commit;
+import gitlet.objects.Tree;
 import gitlet.trees.Repository;
 import gitlet.trees.WorkingArea;
+import gitlet.trees.extra.Branch;
+import gitlet.trees.extra.HEAD;
 
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class StagingArea implements IGLStagingArea, Serializable {
@@ -69,6 +75,41 @@ public class StagingArea implements IGLStagingArea, Serializable {
     @Override
     public void deleteRemovalsEntry(String key) {
         removals.remove(key);
+    }
+
+    @Override
+    public void commitStagedFiles(String message) {
+
+        // Prepare staged files to be committed
+        Tree tree = new Tree();
+        for (String file : getStagedFiles()) {
+            Blob blob = new Blob();
+            blob.setFileName(file);
+
+            tree.addBlob(blob.getHash());
+
+            Repository.storeObject(blob.getHash(), blob);
+        }
+
+        Commit commit = new Commit();
+        commit.setMessage(message);
+        commit.setDate(Utils.getFormattedDate(LocalDateTime.now()));
+        commit.setTree(tree.getHash());
+        commit.setParent(HEAD.getHash());
+        commit.setHash(Utils.sha1(Commit.calculateHash(commit)));
+
+        // Store the objects in the .gitlet/objects
+        Repository.commit(tree, commit);
+
+        // Update active branch to point to the new commit
+        Branch.updateActive(commit.getHash());
+
+        // Clear files staged to be removed,
+        // they should be staged when the staging area not in clean status "staged by rm",
+        // when removals area isn't empty, the commit command will create a new commit by default
+        clearRemovals();
+
+        saveChanges();
     }
 
     @Override
@@ -137,9 +178,12 @@ public class StagingArea implements IGLStagingArea, Serializable {
      * Staged status
      *
      * We call a file staged when:
-     * - The staging area "additions" has this file
+     * - The staging area "additions" has this file [*]
      * AND
-     * - This file isn't a blob in the repository yet "Have not been committed before"
+     * - Labeled as "STAGED"
+     *
+     * IGNORE
+     * - This file isn't a blob in the repository yet "Have not been committed before" [X]
      *
      * */
     @Override
@@ -151,16 +195,9 @@ public class StagingArea implements IGLStagingArea, Serializable {
             String fileName = entry.getKey();
             Status status = entry.getValue().getStatus();
 
-            Path filePath = Path.of(WorkingArea.WD, fileName);
+            // Don't stage deleted files and invalid files
+            if (!Files.exists(WorkingArea.getPath(fileName))) continue;
 
-            if (!Files.exists(filePath)) continue;
-//            String fileHash = Utils.sha1(
-//                    Utils.readContents(
-//                            new File(filePath)
-//                    )
-//            );
-
-//            if (hasFileInAdditions(fileName) && !Repository.isInRepository(fileHash, new GitletPathsWrapper()))
             if (status.equals(Status.STAGED)) {
                 stagedFiles.add(fileName);
             }

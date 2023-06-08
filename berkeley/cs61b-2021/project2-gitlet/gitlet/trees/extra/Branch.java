@@ -30,6 +30,10 @@ public class Branch {
         Branch.create(name, commitHash);
     }
 
+    public static void updateActive(String commitHash) {
+        Branch.create(HEAD.getName(), commitHash);
+    }
+
     public static String getBranchHash(String name) {
         if (exists(name)) {
             return Utils.readContentsAsString(new File(Repository.getBranchesPath(name).toString()));
