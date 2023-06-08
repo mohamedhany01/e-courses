@@ -35,7 +35,7 @@ public class Repository {
             return null;
         }
 
-        if (!Repository.exists(hash)) {
+        if (!Repository.directoryExists(hash)) {
             return null;
         }
 
@@ -121,8 +121,22 @@ public class Repository {
     }
 
     private static void storeObject(String hash, Serializable object) {
-        String path = Path.of(Repository.OBJECTS, hash).toString();
-        Utils.writeObject(new File(path), object);
+        String[] path = Utils.splitHash(hash, 2);
+        String directory = path[0];
+        String file = path[1];
+        String directoryFullPath = Repository.getObjectPath(directory).toString();
+        String fileFullPath = Path.of(directoryFullPath, file).toString();
+
+        if (Repository.directoryExists(directory)) {
+            Utils.writeObject(new File(fileFullPath), object);
+        } else {
+            try {
+                Files.createDirectory(Path.of(directoryFullPath));
+                Utils.writeObject(new File(fileFullPath), object);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private static void initializeCorePaths() {
@@ -153,8 +167,13 @@ public class Repository {
         }
     }
 
-    public static boolean exists(String objectHash) {
-        return Files.exists(getObjectPath(objectHash));
+    public static boolean directoryExists(String directory) {
+        return Files.exists(getObjectPath(directory));
+    }
+
+    public static boolean objectExists(String directory, String hash) {
+        String filePath = Path.of(getObjectPath(directory).toString(), hash).toString();
+        return Files.exists(Path.of(filePath));
     }
 
     public static TreeMap<String, String> getLastCommitFiles() {

@@ -282,4 +282,33 @@ public class Utils {
         String result = offsetDateTime.format(pattern);
         return result;
     }
+
+    private static String buildSpiltableHash(String str, int number) {
+        if (number > str.length()) {
+            return str;
+        }
+        if (number == 0) {
+            return str;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (i < number) {
+                builder.append(str.charAt(i));
+            }
+
+            if (i == number) {
+                builder.append("_");
+            }
+
+            if (i> number) {
+                builder.append(str.charAt(i));
+            }
+        }
+        return builder.toString();
+    }
+
+    public static String [] splitHash(String str, int number) {
+        return buildSpiltableHash(str, number).split("_");
+    }
 }

@@ -2,7 +2,6 @@ package gitlet.app;
 
 import gitlet.Utils;
 import gitlet.interfaces.ICommit;
-import gitlet.interfaces.IGLStagingEntry;
 import gitlet.objects.Blob;
 import gitlet.objects.Commit;
 import gitlet.objects.Tree;
@@ -11,8 +10,6 @@ import gitlet.trees.WorkingArea;
 import gitlet.trees.extra.Branch;
 import gitlet.trees.extra.HEAD;
 import gitlet.trees.staging.StagingArea;
-import gitlet.trees.staging.StagingEntry;
-import gitlet.trees.staging.Status;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -508,7 +505,7 @@ public class App {
             String commitHash = args[1];
             String fileName = args[3];
 
-            if (!Repository.exists(commitHash)) {
+            if (!Repository.directoryExists(commitHash)) {
                 Utils.exit("No commit with that id exists.");
             }
 
@@ -544,7 +541,7 @@ public class App {
         StagingArea stagingArea = new StagingArea();
 
         String hash = args[1];
-        if (!Repository.exists(hash)) {
+        if (!Repository.directoryExists(hash)) {
             Utils.exit("No commit with that id exists.");
         }
 
