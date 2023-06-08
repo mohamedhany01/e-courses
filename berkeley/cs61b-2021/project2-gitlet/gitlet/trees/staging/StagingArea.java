@@ -17,7 +17,10 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class StagingArea implements IGLStagingArea, Serializable {
     private final TreeMap<String, IGLStagingEntry> additions;
@@ -190,16 +193,16 @@ public class StagingArea implements IGLStagingArea, Serializable {
      *
      * */
     @Override
-    public LinkedList<String> getUntrackedFiles() {
-        LinkedList<String> untrackedFiles = new LinkedList<>();
+    public Set<Map.Entry<String, IGLStagingEntry>> getUntrackedFiles() {
+        TreeMap<String, IGLStagingEntry> untrackedFiles = new TreeMap<>();
         for (String file : WorkingArea.getWorkingFiles()) {
 
             // If no file in the additions map, then this file is untracked
             if (!isTracked(file)) {
-                untrackedFiles.add(file);
+                untrackedFiles.put(file, untrackedFiles.get(file));
             }
         }
-        return untrackedFiles;
+        return untrackedFiles.entrySet();
     }
 
     @Override
@@ -220,8 +223,8 @@ public class StagingArea implements IGLStagingArea, Serializable {
      *
      * */
     @Override
-    public LinkedList<String> getStagedFiles() {
-        LinkedList<String> stagedFiles = new LinkedList<>();
+    public Set<Map.Entry<String, IGLStagingEntry>> getStagedFiles() {
+        TreeMap<String, IGLStagingEntry> stagedFiles = new TreeMap<>();
 
         // Files in the staging area "additions"
         for (Map.Entry<String, IGLStagingEntry> entry : additions.entrySet()) {
@@ -232,10 +235,10 @@ public class StagingArea implements IGLStagingArea, Serializable {
             if (!Files.exists(WorkingArea.getPath(fileName))) continue;
 
             if (status.equals(Status.STAGED)) {
-                stagedFiles.add(fileName);
+                stagedFiles.put(fileName, stagedFiles.get(fileName));
             }
         }
-        return stagedFiles;
+        return stagedFiles.entrySet();
     }
 
     /*
@@ -246,14 +249,14 @@ public class StagingArea implements IGLStagingArea, Serializable {
      *
      * */
     @Override
-    public LinkedList<String> getRemovedFiles() {
-        LinkedList<String> removedFiles = new LinkedList<>();
+    public Set<Map.Entry<String, IGLStagingEntry>> getRemovedFiles() {
+        TreeMap<String, IGLStagingEntry> removedFiles = new TreeMap<>();
 
         // Files in the staging area "removals"
         for (String file : removals) {
-            removedFiles.add(file);
+            removedFiles.put(file, removedFiles.get(file));
         }
-        return removedFiles;
+        return removedFiles.entrySet();
     }
 
     /*

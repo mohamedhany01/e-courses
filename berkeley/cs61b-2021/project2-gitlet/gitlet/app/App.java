@@ -1,6 +1,7 @@
 package gitlet.app;
 
 import gitlet.Utils;
+import gitlet.interfaces.IGLStagingEntry;
 import gitlet.objects.Blob;
 import gitlet.objects.Commit;
 import gitlet.trees.Repository;
@@ -270,20 +271,24 @@ public class App {
 
     /* status: https://sp21.datastructur.es/materials/proj/proj2/proj2#status
      *
-     * - Displays what branches currently exist, and marks the current branch with a *. [DONE]
+     *  - Displays what branches currently exist, and marks the current branch with a *. [DONE]
      *
-     * - Displays what files have been staged for addition or removal. [DONE]
+     *  - Displays what files have been staged for addition or removal. [DONE]
      *
-     * - The last two sections (modifications not staged and untracked files) are extra credit, worth 32 points. Feel free to leave them blank (leaving just the headers). TODO
+     *  - The last two sections (modifications not staged and untracked files) are extra credit,
+     *      worth 32 points. Feel free to leave them blank (leaving just the headers). [DONE]
      *
-     * - There is an empty line between sections, and the entire status ends in an empty line as well. [DONE]
+     *  - There is an empty line between sections, and the entire status ends in an empty line as well. [DONE]
      *
-     * - Entries should be listed in lexicographic order, using the Java string-comparison order (the asterisk doesn’t count). TODO
+     *  - Entries should be listed in lexicographic order,
+     *      using the Java string-comparison order (the asterisk doesn’t count). [DONE]
      *
-     * - Runtime: Make sure this depends only on the amount of data in the working directory plus the number of files staged to be added or deleted plus the number of branches. [DONE]
+     *  - Runtime: Make sure this depends only on the amount of data in the working directory
+     *      plus the number of files staged to be added or deleted plus the number of branches. [DONE]
      *
      * - READ: https://sp21.datastructur.es/materials/proj/proj2/proj2#status for more details
      * */
+    // DONE
     public static void status() {
         StagingArea stagingArea = new StagingArea();
         System.out.println("\n=== Branches ===");
@@ -296,12 +301,14 @@ public class App {
         }
 
         System.out.println("\n=== Staged Files ===");
-        for (String file : stagingArea.getStagedFiles()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : stagingArea.getStagedFiles()) {
+            String file = entry.getKey();
             System.out.println(file);
         }
 
         System.out.println("\n=== Removed Files ===");
-        for (String file : stagingArea.getRemovedFiles()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : stagingArea.getRemovedFiles()) {
+            String file = entry.getKey();
             System.out.println(file);
         }
 
@@ -314,7 +321,8 @@ public class App {
         }
 
         System.out.println("\n=== Untracked Files ===");
-        for (String file : stagingArea.getUntrackedFiles()) {
+        for (Map.Entry<String, IGLStagingEntry> entry : stagingArea.getUntrackedFiles()) {
+            String file = entry.getKey();
             System.out.println(file);
         }
     }
