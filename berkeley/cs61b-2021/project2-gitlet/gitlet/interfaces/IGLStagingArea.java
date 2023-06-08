@@ -40,6 +40,8 @@ public interface IGLStagingArea {
 
     Set<Map.Entry<String, String>> getModifiedFiles();
 
+    String getHashInAdditions(String key);
+
     boolean isTracked(String key);
 
     boolean existsInLastCommit(String file);

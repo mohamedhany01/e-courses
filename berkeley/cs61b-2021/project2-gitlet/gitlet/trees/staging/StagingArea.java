@@ -82,8 +82,15 @@ public class StagingArea implements IGLStagingArea, Serializable {
 
         // Prepare staged files to be committed
         Tree tree = new Tree();
+        System.out.println(getAllFiles());
         for (Map.Entry<String, IGLStagingEntry> entry : getAllFiles()) {
+
             String file = entry.getKey();
+
+            // Skip deleted files
+            if (!WorkingArea.exists(file)) {
+                continue;
+            }
 
             Blob blob = new Blob();
             blob.setFileName(file);
@@ -300,10 +307,19 @@ public class StagingArea implements IGLStagingArea, Serializable {
             );
 
             // If not the same hash then it's modified
-            if (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).equals(workingDirectoryFileHash) && !fileStatus.equals(Status.STAGED)) {
+            // If any file in last commit changed OR a staged file change
+            if (
+                    (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).equals(workingDirectoryFileHash)) ||
+                            !getHashInAdditions(file).equals(workingDirectoryFileHash)
+            ) {
                 modifiedFiles.put(file, "(modified)");
             }
         }
         return modifiedFiles.entrySet();
+    }
+
+    @Override
+    public String getHashInAdditions(String key) {
+        return additions.get(key).getHash();
     }
 }

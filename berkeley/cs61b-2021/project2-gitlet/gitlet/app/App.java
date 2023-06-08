@@ -171,12 +171,12 @@ public class App {
             // If the file in last commit stage it to be removed, in next commit
             // File in the last commit means the staging area is clean, and it has this file "tracked"
             if (stagingArea.existsInLastCommit(file)) {
-                stagingArea.stageForRemoval(file);
                 WorkingArea.remove(file);
             }
 
-            // In both cases we need to remove it form the additions
+            // In both cases we need to remove it form the additions and stage it te be removed
             stagingArea.deleteAdditionsEntry(file);
+            stagingArea.stageForRemoval(file);
         }
 
         stagingArea.saveChanges();
