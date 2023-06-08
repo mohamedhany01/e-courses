@@ -36,7 +36,7 @@ public class Main {
                 App.log();
                 break;
             case "global-log":
-                App.logAll();
+                App.globalLog();
                 break;
             case "rm":
                 App.rm(args);

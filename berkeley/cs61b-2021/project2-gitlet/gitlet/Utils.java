@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.objects.Commit;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -177,6 +179,19 @@ public class Utils {
         }
     }
 
+    public static <T extends Serializable> T readObject(File file) {
+        try {
+            ObjectInputStream in =
+                    new ObjectInputStream(new FileInputStream(file));
+            T result = (T) in.readObject();
+            in.close();
+            return result;
+        } catch (IOException | ClassCastException
+                 | ClassNotFoundException excp) {
+            throw new IllegalArgumentException(excp.getMessage());
+        }
+    }
+
     /* DIRECTORIES */
 
     /**
@@ -310,5 +325,9 @@ public class Utils {
 
     public static String [] splitHash(String str, int number) {
         return buildSpiltableHash(str, number).split("_");
+    }
+
+    public static boolean isCommit(Serializable object) {
+        return object instanceof Commit;
     }
 }

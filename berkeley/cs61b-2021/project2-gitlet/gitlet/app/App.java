@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class App {
 
@@ -185,60 +184,43 @@ public class App {
 
     /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
      *
-     *   - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
+     *  - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
      *
-     * - Ignoring any second parents found in merge commits. TODO
+     *  - Ignoring any second parents found in merge commits. TODO
      *
-     * - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
+     *  - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
      *
-     * - There is a === before each commit and an empty line after it [DONE]
+     *  - There is a === before each commit and an empty line after it [DONE]
      *
-     * - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
+     *  - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
      *
-     * - Merge field. TODO
+     *  - Merge field. TODO
      * */
     public static void log() {
-        Commit currentCommit = Repository.getObject(HEAD.getHash(), Commit.class);
+        Commit commit = Repository.getObject(HEAD.getHash(), Commit.class);
 
-        while (true) {
-            if (currentCommit == null) {
-                break;
-            }
-            AppUtils.formatLog(currentCommit);
-            currentCommit = Repository.getObject(currentCommit.getParent(), Commit.class);
+        while (commit != null){
+
+            AppUtils.printFormatted(commit);
+
+            commit = Repository.getObject(commit.getParent(), Commit.class);
         }
     }
 
-    /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#global-log
+    /* global-log: https://sp21.datastructur.es/materials/proj/proj2/proj2#global-log
      *
      *   - Like log, except displays information about all commits ever made. The order of the commits does not matter. [DONE]
      *   - There is a useful method in gitlet.Utils that will help you iterate over files within a directory. [DONE]
      *   - Merge field. TODO
      * */
-    public static void logAll() {
-        Path objectsDirectory = Path.of(Repository.OBJECTS);
-
-        // If no objects directory just exit and don't do anything
-        if (!Files.exists(objectsDirectory)) {
-            System.exit(0);
-        }
-
-        // Loop over objects directory, and read all serialized objects
-        for (String objectHash : Utils.plainFilenamesIn(objectsDirectory.toFile())) {
-            Path objectPath = Path.of(objectsDirectory.toString(), objectHash);
-
-            try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(objectPath.toFile()))) {
-                Object rowObject = reader.readObject();
-
-                // If you found any object of type Commit print it
-                if (rowObject instanceof Commit commit) {
-                    AppUtils.formatLog(commit);
+    public static void globalLog() {
+        for (Path path : AppUtils.listDirectoriesOfDirectory(Path.of(Repository.OBJECTS))) {
+            for (String object : Utils.plainFilenamesIn(path.toFile())) {
+                File objectPath = new File(path.toString(), object);
+                Serializable genericObject = Utils.readObject(objectPath);
+                if (Utils.isCommit(genericObject)) {
+                    AppUtils.printFormatted((Commit) genericObject);
                 }
-
-            } catch (FileNotFoundException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         }
     }

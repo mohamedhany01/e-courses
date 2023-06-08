@@ -35,11 +35,15 @@ public class Repository {
             return null;
         }
 
-        if (!Repository.directoryExists(hash)) {
+        String [] path = Utils.splitHash(hash, 2);
+        String directory = path[0];
+        String object = path[1];
+
+        if (!Repository.objectExists(directory, object)) {
             return null;
         }
 
-        return Utils.readObject(new File(getObjectPath(hash).toString()), type);
+        return Utils.readObject(new File(Path.of(Repository.getObjectPath(directory).toString(), object).toString()), type);
     }
 
     public static Path getObjectPath(String file) {
