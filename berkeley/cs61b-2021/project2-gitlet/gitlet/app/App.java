@@ -457,26 +457,31 @@ public class App {
 
     /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
      *
-     * - Deletes the branch with the given name. [DONE]
+     *  - Deletes the branch with the given name. [DONE]
      *
-     * - This only means to delete the pointer associated with the branch; it does not mean to delete all commits that were created under the branch, or anything like that. [DONE]
+     *  - This only means to delete the pointer associated with the branch;
+     *      it does not mean to delete all commits that were created under the branch,
+     *      or anything like that. [DONE]
      *
-     * - If a branch with the given name does not exist, aborts. Print the error message A branch with that name does not exist. [DONE]
+     *  - If a branch with the given name does not exist, aborts.
+     *      Print the error message A branch with that name does not exist. [DONE]
      *
-     * - If you try to remove the branch you’re currently on, aborts, printing the error message Cannot remove the current branch. [DONE]
+     *  - If you try to remove the branch you’re currently on, aborts,
+     *      printing the error message Cannot remove the current branch. [DONE]
      * */
+    // DONE
     public static void removeBranch(String[] args) {
-        String branchName = args[1];
+        String branch = args[1];
 
-        if (!Branch.exists(branchName)) {
+        if (!Branch.exists(branch)) {
             Utils.exit("A branch with that name does not exist.");
         }
 
-        if (HEAD.isPoint(branchName)) {
+        if (HEAD.isPoint(branch)) {
             Utils.exit("Cannot remove the current branch.");
         }
 
-        Branch.remove(branchName);
+        Branch.remove(branch);
     }
 
     /* reset: https://sp21.datastructur.es/materials/proj/proj2/proj2#reset
