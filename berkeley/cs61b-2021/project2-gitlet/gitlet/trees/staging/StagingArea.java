@@ -294,13 +294,12 @@ public class StagingArea implements IGLStagingArea, Serializable {
     @Override
     public Set<Map.Entry<String, String>> getModifiedFiles() {
         TreeMap<String, String> modifiedFiles = new TreeMap<>();
-        TreeMap<String, String> lastCommitFiles = Repository.getLastCommitFiles();
+        TreeMap<String, Blob> lastCommitFiles = Repository.getLastCommitBlobs();
 
         // Files in the staging area "additions"
         for (Map.Entry<String, IGLStagingEntry> entry : additions.entrySet()) {
             String file = entry.getKey();
             String workingDirectoryFile = Path.of(WorkingArea.WD, file).toString();
-            Status fileStatus = entry.getValue().getStatus();
 
             // Isn't represented in the working directory, then it's deleted
             if (lastCommitFiles.containsKey(file) && !WorkingArea.exists(file) || !WorkingArea.exists(file)) {
@@ -317,7 +316,7 @@ public class StagingArea implements IGLStagingArea, Serializable {
             // If not the same hash then it's modified
             // If any file in last commit changed OR a staged file change
             if (
-                    (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).equals(workingDirectoryFileHash)) ||
+                    (lastCommitFiles.containsKey(file) && !lastCommitFiles.get(file).getHash().equals(workingDirectoryFileHash)) ||
                             !getHashInAdditions(file).equals(workingDirectoryFileHash)
             ) {
                 modifiedFiles.put(file, "(modified)");

@@ -120,4 +120,9 @@ public class WorkingArea implements IWorkingArea {
 
         stagingArea.saveChanges();
     }
+
+    @Override
+    public void addBlob(Blob blob) {
+        Utils.writeContents(new File(getPath(blob.getFileName()).toString()), blob.getFileContent());
+    }
 }

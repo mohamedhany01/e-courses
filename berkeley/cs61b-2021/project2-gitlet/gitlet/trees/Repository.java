@@ -228,17 +228,7 @@ public class Repository {
         return Files.exists(Path.of(filePath));
     }
 
-    public static TreeMap<String, String> getLastCommitFiles() {
-        TreeMap<String, String> lastCommitFiles = new TreeMap<>();
-        String hash = HEAD.getHash();
-        Commit lastCommit = Repository.getObject(hash, Commit.class);
-        Tree tree = Repository.getObject(lastCommit.getTree(), Tree.class);
-
-        // Load last commit files using its hash from HEAD pointer
-        for (Object object : tree.getBlobs()) {
-            Blob blob = Repository.getObject((String) object, Blob.class);
-            lastCommitFiles.put(blob.getFileName(), blob.getHash());
-        }
-        return lastCommitFiles;
+    public static TreeMap<String, Blob> getLastCommitBlobs() {
+        return getBlobs(HEAD.getHash());
     }
 }

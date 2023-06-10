@@ -14,4 +14,6 @@ public interface IWorkingArea {
     boolean hasUntrackedFile(IStagingArea stagingArea);
 
     void addBlobs(TreeMap<String, Blob> blobs);
+
+    void addBlob(Blob blob);
 }

@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class App {
 
@@ -369,25 +370,26 @@ public class App {
         }
 
         /*
-         * - Takes the version of the file as it exists in the head commit and puts it in the working directory, overwriting the version of the file that’s already there if there is one. [DONE]
+         *  - Takes the version of the file as it exists in the head commit and puts it in the working directory,
+         *      overwriting the version of the file that’s already there if there is one. [DONE]
          *
-         * - The new version of the file is not staged. [DONE]
+         *  - The new version of the file is not staged. [DONE]
          *
-         * - If the file does not exist in the previous commit, abort, printing the error message File does not exist in that commit. Do not change the CWD. [DONE]
+         *  - If the file does not exist in the previous commit, abort, printing
+         *      the error message File does not exist in that commit. Do not change the CWD. [DONE]
          * */
 
         // Checkout file
         if (args.length == 3 && args[1].equals("--")) {
-            String fileName = args[2];
+            String file = args[2];
+            TreeMap<String, Blob> blobs = Repository.getLastCommitBlobs();
 
-            Blob blob = Repository.getBlob(fileName, HEAD.getHash());
-            if (blob == null) {
+            if (!blobs.containsKey(file)) {
                 Utils.exit("File does not exist in that commit.");
             }
 
-            // Start restoring the file
-            Path fileFullPath = Path.of(WorkingArea.WD, fileName);
-            Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
+            WorkingArea workingArea = new WorkingArea();
+            workingArea.addBlob(blobs.get(file));
         }
 
         /*
