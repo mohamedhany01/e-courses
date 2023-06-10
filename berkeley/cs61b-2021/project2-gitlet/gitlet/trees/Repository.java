@@ -39,13 +39,13 @@ public class Repository {
             return null;
         }
 
+        if (!Repository.objectExists(hash)) {
+            return null;
+        }
+
         String[] path = Utils.splitHash(hash, 2);
         String directory = path[0];
         String object = path[1];
-
-        if (!Repository.objectExists(directory, object)) {
-            return null;
-        }
 
         return Utils.readObject(new File(Path.of(Repository.getObjectPath(directory).toString(), object).toString()), type);
     }
@@ -124,7 +124,7 @@ public class Repository {
         Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
         for (Object blobHash : commitTree.getBlobs()) {
             Blob blob = Repository.getObject((String) blobHash, Blob.class);
-            if (blob.getHash().equals(file)) {
+            if (blob.getFileName().equals(file)) {
                 return blob;
             }
         }
@@ -223,8 +223,12 @@ public class Repository {
         return Files.exists(getObjectPath(directory));
     }
 
-    public static boolean objectExists(String directory, String hash) {
-        String filePath = Path.of(getObjectPath(directory).toString(), hash).toString();
+    public static boolean objectExists(String hash) {
+        String[] path = Utils.splitHash(hash, 2);
+        String directory = path[0];
+        String object = path[1];
+
+        String filePath = Path.of(getObjectPath(directory).toString(), object).toString();
         return Files.exists(Path.of(filePath));
     }
 

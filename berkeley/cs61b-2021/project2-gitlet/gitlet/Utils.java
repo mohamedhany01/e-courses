@@ -314,6 +314,7 @@ public class Utils {
 
             if (i == number) {
                 builder.append("_");
+                builder.append(str.charAt(i));
             }
 
             if (i > number) {

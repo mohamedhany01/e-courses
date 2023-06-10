@@ -352,8 +352,8 @@ public class App {
          *
          * -  If a working file is untracked in the current branch and would be overwritten by the checkout, print There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. Do not change the CWD. [DONE]
          * */
-
         // Checkout branch
+        // DONE
         if (args.length == 2) {
 
             String branch = args[1];
@@ -378,8 +378,8 @@ public class App {
          *  - If the file does not exist in the previous commit, abort, printing
          *      the error message File does not exist in that commit. Do not change the CWD. [DONE]
          * */
-
         // Checkout file
+        // DONE
         if (args.length == 3 && args[1].equals("--")) {
             String file = args[2];
             TreeMap<String, Blob> blobs = Repository.getLastCommitBlobs();
@@ -393,32 +393,37 @@ public class App {
         }
 
         /*
-         * - Takes the version of the file as it exists in the commit with the given id, and puts it in the working directory, overwriting the version of the file that’s already there if there is one. [DONE]
+         *  - Takes the version of the file as it exists in the commit with the given id,
+         *      and puts it in the working directory, overwriting the version of the file
+         *      that’s already there if there is one. [DONE]
          *
-         * - The new version of the file is not staged. [DONE]
+         *  - The new version of the file is not staged.
+         *      (Which means the file will show in "status" modified) [DONE]
          *
-         * - if the file does not exist in the given commit, print File does not exist in that commit. Do not change the CWD.[DONE]
+         *  - If the file does not exist in the given commit,
+         *      print File does not exist in that commit. Do not change the CWD.[DONE]
          * */
-
         // Checkout commit hash and file
+        // DONE
         if (args.length == 4 && args[2].equals("--")) {
-            String commitHash = args[1];
-            String fileName = args[3];
+            String hash = args[1];
+            String file = args[3];
 
-            if (!Repository.directoryExists(commitHash)) {
+            if (!Repository.objectExists(hash)) {
                 Utils.exit("No commit with that id exists.");
             }
 
-            Blob blob = Repository.getBlob(fileName, commitHash);
+            Blob blob = Repository.getBlob(file, hash);
             if (blob == null) {
                 Utils.exit("File does not exist in that commit.");
             }
 
-            // Start restoring the file
-            Path fileFullPath = Path.of(WorkingArea.WD, fileName);
-            Utils.writeContents(fileFullPath.toFile(), blob.getFileContent());
-//            stagingArea.stagManually(fileName, blob.getHash()); TODO: should I active this or not? because this command shouldn't update the staging area
-            Branch.update(HEAD.getName(), commitHash);
+            TreeMap<String, Blob> blobs = Repository.getBlobs(hash);
+
+            WorkingArea workingArea = new WorkingArea();
+            workingArea.addBlob(blobs.get(file));
+
+            Branch.update(HEAD.getName(), hash);
         }
     }
 
