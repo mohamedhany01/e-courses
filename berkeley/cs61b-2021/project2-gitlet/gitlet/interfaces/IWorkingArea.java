@@ -1,5 +1,9 @@
 package gitlet.interfaces;
 
+import gitlet.objects.Blob;
+
+import java.util.TreeMap;
+
 public interface IWorkingArea {
     String getFileHash(String targetFile);
 
@@ -8,4 +12,6 @@ public interface IWorkingArea {
     void clear();
 
     boolean hasUntrackedFile(IStagingArea stagingArea);
+
+    void addBlobs(TreeMap<String, Blob> blobs);
 }

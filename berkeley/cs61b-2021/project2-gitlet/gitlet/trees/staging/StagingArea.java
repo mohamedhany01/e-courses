@@ -134,6 +134,11 @@ public class StagingArea implements IGLStagingArea, Serializable {
     }
 
     @Override
+    public void updatedEntryStatus(String file, StagingEntry entry) {
+        additions.put(file, entry);
+    }
+
+    @Override
     public TreeMap<String, IGLStagingEntry> getAdditions() {
         return additions;
     }

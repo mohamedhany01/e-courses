@@ -3,17 +3,22 @@ package gitlet.trees;
 import gitlet.Utils;
 import gitlet.interfaces.IStagingArea;
 import gitlet.interfaces.IWorkingArea;
+import gitlet.objects.Blob;
+import gitlet.trees.staging.StagingArea;
+import gitlet.trees.staging.StagingEntry;
+import gitlet.trees.staging.Status;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class WorkingArea implements IWorkingArea {
-    public final static String WD = Path.of(System.getProperty("user.dir")).toString();
+    //    public final static String WD = Path.of(System.getProperty("user.dir")).toString();
+    public final static String WD = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
     private final static List<String> excludedFiles = new ArrayList<>() {
         {
             add(".gitlet");
@@ -94,5 +99,25 @@ public class WorkingArea implements IWorkingArea {
             }
         }
         return false;
+    }
+
+    @Override
+    public void addBlobs(TreeMap<String, Blob> blobs) {
+        StagingArea stagingArea = new StagingArea();
+
+        stagingArea.clearAdditions();
+
+        for (Map.Entry<String, Blob> blobEntry : blobs.entrySet()) {
+            Blob blob = blobEntry.getValue();
+
+            Utils.writeContents(new File(getPath(blob.getFileName()).toString()), blob.getFileContent());
+
+            StagingEntry entry = new StagingEntry(blob.getHash());
+            entry.setStatus(Status.COMMITTED);
+
+            stagingArea.updatedEntryStatus(blob.getFileName(), entry);
+        }
+
+        stagingArea.saveChanges();
     }
 }

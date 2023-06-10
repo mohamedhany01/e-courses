@@ -34,7 +34,7 @@ public class Branch {
         Branch.create(HEAD.getName(), commitHash);
     }
 
-    public static String getBranchHash(String name) {
+    public static String getHash(String name) {
         if (exists(name)) {
             return Utils.readContentsAsString(new File(Repository.getBranchesPath(name).toString()));
         }

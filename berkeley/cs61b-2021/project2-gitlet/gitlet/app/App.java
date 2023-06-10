@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 public class App {
@@ -327,63 +326,14 @@ public class App {
         }
     }
 
-    /* branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#branch
-     *
-     * - Creates a new branch with the given name, and points it at the current head commit. [DONE]
-     *
-     * - A branch is nothing more than a name for a reference (a SHA-1 identifier) to a commit node. [DONE]
-     *
-     * - This command does NOT immediately switch to the newly created branch (just as in real Git). [DONE]
-     *
-     * - Before you ever call branch, your code should be running with a default branch called “master”. [DONE]
-     *
-     * - Failure cases: If a branch with the given name already exists, print the error message A branch with that name already exists. [DONE]
-     * */
-    public static void branch(String[] args) {
-        String branchName = args[1];
-
-        Path branches = Path.of(Repository.BRANCHES);
-
-        if (!Files.exists(branches)) {
-            Utils.exit("");
-        }
-
-        if (Files.exists(Path.of(branches.toString(), branchName))) {
-            Utils.exit("A branch with that name already exists.");
-        }
-
-        Branch.create(branchName, HEAD.getHash());
-    }
-
-    /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
-     *
-     * - Deletes the branch with the given name. [DONE]
-     *
-     * - This only means to delete the pointer associated with the branch; it does not mean to delete all commits that were created under the branch, or anything like that. [DONE]
-     *
-     * - If a branch with the given name does not exist, aborts. Print the error message A branch with that name does not exist. [DONE]
-     *
-     * - If you try to remove the branch you’re currently on, aborts, printing the error message Cannot remove the current branch. [DONE]
-     * */
-    public static void removeBranch(String[] args) {
-        String branchName = args[1];
-
-        if (!Branch.exists(branchName)) {
-            Utils.exit("A branch with that name does not exist.");
-        }
-
-        if (HEAD.isPoint(branchName)) {
-            Utils.exit("Cannot remove the current branch.");
-        }
-
-        Branch.remove(branchName);
-    }
-
     /* checkout: https://sp21.datastructur.es/materials/proj/proj2/proj2#checkout
      *
-     * - However, that you poke around in a .git directory (specifically, .git/objects) and see how it manages to speed up its search. You will perhaps recognize a familiar data structure implemented with the file system rather than pointers. TODO
+     *  - However, that you poke around in a .git directory (specifically, .git/objects) and see how
+     *      it manages to speed up its search. You will perhaps recognize a familiar data structure
+     *      implemented with the file system rather than pointers. TODO
      *
-     * - Only version 3 (checkout of a full branch) modifies the staging area: otherwise files scheduled for addition or removal remain so. TODO
+     *  - Only version 3 (checkout of a full branch) modifies the staging area:
+     *      otherwise files scheduled for addition or removal remain so. [DONE]
      * */
     public static void checkout(String[] args) {
         /*
@@ -405,38 +355,17 @@ public class App {
         // Checkout branch
         if (args.length == 2) {
 
-            String branchName = args[1];
+            String branch = args[1];
 
-            if (!Branch.exists(branchName)) {
+            if (!Branch.exists(branch)) {
                 Utils.exit("No such branch exists.");
             }
 
-            if (HEAD.isPoint(branchName)) {
+            if (HEAD.isPoint(branch)) {
                 Utils.exit("No need to checkout the current branch.");
             }
 
-            List<Object> blobs = Repository.getBlobs(Branch.getBranchHash(branchName));
-            WorkingArea workingArea = new WorkingArea();
-            StagingArea stagingArea = new StagingArea();
-
-
-            if (stagingArea.haveUntrackedFiles()) {
-                Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
-            }
-
-            workingArea.clear();
-
-            for (Object rowBlob : blobs) {
-                String blobHash = (String) rowBlob;
-                Blob blob = Repository.getObject(blobHash, Blob.class);
-                Path file = Path.of(WorkingArea.WD, blob.getFileName());
-
-                Utils.writeContents(file.toFile(), blob.getFileContent());
-
-                stagingArea.stageForAddition(blob);
-            }
-
-            HEAD.move(branchName);
+            Repository.switchTo(branch);
         }
 
         /*
@@ -491,6 +420,58 @@ public class App {
         }
     }
 
+    /* branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#branch
+     *
+     * - Creates a new branch with the given name, and points it at the current head commit. [DONE]
+     *
+     * - A branch is nothing more than a name for a reference (a SHA-1 identifier) to a commit node. [DONE]
+     *
+     * - This command does NOT immediately switch to the newly created branch (just as in real Git). [DONE]
+     *
+     * - Before you ever call branch, your code should be running with a default branch called “master”. [DONE]
+     *
+     * - Failure cases: If a branch with the given name already exists, print the error message A branch with that name already exists. [DONE]
+     * */
+    public static void branch(String[] args) {
+        String branchName = args[1];
+
+        Path branches = Path.of(Repository.BRANCHES);
+
+        if (!Files.exists(branches)) {
+            Utils.exit("");
+        }
+
+        if (Files.exists(Path.of(branches.toString(), branchName))) {
+            Utils.exit("A branch with that name already exists.");
+        }
+
+        Branch.create(branchName, HEAD.getHash());
+    }
+
+    /* rm-branch: https://sp21.datastructur.es/materials/proj/proj2/proj2#rm-branch
+     *
+     * - Deletes the branch with the given name. [DONE]
+     *
+     * - This only means to delete the pointer associated with the branch; it does not mean to delete all commits that were created under the branch, or anything like that. [DONE]
+     *
+     * - If a branch with the given name does not exist, aborts. Print the error message A branch with that name does not exist. [DONE]
+     *
+     * - If you try to remove the branch you’re currently on, aborts, printing the error message Cannot remove the current branch. [DONE]
+     * */
+    public static void removeBranch(String[] args) {
+        String branchName = args[1];
+
+        if (!Branch.exists(branchName)) {
+            Utils.exit("A branch with that name does not exist.");
+        }
+
+        if (HEAD.isPoint(branchName)) {
+            Utils.exit("Cannot remove the current branch.");
+        }
+
+        Branch.remove(branchName);
+    }
+
     /* reset: https://sp21.datastructur.es/materials/proj/proj2/proj2#reset
      *
      * - Checks out all the files tracked by the given commit. Removes tracked files that are not present in that commit. [DONE]
@@ -520,13 +501,9 @@ public class App {
 
         workingArea.clear();
 
-        List<Object> blobs = Repository.getBlobs(hash);
-        for (Object rowBlob : blobs) {
-            Blob blob = Repository.getObject((String) rowBlob, Blob.class);
-
-            Utils.writeContents(new File(WorkingArea.getPath(blob.getFileName()).toString()), blob.getFileContent());
-
-            stagingArea.stageForAddition(blob);
+        for (Map.Entry<String, Blob> entry : Repository.getBlobs(hash).entrySet()) {
+            Utils.writeContents(new File(WorkingArea.getPath(entry.getKey()).toString()), entry.getValue().getFileContent());
+            stagingArea.stageForAddition(entry.getValue());
         }
 
         Branch.update(HEAD.getName(), hash);

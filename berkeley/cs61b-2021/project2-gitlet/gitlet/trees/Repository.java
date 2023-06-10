@@ -23,7 +23,11 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class Repository {
-    public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
+
+    public final static String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+    public final static String GITLET = Path.of(TEMP_TESTING, ".gitlet").toString();
+
+    //    public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
     public final static String INDEX = Path.of(GITLET, "index").toString();
     public final static String OBJECTS = Path.of(GITLET, "objects").toString();
     public final static String HEAD_POINTER = Path.of(GITLET, "HEAD").toString();
@@ -60,6 +64,32 @@ public class Repository {
 
     public static Path getIndexPath(String file) {
         return Path.of(Repository.INDEX, file);
+    }
+
+    public static void switchTo(String branch) {
+        WorkingArea workingArea = new WorkingArea();
+        StagingArea stagingArea = new StagingArea();
+
+        String hash = Branch.getHash(branch);
+        TreeMap<String, Blob> blobs = getBlobs(hash);
+
+        // Prevent overwriting untracked file that is in the branch that will be switched to
+        for (String file : WorkingArea.getWorkingFiles()) {
+
+            // The file should be untracked and exits in the working area
+            if (!stagingArea.isTracked(file) && blobs.containsKey(file)) {
+                Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
+            }
+        }
+
+        workingArea.clear();
+
+        workingArea.addBlobs(blobs);
+
+        HEAD.move(branch);
+    }
+
+    public static void switchTo(String hash, String file) {
     }
 
     public static void initialize() {
@@ -101,10 +131,18 @@ public class Repository {
         return null;
     }
 
-    public static List<Object> getBlobs(String hash) {
+    public static TreeMap<String, Blob> getBlobs(String hash) {
+        TreeMap<String, Blob> blobs = new TreeMap<>();
+
         Commit commit = Repository.getObject(hash, Commit.class);
         Tree commitTree = Repository.getObject(commit.getTree(), Tree.class);
-        return commitTree.getBlobs();
+
+        for (Object blobHash : commitTree.getBlobs()) {
+            Blob blob = Repository.getObject((String) blobHash, Blob.class);
+            blobs.put(blob.getFileName(), blob);
+        }
+
+        return blobs;
     }
 
     public static void commit(IBlob blob, ITree tree, ICommit commit) {
@@ -150,6 +188,11 @@ public class Repository {
 
     private static void initializeCorePaths() {
         try {
+            Files.createDirectory(Path.of(Repository.TEMP_TESTING));
+            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "foo.txt").toString()), "foo");
+            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "bar.txt").toString()), "bar");
+            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "buz.txt").toString()), "buz");
+
             Files.createDirectory(
                     Path.of(Repository.GITLET)
             );

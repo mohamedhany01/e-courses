@@ -1,5 +1,6 @@
 package gitlet.interfaces;
 
+import gitlet.trees.staging.StagingEntry;
 import gitlet.trees.staging.Status;
 
 import java.util.Map;
@@ -20,6 +21,8 @@ public interface IGLStagingArea {
     void commitStagedFiles(String message);
 
     void updatedEntryStatus(String file, Status status);
+
+    void updatedEntryStatus(String file, StagingEntry entry);
 
     TreeMap<String, IGLStagingEntry> getAdditions();
 
