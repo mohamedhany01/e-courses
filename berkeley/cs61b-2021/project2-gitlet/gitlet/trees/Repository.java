@@ -66,11 +66,10 @@ public class Repository {
         return Path.of(Repository.INDEX, file);
     }
 
-    public static void switchTo(String branch) {
+    public static void switchTo(String hash) {
         WorkingArea workingArea = new WorkingArea();
         StagingArea stagingArea = new StagingArea();
 
-        String hash = Branch.getHash(branch);
         TreeMap<String, Blob> blobs = getBlobs(hash);
 
         // Prevent overwriting untracked file that is in the branch that will be switched to
@@ -85,8 +84,6 @@ public class Repository {
         workingArea.clear();
 
         workingArea.addBlobs(blobs);
-
-        HEAD.move(branch);
     }
 
     public static void switchTo(String hash, String file) {

@@ -366,7 +366,9 @@ public class App {
                 Utils.exit("No need to checkout the current branch.");
             }
 
-            Repository.switchTo(branch);
+            Repository.switchTo(Branch.getHash(branch));
+
+            HEAD.move(branch);
         }
 
         /*
@@ -486,37 +488,32 @@ public class App {
 
     /* reset: https://sp21.datastructur.es/materials/proj/proj2/proj2#reset
      *
-     * - Checks out all the files tracked by the given commit. Removes tracked files that are not present in that commit. [DONE]
+     *  - Checks out all the files tracked by the given commit.
+     *      Removes tracked files that are not present in that commit. [DONE]
      *
-     * - Also moves the current branch’s head to that commit node. See the intro for an example of what happens to the head pointer after using reset. [DONE]
+     *  - Also moves the current branch’s head to that commit node.
+     *      See the intro for an example of what happens to the head pointer after using reset. [DONE]
      *
-     * -  The [commit id] may be abbreviated as for checkout. TODO
+     *  - The [commit id] may be abbreviated as for checkout. TODO
      *
-     * - The staging area is cleared. [DONE]
+     *  - The staging area is cleared. [DONE]
      *
-     * -  If no commit with the given id exists, print No commit with that id exists. [DONE]
+     *  - If no commit with the given id exists,
+     *      print No commit with that id exists. [DONE]
      *
-     * -  If a working file is untracked in the current branch and would be overwritten by the reset, print `There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. [DONE]
+     *  - If a working file is untracked in the current branch and would be overwritten by the reset,
+     *      print `There is an untracked file in the way; delete it, or add and commit it first.
+     *      and exit; perform this check before doing anything else. [DONE]
      * */
     public static void reset(String[] args) {
-        WorkingArea workingArea = new WorkingArea();
-        StagingArea stagingArea = new StagingArea();
 
         String hash = args[1];
-        if (!Repository.directoryExists(hash)) {
+
+        if (!Repository.objectExists(hash)) {
             Utils.exit("No commit with that id exists.");
         }
 
-        if (stagingArea.haveUntrackedFiles()) {
-            Utils.exit("There is an untracked file in the way; delete it, or add and commit it first.");
-        }
-
-        workingArea.clear();
-
-        for (Map.Entry<String, Blob> entry : Repository.getBlobs(hash).entrySet()) {
-            Utils.writeContents(new File(WorkingArea.getPath(entry.getKey()).toString()), entry.getValue().getFileContent());
-            stagingArea.stageForAddition(entry.getValue());
-        }
+        Repository.switchTo(hash);
 
         Branch.update(HEAD.getName(), hash);
     }
