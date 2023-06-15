@@ -125,4 +125,9 @@ public class WorkingArea implements IWorkingArea {
     public void addBlob(Blob blob) {
         Utils.writeContents(new File(getPath(blob.getFileName()).toString()), blob.getFileContent());
     }
+
+    @Override
+    public void addBlob(Blob blob, String content) {
+        Utils.writeContents(new File(getPath(blob.getFileName()).toString()), content);
+    }
 }

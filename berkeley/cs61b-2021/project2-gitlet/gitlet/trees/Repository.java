@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class Repository {
@@ -231,5 +232,127 @@ public class Repository {
 
     public static TreeMap<String, Blob> getLastCommitBlobs() {
         return getBlobs(HEAD.getHash());
+    }
+
+    public static void merge(String other) {
+//        String c = HEAD.getHash(),o = Branch.getHash(other);
+        Commit currentCommit = getObject(HEAD.getHash(), Commit.class);
+        Commit otherCommit = getObject(Branch.getHash(other), Commit.class);
+
+        String LCA = Utils.findLCA(currentCommit, otherCommit);
+
+        String givenBranch = Branch.getHash(other);
+
+        // If the split point is the same commit as the given branch
+        if (LCA.equals(givenBranch)) {
+
+            Utils.exit("Given branch is an ancestor of the current branch.");
+        }
+
+        String currentBranch = Branch.getHash(HEAD.getName());
+
+        // If the split point is the current branch
+        if (currentBranch.equals(LCA)) {
+
+            // fast-forward the current branch to point on given branch
+            Repository.switchTo(givenBranch);
+            Branch.update(HEAD.getName(), givenBranch);
+
+            Utils.exit("Current branch fast-forwarded.");
+        }
+
+        // Files in all commits (parent, head, and other)
+        TreeMap<String, String> files = new TreeMap<>();
+        TreeMap<String, Blob> parentBlobs = Repository.getBlobs(LCA);
+        TreeMap<String, Blob> currentBlobs = Repository.getBlobs(currentBranch);
+        TreeMap<String, Blob> givenBlobs = Repository.getBlobs(givenBranch);
+
+        for (Map.Entry<String, Blob> parentEntry : parentBlobs.entrySet()) {
+            files.put(parentEntry.getKey(), parentEntry.getKey());
+        }
+
+        for (Map.Entry<String, Blob> currentEntry : currentBlobs.entrySet()) {
+            files.put(currentEntry.getKey(), currentEntry.getKey());
+        }
+
+        for (Map.Entry<String, Blob> givenEntry : givenBlobs.entrySet()) {
+            files.put(givenEntry.getKey(), givenEntry.getKey());
+        }
+
+        StagingArea stagingArea = new StagingArea();
+        WorkingArea workingArea = new WorkingArea();
+
+        for (Map.Entry<String, String> filesEntry : files.entrySet()) {
+            String fileName = filesEntry.getKey();
+
+            Blob parentBlob = Repository.getBlob(fileName, LCA);
+            Blob currentBlob = Repository.getBlob(fileName, currentBranch);
+            Blob givenBlob = Repository.getBlob(fileName, givenBranch);
+
+            // Parent -> A AND Current -> A AND Given -> !A = Given (!A) "STAGING for ADDITION"
+            if (
+                    parentBlob != null &&
+                    currentBlob != null &&
+                    givenBlob != null &&
+                    parentBlob.getHash().equals(currentBlob.getHash()) &&
+                            !parentBlob.getHash().equals(givenBlob.getHash())
+            ) {
+                System.out.println("CASE 1");
+                workingArea.addBlob(givenBlob);
+                stagingArea.stageForAddition(givenBlob);
+            }
+            // Parent -> B AND Current -> !B AND Given -> B = Current (!B) "No STAGING & DELETION"
+//            else if (parentBlob != null && currentBlob != null && givenBlob != null && !parentBlob.getHash().equals(currentBlob.getHash()) && parentBlob.getHash().equals(givenBlob.getHash())) {
+//                System.out.println("CASE 2 - Nothing");
+////                workingArea.addBlob(currentBlob);
+////                tree.addBlob(currentBlob.getHash());
+//            }
+            // Parent -> C AND Current -> Null AND Given -> Null = (Current | Given) Null "STAGING for DELETION"
+            else if (parentBlob != null && currentBlob == null && givenBlob == null) {
+                System.out.println("CASE 3.1");
+                stagingArea.stageForRemoval(parentBlob.getFileName());
+                WorkingArea.remove(parentBlob.getFileName());
+                stagingArea.deleteAdditionsEntry(parentBlob.getFileName());
+            }
+            // Parent -> D AND Current -> D AND Given -> Null = "STAGING for DELETION"
+            else if (parentBlob != null && currentBlob != null && parentBlob.getHash().equals(currentBlob.getHash()) && givenBlob == null) {
+                System.out.println("CASE 6");
+                // Or stagingArea.stageForRemoval(currentBlob.getFileName());
+                stagingArea.stageForRemoval(parentBlob.getFileName());
+                WorkingArea.remove(parentBlob.getFileName());
+                stagingArea.deleteAdditionsEntry(parentBlob.getFileName());
+            }
+            // Parent -> E AND Current -> Null AND Given -> E = Nothing like B
+            else if (parentBlob != null && givenBlob != null && parentBlob.getHash().equals(givenBlob.getHash()) && currentBlob == null) {
+                System.out.println("CASE 7");
+                WorkingArea.remove(parentBlob.getFileName());
+            }
+            // Parent -> Null AND Current -> Null AND Given -> F|!F = "STAGING for ADDITION" F|!F
+            else if (parentBlob == null && currentBlob == null && givenBlob != null) {
+                System.out.println("CASE 5");
+                workingArea.addBlob(givenBlob);
+                stagingArea.stageForAddition(givenBlob);
+            }
+            // Parent -> Null AND Current -> G AND Given -> Null = G
+            else if (parentBlob == null && currentBlob != null && givenBlob == null) {
+                System.out.println("CASE 4");
+//                stagingArea.stageForAddition(currentBlob);
+//                tree.addBlob(currentBlob.getHash());
+            } else {
+//                System.out.println(new String(parentBlob.getFileContent()) + " < == > " + new String(currentBlob.getFileContent()) + " < == > " + new String(givenBlob.getFileContent()));
+                System.out.println("CASE 3.2 CONFLICT" + fileName);
+                String conflictData = "<<<<<<< " + "HEAD" + "\n" +
+                        new String(currentBlob.getFileContent())
+                        + "\n" + "=======" + "\n" +
+                        new String(givenBlob.getFileContent())
+                        + "\n" +
+                        ">>>>>>> " + other;
+
+                workingArea.addBlob(currentBlob, conflictData);
+//                Utils.exit("CONFLICT FOUND");
+            }
+        }
+
+        stagingArea.commitStagedFiles("MERGED " + currentBranch + " " + givenBranch);
     }
 }

@@ -517,4 +517,35 @@ public class App {
 
         Branch.update(HEAD.getName(), hash);
     }
+
+    /* merge: https://sp21.datastructur.es/materials/proj/proj2/proj2#merge
+     *
+     *  - If the split point is the same commit as the given branch, then we do nothing; the merge is complete,
+     *      and the operation ends with the message Given branch is an ancestor of the current branch. TODO
+     *
+     *  - If the split point is the current branch, then the effect is to check out the given branch,
+     *      and the operation ends after printing the message Current branch fast-forwarded. [DONE]
+     *
+     *  -
+     *
+     *  - If a branch with the given name does not exist, print the error
+     *      message A branch with that name does not exist. [DONE]
+     *
+     *  - If attempting to merge a branch with itself,
+     *      print the error message Cannot merge a branch with itself. [DONE]
+     *
+     * */
+    public static void merge(String[] args) {
+        String other = args[1];
+
+        if (!Branch.exists(other)) {
+            Utils.exit("A branch with that name does not exist.");
+        }
+
+        if (other.equals(HEAD.getName())) {
+            Utils.exit("Cannot merge a branch with itself.");
+        }
+
+        Repository.merge(other);
+    }
 }

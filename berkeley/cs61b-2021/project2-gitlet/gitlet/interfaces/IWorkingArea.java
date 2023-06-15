@@ -16,4 +16,6 @@ public interface IWorkingArea {
     void addBlobs(TreeMap<String, Blob> blobs);
 
     void addBlob(Blob blob);
+
+    void addBlob(Blob blob, String content);
 }

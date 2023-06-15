@@ -57,6 +57,8 @@ public class Main {
             case "reset":
                 App.reset(args);
                 break;
+            case "merge":
+                App.merge(args);
         }
     }
 }

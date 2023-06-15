@@ -1,6 +1,7 @@
 package gitlet;
 
 import gitlet.objects.Commit;
+import gitlet.trees.Repository;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,9 +13,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -330,5 +329,43 @@ public class Utils {
 
     public static boolean isCommit(Serializable object) {
         return object instanceof Commit;
+    }
+
+    public static String findLCA(Commit currant, Commit other) {
+        LinkedHashMap<String, Commit> currentCommits = new LinkedHashMap<>();
+        LinkedHashMap<String, Commit> otherCommits = new LinkedHashMap<>();
+
+        currentCommits.put(currant.getHash(), currant);
+        otherCommits.put(other.getHash(), other);
+
+
+        Commit nextCurrent = currant;
+        while (nextCurrent.getParent() != null) {
+            nextCurrent = Repository.getObject(nextCurrent.getParent(), Commit.class);
+            currentCommits.put(nextCurrent.getHash(), nextCurrent);
+        }
+
+        Commit nextOther = other;
+        while (nextOther.getParent() != null) {
+            nextOther = Repository.getObject(nextOther.getParent(), Commit.class);
+            otherCommits.put(nextOther.getHash(), nextOther);
+        }
+
+        String target = null;
+        for (Map.Entry<String, Commit> entry : currentCommits.entrySet()) {
+            String aCurrent = entry.getKey();
+            if (otherCommits.containsKey(aCurrent)) {
+                target = entry.getKey();
+                return target;
+            }
+        }
+
+        // DEBUG
+//        Blob blob = Repository.getObject((String) Repository.getObject(target.getTree(), Tree.class).getBlobs().get(0), Blob.class);
+//
+//        System.out.println(new String(blob.getFileContent()));
+
+
+        return null;
     }
 }
