@@ -183,17 +183,22 @@ public class App {
 
     /* log: https://sp21.datastructur.es/materials/proj/proj2/proj2#log
      *
-     *  - Starting at the current head commit, display information about each commit backwards along the commit tree until the initial commit, following the first parent commit links. [DONE]
+     *  - Starting at the current head commit, display information about each commit backwards along
+     *      the commit tree until the initial commit, following the first parent commit links. [DONE]
      *
-     *  - Ignoring any second parents found in merge commits. TODO
+     *  - Ignoring any second parents found in merge commits. [DONE]
      *
-     *  - For every node in this history, the information it should display is the commit id, the time the commit was made, and the commit message. [DONE]
+     *  - For every node in this history, the information it should display is the commit id,
+     *      the time the commit was made, and the commit message. [DONE]
      *
      *  - There is a === before each commit and an empty line after it [DONE]
      *
-     *  - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result, the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00, but rather the equivalent Pacific Standard Time. Your timezone might be different depending on where you live, and that’s fine. [DONE]
+     *  - The timestamps displayed in the commits reflect the current timezone, not UTC; as a result,
+     *      the timestamp for the initial commit does not read Thursday, January 1st, 1970, 00:00:00,
+     *      but rather the equivalent Pacific Standard Time. Your timezone might be different
+     *      depending on where you live, and that’s fine. [DONE]
      *
-     *  - Merge field. TODO
+     *  - Merge field. [DONE]
      * */
     public static void log() {
         Commit commit = Repository.getObject(HEAD.getHash(), Commit.class);
@@ -214,7 +219,7 @@ public class App {
      *
      *   - Like log, except displays information about all commits ever made. The order of the commits does not matter. [DONE]
      *   - There is a useful method in gitlet.Utils that will help you iterate over files within a directory. [DONE]
-     *   - Merge field. TODO
+     *   - Merge field. [DONE]
      * */
     public static void globalLog() {
         for (Path path : AppUtils.listDirectoriesOfDirectory(Path.of(Repository.OBJECTS))) {
@@ -406,6 +411,8 @@ public class App {
          *
          *  - If the file does not exist in the given commit,
          *      print File does not exist in that commit. Do not change the CWD.[DONE]
+         *
+         * - Shorthand support TODO
          * */
         // Checkout commit hash and file
         // DONE
@@ -441,7 +448,8 @@ public class App {
      *
      * - Before you ever call branch, your code should be running with a default branch called “master”. [DONE]
      *
-     * - Failure cases: If a branch with the given name already exists, print the error message A branch with that name already exists. [DONE]
+     * - Failure cases: If a branch with the given name already exists,
+     *      print the error message A branch with that name already exists. [DONE]
      * */
     public static void branch(String branchName) {
 
@@ -495,7 +503,7 @@ public class App {
      *  - Also moves the current branch’s head to that commit node.
      *      See the intro for an example of what happens to the head pointer after using reset. [DONE]
      *
-     *  - The [commit id] may be abbreviated as for checkout. TODO
+     *  - The [commit id] may be abbreviated as for checkout/hash shorthand. TODO
      *
      *  - The staging area is cleared. [DONE]
      *
@@ -522,7 +530,7 @@ public class App {
     /* merge: https://sp21.datastructur.es/materials/proj/proj2/proj2#merge
      *
      *  - If the split point is the same commit as the given branch, then we do nothing; the merge is complete,
-     *      and the operation ends with the message Given branch is an ancestor of the current branch. TODO
+     *      and the operation ends with the message Given branch is an ancestor of the current branch. [DONE]
      *
      *  - If the split point is the current branch, then the effect is to check out the given branch,
      *      and the operation ends after printing the message Current branch fast-forwarded. [DONE]
@@ -534,6 +542,8 @@ public class App {
      *
      *  - If attempting to merge a branch with itself,
      *      print the error message Cannot merge a branch with itself. [DONE]
+     *
+     * - Enhance LCA algorithm TODO
      *
      * */
     public static void merge(String other) {
