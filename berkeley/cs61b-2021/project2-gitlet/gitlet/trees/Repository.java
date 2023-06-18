@@ -46,7 +46,7 @@ public class Repository {
             return null;
         }
 
-        String[] path = Utils.splitHash(hash, 2);
+        String[] path = Utils.splitHash(hash);
         String directory = path[0];
         String object = path[1];
 
@@ -168,7 +168,7 @@ public class Repository {
     }
 
     public static void storeObject(String hash, Serializable object) {
-        String[] path = Utils.splitHash(hash, 2);
+        String[] path = Utils.splitHash(hash);
         String directory = path[0];
         String file = path[1];
         String directoryFullPath = Repository.getObjectPath(directory).toString();
@@ -224,7 +224,7 @@ public class Repository {
     }
 
     public static boolean objectExists(String hash) {
-        String[] path = Utils.splitHash(hash, 2);
+        String[] path = Utils.splitHash(hash);
         String directory = path[0];
         String object = path[1];
 

@@ -59,8 +59,7 @@ public class App {
      *   - 20 lines
      * */
     //DONE
-    public static void add(String[] args) {
-        String fileName = args[1];
+    public static void add(String fileName) {
 
         if (!WorkingArea.exists(fileName)) {
             Utils.exit("File does not exist.");
@@ -121,14 +120,14 @@ public class App {
      *  - Line count: ~35 [DONE]
      * */
     // DONE
-    public static void commit(String[] args) {
+    public static void commit(String msg) {
         StagingArea stagingArea = new StagingArea();
 
         if (stagingArea.isClean()) {
             Utils.exit("No changes added to the commit.");
         }
 
-        String message = args[1].trim();
+        String message = msg.trim();
 
         if (message.isEmpty()) {
             Utils.exit("Please enter a commit message.");
@@ -149,9 +148,8 @@ public class App {
      *      print the error message No reason to remove the file. [DONE]
      * */
     // DONE
-    public static void rm(String[] args) {
+    public static void rm(String file) {
 
-        String file = args[1];
         StagingArea stagingArea = new StagingArea();
 
         // This file untracked by Gitlet yet
@@ -204,7 +202,11 @@ public class App {
 
             AppUtils.printFormatted(commit);
 
-            commit = Repository.getObject(commit.getParent(), Commit.class);
+            if (commit.getMergeMessage() != null) {
+                commit = Repository.getObject(commit.getMergeFirstParent(), Commit.class);
+            } else {
+                commit = Repository.getObject(commit.getParent(), Commit.class);
+            }
         }
     }
 
@@ -441,8 +443,7 @@ public class App {
      *
      * - Failure cases: If a branch with the given name already exists, print the error message A branch with that name already exists. [DONE]
      * */
-    public static void branch(String[] args) {
-        String branchName = args[1];
+    public static void branch(String branchName) {
 
         Path branches = Path.of(Repository.BRANCHES);
 
@@ -535,8 +536,7 @@ public class App {
      *      print the error message Cannot merge a branch with itself. [DONE]
      *
      * */
-    public static void merge(String[] args) {
-        String other = args[1];
+    public static void merge(String other) {
 
         if (!Branch.exists(other)) {
             Utils.exit("A branch with that name does not exist.");

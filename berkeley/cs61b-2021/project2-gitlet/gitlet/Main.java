@@ -28,10 +28,10 @@ public class Main {
                 App.status();
                 break;
             case "add":
-                App.add(args);
+                App.add(args[1]);
                 break;
             case "commit":
-                App.commit(args);
+                App.commit(args[1]);
                 break;
             case "log":
                 App.log();
@@ -40,7 +40,7 @@ public class Main {
                 App.globalLog();
                 break;
             case "rm":
-                App.rm(args);
+                App.rm(args[1]);
                 break;
             case "find":
                 App.find(args);
@@ -49,7 +49,7 @@ public class Main {
                 App.checkout(args);
                 break;
             case "branch":
-                App.branch(args);
+                App.branch(args[1]);
                 break;
             case "rm-branch":
                 App.removeBranch(args);
@@ -58,7 +58,7 @@ public class Main {
                 App.reset(args);
                 break;
             case "merge":
-                App.merge(args);
+                App.merge(args[1]);
         }
     }
 }

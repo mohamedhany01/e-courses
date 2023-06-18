@@ -59,6 +59,26 @@ public class FakeCommit implements ICommit {
     }
 
     @Override
+    public String getMergeFirstParent() {
+        return null;
+    }
+
+    @Override
+    public void setMergeFirstParent(String firstParent) {
+
+    }
+
+    @Override
+    public String getMergeSecondParent() {
+        return null;
+    }
+
+    @Override
+    public void setMergeSecondParent(String secondParent) {
+
+    }
+
+    @Override
     public String getHash() {
         return "hash";
     }

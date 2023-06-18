@@ -23,6 +23,14 @@ public interface ICommit extends Serializable {
 
     void setParent(String parent);
 
+    String getMergeFirstParent();
+
+    void setMergeFirstParent(String firstParent);
+
+    String getMergeSecondParent();
+
+    void setMergeSecondParent(String secondParent);
+
     String getHash();
 
     void setHash(String hash);

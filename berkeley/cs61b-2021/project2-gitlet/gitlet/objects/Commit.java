@@ -19,7 +19,7 @@ public class Commit implements ICommit, Serializable {
      */
     private String message;
     /**
-     * The message of this Commit.
+     * The merge message of this Commit.
      */
     private String mergeMessage;
     /**
@@ -34,6 +34,14 @@ public class Commit implements ICommit, Serializable {
      * The parent hash of this commit.
      */
     private String parent;
+    /**
+     * The first parent hash of this commit if merged happened.
+     */
+    private String firstParent;
+    /**
+     * The second parent hash of this commit if merged happened.
+     */
+    private String secondParent;
     /**
      * The hash of this commit.
      */
@@ -104,6 +112,26 @@ public class Commit implements ICommit, Serializable {
     @Override
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public String getMergeFirstParent() {
+        return this.firstParent;
+    }
+
+    @Override
+    public void setMergeFirstParent(String firstParent) {
+        this.firstParent = firstParent;
+    }
+
+    @Override
+    public String getMergeSecondParent() {
+        return this.secondParent;
+    }
+
+    @Override
+    public void setMergeSecondParent(String secondParent) {
+        this.secondParent = secondParent;
     }
 
     @Override

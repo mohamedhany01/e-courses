@@ -30,6 +30,7 @@ public class Utils {
      * The length of a complete SHA-1 UID as a hexadecimal numeral.
      */
     static final int UID_LENGTH = 40;
+    static final int HASH_SPLITTER = 7;
 
     /* SHA-1 HASH VALUES. */
     /**
@@ -297,34 +298,34 @@ public class Utils {
         return result;
     }
 
-    private static String buildSpiltableHash(String str, int number) {
-        if (number > str.length()) {
+    private static String buildSpiltableHash(String str) {
+        if (HASH_SPLITTER > str.length()) {
             return str;
         }
-        if (number == 0) {
+        if (HASH_SPLITTER == 0) {
             return str;
         }
 
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            if (i < number) {
+            if (i < HASH_SPLITTER) {
                 builder.append(str.charAt(i));
             }
 
-            if (i == number) {
+            if (i == HASH_SPLITTER) {
                 builder.append("_");
                 builder.append(str.charAt(i));
             }
 
-            if (i > number) {
+            if (i > HASH_SPLITTER) {
                 builder.append(str.charAt(i));
             }
         }
         return builder.toString();
     }
 
-    public static String[] splitHash(String str, int number) {
-        return buildSpiltableHash(str, number).split("_");
+    public static String[] splitHash(String str) {
+        return buildSpiltableHash(str).split("_");
     }
 
     public static boolean isCommit(Serializable object) {
