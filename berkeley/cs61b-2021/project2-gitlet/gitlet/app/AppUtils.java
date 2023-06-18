@@ -11,6 +11,9 @@ public class AppUtils {
     public static void printFormatted(Commit commit) {
         System.out.println("===");
         System.out.println("commit " + commit.getHash());
+        if (commit.getMergeMessage() != null) {
+            System.out.println("Merge: " + commit.getMergeMessage());
+        }
         System.out.println("Date: " + commit.getDate());
         System.out.println(commit.getMessage() + "\n");
     }

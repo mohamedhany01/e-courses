@@ -400,7 +400,7 @@ public class Repository {
                         ">>>>>>> " + other;
 
                 workingArea.addBlob(currentBlob, conflictData);
-                MergeEntry mergeEntry = new MergeEntry(true, givenBranch, currentBranch);
+                MergeEntry mergeEntry = new MergeEntry(givenBranch, currentBranch, HEAD.getName(), other);
 
                 MergeTracker.writeEntry(mergeEntry);
                 Utils.exit("Encountered a merge conflict.");

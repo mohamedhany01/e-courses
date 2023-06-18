@@ -3,25 +3,31 @@ package gitlet;
 import java.io.Serializable;
 
 public class MergeEntry implements Serializable {
-    private boolean hasConflict;
-    private String firstParent;
-    private String secondParent;
+    private String firstParentHash;
+    private String secondParentHash;
+    private String firstParentName;
+    private String secondParentName;
 
-    public MergeEntry(boolean hasConflict, String firstParent, String secondParent) {
-        this.hasConflict = hasConflict;
-        this.firstParent = firstParent;
-        this.secondParent = secondParent;
+    public MergeEntry(String firstParentHash, String secondParentHash, String firstParentName, String secondParentName) {
+        this.firstParentHash = firstParentHash;
+        this.secondParentHash = secondParentHash;
+        this.firstParentName = firstParentName;
+        this.secondParentName = secondParentName;
     }
 
-    public boolean isHasConflict() {
-        return hasConflict;
+    public String getFirstParentHash() {
+        return firstParentHash;
     }
 
-    public String getFirstParent() {
-        return firstParent;
+    public String getSecondParentHash() {
+        return secondParentHash;
     }
 
-    public String getSecondParent() {
-        return secondParent;
+    public String getFirstParentName() {
+        return firstParentName;
+    }
+
+    public String getSecondParentName() {
+        return secondParentName;
     }
 }

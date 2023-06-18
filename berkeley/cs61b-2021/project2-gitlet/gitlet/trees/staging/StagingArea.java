@@ -109,8 +109,9 @@ public class StagingArea implements IGLStagingArea, Serializable {
         }
 
         Commit commit = new Commit();
-        if (mergeEntry != null && mergeEntry.isHasConflict()) {
-            commit.setMessage("Merged " + mergeEntry.getFirstParent() + " into " + mergeEntry.getSecondParent() + " .");
+        if (MergeTracker.hasMergeData()) {
+            commit.setMergeMessage(mergeEntry.getFirstParentHash() + " " + mergeEntry.getSecondParentHash());
+            commit.setMessage("Merged " + mergeEntry.getSecondParentName() + " into " + mergeEntry.getFirstParentName() + ".");
         } else {
             commit.setMessage(message);
         }
