@@ -1,5 +1,7 @@
 package gitlet.trees.staging;
 
+import gitlet.MergeEntry;
+import gitlet.MergeTracker;
 import gitlet.Utils;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.IGLStagingArea;
@@ -82,6 +84,7 @@ public class StagingArea implements IGLStagingArea, Serializable {
 
     @Override
     public void commitStagedFiles(String message) {
+        MergeEntry mergeEntry = MergeTracker.loadEntry();
 
         // Prepare staged files to be committed
         Tree tree = new Tree();
@@ -106,7 +109,11 @@ public class StagingArea implements IGLStagingArea, Serializable {
         }
 
         Commit commit = new Commit();
-        commit.setMessage(message);
+        if (mergeEntry != null && mergeEntry.isHasConflict()) {
+            commit.setMessage("Merged " + mergeEntry.getFirstParent() + " into " + mergeEntry.getSecondParent() + " .");
+        } else {
+            commit.setMessage(message);
+        }
         commit.setDate(Utils.getFormattedDate(LocalDateTime.now()));
         commit.setTree(tree.getHash());
         commit.setParent(HEAD.getHash());
@@ -124,6 +131,8 @@ public class StagingArea implements IGLStagingArea, Serializable {
         clearRemovals();
 
         saveChanges();
+
+        MergeTracker.removeEntry();
     }
 
     @Override

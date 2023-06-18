@@ -19,6 +19,10 @@ public class Commit implements ICommit, Serializable {
      */
     private String message;
     /**
+     * The message of this Commit.
+     */
+    private String mergeMessage;
+    /**
      * When this commit is created.
      */
     private String date;
@@ -38,10 +42,12 @@ public class Commit implements ICommit, Serializable {
     public Commit() {
         this.authorName = "";
         this.authorEmail = "";
+        this.mergeMessage = null;
     }
 
     public static String calculateHash(ICommit commit) {
         String builder = commit.getMessage() +
+                commit.getMergeMessage() +
                 commit.getDate() +
                 commit.getAuthorName() +
                 commit.getAuthorName() +
@@ -108,5 +114,15 @@ public class Commit implements ICommit, Serializable {
     @Override
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    @Override
+    public String getMergeMessage() {
+        return this.mergeMessage;
+    }
+
+    @Override
+    public void setMergeMessage(String mergeMessage) {
+        this.mergeMessage = mergeMessage;
     }
 }

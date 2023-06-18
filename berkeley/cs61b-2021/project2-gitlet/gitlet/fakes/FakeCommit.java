@@ -67,4 +67,14 @@ public class FakeCommit implements ICommit {
     public void setHash(String hash) {
 
     }
+
+    @Override
+    public String getMergeMessage() {
+        return null;
+    }
+
+    @Override
+    public void setMergeMessage(String mergeMessage) {
+
+    }
 }

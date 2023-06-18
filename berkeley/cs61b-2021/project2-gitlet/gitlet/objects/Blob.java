@@ -6,6 +6,7 @@ import gitlet.trees.WorkingArea;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Blob implements IBlob, Serializable {
     private byte[] fileContent;
@@ -40,6 +41,19 @@ public class Blob implements IBlob, Serializable {
         this.fileName = name;
         setFileContent(name);
         setHash();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blob blob = (Blob) o;
+        return Objects.equals(hash, blob.hash) && Objects.equals(fileName, blob.fileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hash, fileName);
     }
 
     private void setHash() {

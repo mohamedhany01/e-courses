@@ -1,5 +1,7 @@
 package gitlet.trees;
 
+import gitlet.MergeEntry;
+import gitlet.MergeTracker;
 import gitlet.Utils;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
@@ -292,9 +294,9 @@ public class Repository {
             // Parent -> A AND Current -> A AND Given -> !A = Given (!A) "STAGING for ADDITION"
             if (
                     parentBlob != null &&
-                    currentBlob != null &&
-                    givenBlob != null &&
-                    parentBlob.getHash().equals(currentBlob.getHash()) &&
+                            currentBlob != null &&
+                            givenBlob != null &&
+                            parentBlob.getHash().equals(currentBlob.getHash()) &&
                             !parentBlob.getHash().equals(givenBlob.getHash())
             ) {
                 System.out.println("CASE 1");
@@ -308,12 +310,29 @@ public class Repository {
 ////                tree.addBlob(currentBlob.getHash());
 //            }
             // Parent -> C AND Current -> Null AND Given -> Null = (Current | Given) Null "STAGING for DELETION"
-            else if (parentBlob != null && currentBlob == null && givenBlob == null) {
-                System.out.println("CASE 3.1");
-                stagingArea.stageForRemoval(parentBlob.getFileName());
-                WorkingArea.remove(parentBlob.getFileName());
-                stagingArea.deleteAdditionsEntry(parentBlob.getFileName());
-            }
+            // Nothing
+//            else if (
+//                    (
+//                            parentBlob != null &&
+//                            currentBlob != null &&
+//                            givenBlob != null &&
+//                            !parentBlob.getHash().equals(currentBlob.getHash()) &&
+//                            !parentBlob.getHash().equals(givenBlob.getHash()) &&
+//                            givenBlob.getHash().equals(currentBlob.getHash())
+//                    )
+//                    ||
+//                    (
+//                            parentBlob != null &&
+//                            currentBlob == null &&
+//                            givenBlob == null &&
+//                            WorkingArea.exists(parentBlob.getFileName())
+//                    )
+//            ) {
+//                System.out.println("CASE 3.1");
+////                stagingArea.stageForRemoval(parentBlob.getFileName());
+////                WorkingArea.remove(parentBlob.getFileName());
+////                stagingArea.deleteAdditionsEntry(parentBlob.getFileName());
+//            }
             // Parent -> D AND Current -> D AND Given -> Null = "STAGING for DELETION"
             else if (parentBlob != null && currentBlob != null && parentBlob.getHash().equals(currentBlob.getHash()) && givenBlob == null) {
                 System.out.println("CASE 6");
@@ -323,10 +342,11 @@ public class Repository {
                 stagingArea.deleteAdditionsEntry(parentBlob.getFileName());
             }
             // Parent -> E AND Current -> Null AND Given -> E = Nothing like B
-            else if (parentBlob != null && givenBlob != null && parentBlob.getHash().equals(givenBlob.getHash()) && currentBlob == null) {
-                System.out.println("CASE 7");
-                WorkingArea.remove(parentBlob.getFileName());
-            }
+            // Nothing
+//            else if (parentBlob != null && givenBlob != null && parentBlob.getHash().equals(givenBlob.getHash()) && currentBlob == null) {
+//                System.out.println("CASE 7");
+//                WorkingArea.remove(parentBlob.getFileName());
+//            }
             // Parent -> Null AND Current -> Null AND Given -> F|!F = "STAGING for ADDITION" F|!F
             else if (parentBlob == null && currentBlob == null && givenBlob != null) {
                 System.out.println("CASE 5");
@@ -334,22 +354,56 @@ public class Repository {
                 stagingArea.stageForAddition(givenBlob);
             }
             // Parent -> Null AND Current -> G AND Given -> Null = G
-            else if (parentBlob == null && currentBlob != null && givenBlob == null) {
-                System.out.println("CASE 4");
-//                stagingArea.stageForAddition(currentBlob);
-//                tree.addBlob(currentBlob.getHash());
-            } else {
-//                System.out.println(new String(parentBlob.getFileContent()) + " < == > " + new String(currentBlob.getFileContent()) + " < == > " + new String(givenBlob.getFileContent()));
+            // Nothing
+//            else if (parentBlob == null && currentBlob != null && givenBlob == null) {
+//                System.out.println("CASE 4");
+////                stagingArea.stageForAddition(currentBlob);
+////                tree.addBlob(currentBlob.getHash());
+//            }
+            else if (
+                    (
+                            parentBlob != null &&
+                                    currentBlob != null && givenBlob != null &&
+                                    !parentBlob.getHash().equals(currentBlob.getHash()) &&
+                                    !parentBlob.getHash().equals(givenBlob.getHash()) &&
+                                    !currentBlob.getHash().equals(givenBlob.getHash())
+                    )
+                            ||
+                            (
+                                    parentBlob != null &&
+                                            currentBlob == null && givenBlob != null &&
+                                            !parentBlob.getHash().equals(givenBlob.getHash())
+                            )
+                            ||
+                            (
+                                    parentBlob != null &&
+                                            currentBlob != null && givenBlob == null &&
+                                            !parentBlob.getHash().equals(currentBlob.getHash())
+                            )
+                            ||
+                            (
+                                    parentBlob == null &&
+                                            currentBlob != null && givenBlob != null &&
+                                            !currentBlob.getHash().equals(givenBlob.getHash())
+                            )
+
+            ) {
+
+                String current = currentBlob == null ? "" : new String(currentBlob.getFileContent());
+                String given = givenBlob == null ? "" : new String(givenBlob.getFileContent());
                 System.out.println("CASE 3.2 CONFLICT" + fileName);
                 String conflictData = "<<<<<<< " + "HEAD" + "\n" +
-                        new String(currentBlob.getFileContent())
+                        current
                         + "\n" + "=======" + "\n" +
-                        new String(givenBlob.getFileContent())
+                        given
                         + "\n" +
                         ">>>>>>> " + other;
 
                 workingArea.addBlob(currentBlob, conflictData);
-//                Utils.exit("CONFLICT FOUND");
+                MergeEntry mergeEntry = new MergeEntry(true, givenBranch, currentBranch);
+
+                MergeTracker.writeEntry(mergeEntry);
+                Utils.exit("Encountered a merge conflict.");
             }
         }
 

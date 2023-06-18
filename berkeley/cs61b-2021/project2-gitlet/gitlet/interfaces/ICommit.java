@@ -26,4 +26,8 @@ public interface ICommit extends Serializable {
     String getHash();
 
     void setHash(String hash);
+
+    String getMergeMessage();
+
+    void setMergeMessage(String mergeMessage);
 }
