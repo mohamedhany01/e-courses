@@ -46,7 +46,7 @@ public class Repository {
             return null;
         }
 
-        String[] path = Utils.splitHash(hash);
+        String[] path = Utils.splitHash(hash, Utils.HASH_TWO);
         String directory = path[0];
         String object = path[1];
 
@@ -168,7 +168,7 @@ public class Repository {
     }
 
     public static void storeObject(String hash, Serializable object) {
-        String[] path = Utils.splitHash(hash);
+        String[] path = Utils.splitHash(hash, Utils.HASH_TWO);
         String directory = path[0];
         String file = path[1];
         String directoryFullPath = Repository.getObjectPath(directory).toString();
@@ -224,7 +224,7 @@ public class Repository {
     }
 
     public static boolean objectExists(String hash) {
-        String[] path = Utils.splitHash(hash);
+        String[] path = Utils.splitHash(hash, Utils.HASH_TWO);
         String directory = path[0];
         String object = path[1];
 
@@ -408,5 +408,38 @@ public class Repository {
         }
 
         stagingArea.commitStagedFiles("MERGED " + currentBranch + " " + givenBranch);
+    }
+
+    public static String getObjectFullHash(String shorthand) {
+        // Safe shorthand length
+        if (shorthand.length() < 4) {
+            return null;
+        }
+
+        String[] splittedHash = Utils.splitHash(shorthand, Utils.HASH_TWO);
+
+        if (splittedHash == null) {
+            return null;
+        }
+
+        String directory = splittedHash[0];
+
+        if (!directoryExists(directory)) {
+            Utils.exit("No commit with that id exists.");
+        }
+
+        List<String> directoryObjects = Utils.plainFilenamesIn(getObjectPath(directory).toString());
+
+        String objectHash = splittedHash[1];
+
+        for (String file : directoryObjects) {
+            String object = Utils.matches(objectHash, file);
+            if (object == null) {
+                return null;
+            }
+            return directory + object;
+        }
+
+        return null;
     }
 }

@@ -110,8 +110,8 @@ public class StagingArea implements IGLStagingArea, Serializable {
 
         Commit commit = new Commit();
         if (MergeTracker.hasMergeData()) {
-            String firstParentShorthand = Utils.splitHash(mergeEntry.getFirstParentHash())[0];
-            String secondParentShorthand = Utils.splitHash(mergeEntry.getSecondParentHash())[0];
+            String firstParentShorthand = Utils.splitHash(mergeEntry.getFirstParentHash(), Utils.HASH_SEVEN)[0];
+            String secondParentShorthand = Utils.splitHash(mergeEntry.getSecondParentHash(), Utils.HASH_SEVEN)[0];
 
             commit.setMergeMessage(firstParentShorthand + " " + secondParentShorthand);
             commit.setMessage("Merged " + mergeEntry.getSecondParentName() + " into " + mergeEntry.getFirstParentName() + ".");

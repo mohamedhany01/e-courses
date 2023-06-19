@@ -200,6 +200,7 @@ public class App {
      *
      *  - Merge field. [DONE]
      * */
+    // DONE
     public static void log() {
         Commit commit = Repository.getObject(HEAD.getHash(), Commit.class);
 
@@ -221,6 +222,7 @@ public class App {
      *   - There is a useful method in gitlet.Utils that will help you iterate over files within a directory. [DONE]
      *   - Merge field. [DONE]
      * */
+    // DONE
     public static void globalLog() {
         for (Path path : AppUtils.listDirectoriesOfDirectory(Path.of(Repository.OBJECTS))) {
             for (String object : Utils.plainFilenamesIn(path.toFile())) {
@@ -338,11 +340,12 @@ public class App {
      *
      *  - However, that you poke around in a .git directory (specifically, .git/objects) and see how
      *      it manages to speed up its search. You will perhaps recognize a familiar data structure
-     *      implemented with the file system rather than pointers. TODO
+     *      implemented with the file system rather than pointers. [DONE]
      *
      *  - Only version 3 (checkout of a full branch) modifies the staging area:
      *      otherwise files scheduled for addition or removal remain so. [DONE]
      * */
+    // DONE
     public static void checkout(String[] args) {
         /*
          * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
@@ -412,15 +415,17 @@ public class App {
          *  - If the file does not exist in the given commit,
          *      print File does not exist in that commit. Do not change the CWD.[DONE]
          *
-         * - Shorthand support TODO
+         * - Shorthand support [DONE]
          * */
         // Checkout commit hash and file
         // DONE
         if (args.length == 4 && args[2].equals("--")) {
-            String hash = args[1];
+            String shorthand = args[1];
             String file = args[3];
 
-            if (!Repository.objectExists(hash)) {
+            String hash = Repository.getObjectFullHash(shorthand);
+
+            if (hash == null) {
                 Utils.exit("No commit with that id exists.");
             }
 
@@ -451,6 +456,7 @@ public class App {
      * - Failure cases: If a branch with the given name already exists,
      *      print the error message A branch with that name already exists. [DONE]
      * */
+    // DONE
     public static void branch(String branchName) {
 
         Path branches = Path.of(Repository.BRANCHES);
@@ -503,7 +509,7 @@ public class App {
      *  - Also moves the current branch’s head to that commit node.
      *      See the intro for an example of what happens to the head pointer after using reset. [DONE]
      *
-     *  - The [commit id] may be abbreviated as for checkout/hash shorthand. TODO
+     *  - The [commit id] may be abbreviated as for checkout/hash shorthand. [DONE]
      *
      *  - The staging area is cleared. [DONE]
      *
@@ -514,9 +520,16 @@ public class App {
      *      print `There is an untracked file in the way; delete it, or add and commit it first.
      *      and exit; perform this check before doing anything else. [DONE]
      * */
+    // DONE
     public static void reset(String[] args) {
 
-        String hash = args[1];
+        String shorthand = args[1];
+
+        String hash = Repository.getObjectFullHash(shorthand);
+
+        if (hash == null) {
+            Utils.exit("No commit with that id exists.");
+        }
 
         if (!Repository.objectExists(hash)) {
             Utils.exit("No commit with that id exists.");

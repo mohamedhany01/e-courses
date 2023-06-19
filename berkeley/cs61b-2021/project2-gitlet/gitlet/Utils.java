@@ -26,11 +26,12 @@ import java.util.*;
  */
 public class Utils {
 
+    public static final int HASH_SEVEN = 7;
+    public static final int HASH_TWO = 2;
     /**
      * The length of a complete SHA-1 UID as a hexadecimal numeral.
      */
     static final int UID_LENGTH = 40;
-    static final int HASH_SPLITTER = 7;
 
     /* SHA-1 HASH VALUES. */
     /**
@@ -298,34 +299,39 @@ public class Utils {
         return result;
     }
 
-    private static String buildSpiltableHash(String str) {
-        if (HASH_SPLITTER > str.length()) {
-            return str;
+    private static String buildSpiltableHash(String str, int size) {
+        if (str.isEmpty()) {
+            return null;
         }
-        if (HASH_SPLITTER == 0) {
+
+        if (str.length() < size) {
             return str;
         }
 
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            if (i < HASH_SPLITTER) {
+            if (i < size) {
                 builder.append(str.charAt(i));
             }
 
-            if (i == HASH_SPLITTER) {
+            if (i == size) {
                 builder.append("_");
                 builder.append(str.charAt(i));
             }
 
-            if (i > HASH_SPLITTER) {
+            if (i > size) {
                 builder.append(str.charAt(i));
             }
         }
         return builder.toString();
     }
 
-    public static String[] splitHash(String str) {
-        return buildSpiltableHash(str).split("_");
+    public static String[] splitHash(String str, int size) {
+        if (str.length() < size || str.length() == size) {
+            return null;
+        }
+
+        return buildSpiltableHash(str, size).split("_");
     }
 
     public static boolean isCommit(Serializable object) {
@@ -368,5 +374,14 @@ public class Utils {
 
 
         return null;
+    }
+
+    public static String matches(String objectHash, String file) {
+        for (int i = 0; i < objectHash.length(); i++) {
+            if (objectHash.charAt(i) != file.charAt(i)) {
+                return null;
+            }
+        }
+        return file;
     }
 }
