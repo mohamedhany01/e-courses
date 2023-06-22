@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class App {
+    public static String mode = "dev";
 
     /*  init: https://sp21.datastructur.es/materials/proj/proj2/proj2#init
      *

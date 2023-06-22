@@ -18,8 +18,15 @@ public class SpeedUP {
                 "x.txt"
         };
 
+        File file = null;
+        String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
         for (int i = 0; i < add.length; i++) {
-            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING, add[i]).toString()), add[i]);
+            if (App.mode.equals("dev")) {
+                Utils.writeContents(new File(Path.of(TEMP_TESTING, add[i]).toString()), add[i]);
+            } else {
+                Utils.writeContents(new File(Path.of(Repository.GITLET, add[i]).toString()), add[i]);
+            }
         }
 
         for (int i = 0; i < add.length; i++) {
@@ -73,18 +80,35 @@ public class SpeedUP {
                 "f.txt",
         };
 
+        File file = null;
+        String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
         for (int i = 0; i < add.length; i++) {
-            File file = new File(Path.of(Repository.TEMP_TESTING, add[i]).toString());
-            if (add[i] == "a.txt" || add[i] == "f.txt") {
-                Utils.writeContents(file, "!" + add[i]);
-                message.append(add[i] + " [U], ");
-            } else if (add[i] == "x.txt") {
-                Utils.writeContents(file, "!!" + add[i]);
-                message.append(add[i] + " [U], ");
+            if (App.mode.equals("dev")) {
+                file = new File(Path.of(TEMP_TESTING, add[i]).toString());
+                if (add[i] == "a.txt" || add[i] == "f.txt") {
+                    Utils.writeContents(file, "!" + add[i]);
+                    message.append(add[i] + " [U], ");
+                } else if (add[i] == "x.txt") {
+                    Utils.writeContents(file, "!!" + add[i]);
+                    message.append(add[i] + " [U], ");
+                } else {
+                    Utils.writeContents(file, add[i]);
+                    message.append(add[i] + " [A], ");
+                }
             } else {
-                Utils.writeContents(file, add[i]);
-                message.append(add[i] + " [A], ");
+                file = new File(Path.of(Repository.GITLET, add[i]).toString());
+                if (add[i] == "a.txt" || add[i] == "f.txt") {
+                    Utils.writeContents(file, "!" + add[i]);
+                    message.append(add[i] + " [U], ");
+                } else if (add[i] == "x.txt") {
+                    Utils.writeContents(file, "!!" + add[i]);
+                    message.append(add[i] + " [U], ");
+                } else {
+                    Utils.writeContents(file, add[i]);
+                    message.append(add[i] + " [A], ");
+                }
             }
+
 
         }
 
@@ -126,8 +150,15 @@ public class SpeedUP {
                 "g.txt",
         };
 
+        File file = null;
+        String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
         for (int i = 0; i < add.length; i++) {
-            File file = new File(Path.of(Repository.TEMP_TESTING, add[i]).toString());
+            if (App.mode.equals("dev")) {
+                file = new File(Path.of(TEMP_TESTING, add[i]).toString());
+            } else {
+                file = new File(Path.of(Repository.GITLET, add[i]).toString());
+            }
+
             if (add[i] == "b.txt" || add[i] == "x.txt") {
                 Utils.writeContents(file, "!" + add[i]);
                 message.append(add[i] + " [U], ");

@@ -1,6 +1,7 @@
 package gitlet.trees;
 
 import gitlet.Utils;
+import gitlet.app.App;
 import gitlet.interfaces.IStagingArea;
 import gitlet.interfaces.IWorkingArea;
 import gitlet.objects.Blob;
@@ -16,8 +17,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class WorkingArea implements IWorkingArea {
-    //    public final static String WD = Path.of(System.getProperty("user.dir")).toString();
-    public final static String WD = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+//    public final static String WD = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
+    public final static String WD = App.mode == "dev" ? Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString() : Path.of(System.getProperty("user.dir")).toString();
 
     private final static List<String> excludedFiles = new ArrayList<>() {
         {
@@ -38,11 +40,21 @@ public class WorkingArea implements IWorkingArea {
     }
 
     public static List<String> getWorkingFiles() {
+        String WD_DEV = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
+        if (App.mode.equals("Dev")) {
+            return Utils.plainFilenamesIn(WD_DEV);
+        }
         return Utils.plainFilenamesIn(WD);
     }
 
     public static Path getPath(String file) {
-        return Path.of(WorkingArea.WD, file);
+        String WD_DEV = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
+        if (App.mode.equals("Dev")) {
+            return Path.of(WD_DEV, file);
+        }
+        return Path.of(WD, file);
     }
 
     public static boolean exists(String fileName) {
@@ -50,7 +62,16 @@ public class WorkingArea implements IWorkingArea {
     }
 
     public static void remove(String file) {
-        Path filePath = Path.of(WD, file);
+        Path filePath = null;
+        String WD_DEV = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
+        if (App.mode.equals("Dev")) {
+            filePath = Path.of(WD_DEV, file);
+
+        } else {
+            filePath = Path.of(WD, file);
+        }
+
         try {
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
@@ -60,8 +81,15 @@ public class WorkingArea implements IWorkingArea {
 
     @Override
     public String getFileHash(String targetFile) {
-        Path path = Paths.get(WD, targetFile);
+        Path path = null;
+        String WD_DEV = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
 
+        if (App.mode.equals("Dev")) {
+            path = Paths.get(WD_DEV, targetFile);
+
+        } else {
+            path = Paths.get(WD, targetFile);
+        }
         if (Files.exists(path)) {
             byte[] pathContent = Utils.readContents(path.toFile());
             return Utils.sha1(pathContent);
@@ -72,7 +100,17 @@ public class WorkingArea implements IWorkingArea {
 
     @Override
     public boolean isFileExist(String file) {
-        Path path = Paths.get(WD, file);
+
+        Path path = null;
+        String WD_DEV = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+
+        if (App.mode.equals("Dev")) {
+            path = Paths.get(WD_DEV, file);
+
+        } else {
+            path = Paths.get(WD, file);
+        }
+
         return Files.exists(path);
     }
 

@@ -3,6 +3,7 @@ package gitlet.trees;
 import gitlet.MergeEntry;
 import gitlet.MergeTracker;
 import gitlet.Utils;
+import gitlet.app.App;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ITree;
@@ -27,10 +28,7 @@ import java.util.TreeMap;
 
 public class Repository {
 
-    public final static String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
-    public final static String GITLET = Path.of(TEMP_TESTING, ".gitlet").toString();
-
-    //    public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
+    public final static String GITLET = Path.of(WorkingArea.WD, ".gitlet").toString();
     public final static String INDEX = Path.of(GITLET, "index").toString();
     public final static String OBJECTS = Path.of(GITLET, "objects").toString();
     public final static String HEAD_POINTER = Path.of(GITLET, "HEAD").toString();
@@ -187,13 +185,18 @@ public class Repository {
     }
 
     private static void initializeCorePaths() {
+
         try {
-            Files.createDirectory(Path.of(Repository.TEMP_TESTING));
-            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "foo.txt").toString()), "foo");
-            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "bar.txt").toString()), "bar");
-            Utils.writeContents(new File(Path.of(Repository.TEMP_TESTING.toString(), "buz.txt").toString()), "buz");
+            if (App.mode.equals("dev")) {
+                String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
+                Files.createDirectory(
+
+                        Path.of(TEMP_TESTING)
+                );
+            }
 
             Files.createDirectory(
+
                     Path.of(Repository.GITLET)
             );
             Files.createDirectory(
@@ -208,6 +211,8 @@ public class Repository {
             Files.createFile(
                     Path.of(Repository.INDEX)
             );
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
