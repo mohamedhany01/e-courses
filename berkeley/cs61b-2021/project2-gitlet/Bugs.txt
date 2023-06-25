@@ -1,0 +1,5 @@
+* When a file staged and then changed, it doesn't appear in (Modifications Not Staged For Commit)
+
+* Replace getUntrackedFiles() to be a treeMap
+
+* Remove one file and try to commit it
