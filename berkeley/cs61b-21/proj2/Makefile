@@ -42,3 +42,6 @@ clean:
 	$(RMAKE) -C $(PACKAGE) clean
 	$(RMAKE) -C testing clean
 
+build-all:
+	$(shell find -name "*.java" > sources.txt && javac @sources.txt && rm sources.txt)
+
