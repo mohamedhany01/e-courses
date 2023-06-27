@@ -88,7 +88,6 @@ public class StagingArea implements IGLStagingArea, Serializable {
 
         // Prepare staged files to be committed
         Tree tree = new Tree();
-        System.out.println(getAllFiles());
         for (Map.Entry<String, IGLStagingEntry> entry : getAllFiles()) {
 
             String file = entry.getKey();
