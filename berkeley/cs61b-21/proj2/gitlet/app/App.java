@@ -208,7 +208,10 @@ public class App {
             AppUtils.printFormatted(commit);
 
             if (commit.getMergeMessage() != null) {
-                commit = Repository.getObject(commit.getMergeFirstParent(), Commit.class);
+                // TODO fix this odd logic, this bug happened after merging
+                String first = commit.getMergeFirstParent();
+                commit = Repository.getObject(commit.getMergeSecondParent(), Commit.class);
+                AppUtils.printFormatted(Repository.getObject(first, Commit.class));
             } else {
                 commit = Repository.getObject(commit.getParent(), Commit.class);
             }
