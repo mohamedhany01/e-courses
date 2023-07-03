@@ -187,14 +187,6 @@ public class Repository {
     private static void initializeCorePaths() {
 
         try {
-            if (App.mode.equals("dev")) {
-                String TEMP_TESTING = Path.of(System.getProperty("user.dir"), "TEMP_TEST").toString();
-                Files.createDirectory(
-
-                        Path.of(TEMP_TESTING)
-                );
-            }
-
             Files.createDirectory(
 
                     Path.of(Repository.GITLET)
@@ -304,7 +296,6 @@ public class Repository {
                             parentBlob.getHash().equals(currentBlob.getHash()) &&
                             !parentBlob.getHash().equals(givenBlob.getHash())
             ) {
-                System.out.println("CASE 1");
                 workingArea.addBlob(givenBlob);
                 stagingArea.stageForAddition(givenBlob);
             }
@@ -340,7 +331,6 @@ public class Repository {
 //            }
             // Parent -> D AND Current -> D AND Given -> Null = "STAGING for DELETION"
             else if (parentBlob != null && currentBlob != null && parentBlob.getHash().equals(currentBlob.getHash()) && givenBlob == null) {
-                System.out.println("CASE 6");
                 // Or stagingArea.stageForRemoval(currentBlob.getFileName());
                 stagingArea.stageForRemoval(parentBlob.getFileName());
                 WorkingArea.remove(parentBlob.getFileName());
@@ -354,7 +344,6 @@ public class Repository {
 //            }
             // Parent -> Null AND Current -> Null AND Given -> F|!F = "STAGING for ADDITION" F|!F
             else if (parentBlob == null && currentBlob == null && givenBlob != null) {
-                System.out.println("CASE 5");
                 workingArea.addBlob(givenBlob);
                 stagingArea.stageForAddition(givenBlob);
             }
@@ -396,7 +385,6 @@ public class Repository {
 
                 String current = currentBlob == null ? "" : new String(currentBlob.getFileContent());
                 String given = givenBlob == null ? "" : new String(givenBlob.getFileContent());
-                System.out.println("CASE 3.2 CONFLICT" + fileName);
                 String conflictData = "<<<<<<< " + "HEAD" + "\n" +
                         current
                         + "\n" + "=======" + "\n" +
