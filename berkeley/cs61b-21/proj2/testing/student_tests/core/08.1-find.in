@@ -1,0 +1,14 @@
+# 8.1 found a commit
+
+I ../definitions.inc
+> init
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug.txt"
+<<<
+> find "added wug.txt"
+${ARBLINES}
+
+<<<*

@@ -1,0 +1,9 @@
+I ../definitions.inc
+> init
+<<<
+> global-log
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*

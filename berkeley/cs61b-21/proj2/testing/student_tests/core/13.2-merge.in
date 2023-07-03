@@ -1,0 +1,89 @@
+# Case 2: If the split point is the current branch
+# Foo is current branch
+# Master is given branch
+I ../definitions.inc
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt"
+<<<
+> branch foo
+<<<
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
++ b.txt b.txt
+> add b.txt
+<<<
+> commit "added b.txt"
+<<<
++ c.txt c.txt
+> add c.txt
+<<<
+> commit "added c.txt"
+<<<
+> checkout foo
+<<<
+> log
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+D aCommitID "${1}"
+
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+> merge master
+Current branch fast-forwarded.
+<<<
+> log
+===
+${COMMIT_HEAD}
+added c.txt
+
+===
+${COMMIT_HEAD}
+added b.txt
+
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+D aCommitIDMerged "${3}"
+
+= ${aCommitID} ${aCommitIDMerged}

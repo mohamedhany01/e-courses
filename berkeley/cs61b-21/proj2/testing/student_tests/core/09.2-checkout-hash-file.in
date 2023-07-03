@@ -1,0 +1,108 @@
+I ../definitions.inc
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt v1"
+<<<
+# Put b.txt into a.txt
++ a.txt b.txt
+> add a.txt
+<<<
+> commit "added a.txt v2"
+<<<
+# Put c.txt into a.txt
++ a.txt c.txt
+> add a.txt
+<<<
+> commit "added a.txt v3"
+<<<
+
+= a.txt c.txt
+
+> log
+===
+${COMMIT_HEAD}
+added a.txt v3
+
+===
+${COMMIT_HEAD}
+added a.txt v2
+
+===
+${COMMIT_HEAD}
+added a.txt v1
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+D a3ID "${1}"
+
+D a2ID "${2}"
+
+D a1ID "${3}"
+
+# Checkout to v2 content
+> checkout ${a2ID} -- a.txt
+<<<
+
+= a.txt b.txt
+
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+
+=== Untracked Files ===
+
+<<<
+
+# Checkout to v1 content
+> checkout ${a1ID} -- a.txt
+<<<
+
+= a.txt a.txt
+
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+
+=== Untracked Files ===
+
+<<<
+
+# Checkout to v3 content again "latest"
+> checkout ${a3ID} -- a.txt
+<<<
+
+= a.txt c.txt
+
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<

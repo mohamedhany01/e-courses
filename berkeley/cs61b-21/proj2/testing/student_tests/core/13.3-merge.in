@@ -1,0 +1,368 @@
+# Case 3: full merge
+# Foo is current branch
+# Master is given branch
+I ../definitions.inc
+> init
+<<<
+# Prepare split point
++ a.txt a.txt
++ b.txt b.txt
++ c.txt c.txt
++ d.txt d.txt
++ e.txt e.txt
++ h.txt h.txt
+> add a.txt
+<<<
+> add b.txt
+<<<
+> add c.txt
+<<<
+> add d.txt
+<<<
+> add e.txt
+<<<
+> add h.txt
+<<<
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+a.txt
+b.txt
+c.txt
+d.txt
+e.txt
+h.txt
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+
+# Added a.txt, b.txt, c.txt, d.txt e.txt and h.txt
+> commit "added split point"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added split point
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+# End split point
+
+# Create "current branch"
+> branch foo
+<<<
+
+# Prepare given branch "master"
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+
+# Put not-a.txt into a.txt
++ a.txt not-a.txt
++ f.txt f.txt
++ h.txt not-not-h.txt
+> rm c.txt
+<<<
+> rm d.txt
+<<<
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+c.txt
+d.txt
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+h.txt (modified)
+
+=== Untracked Files ===
+f.txt
+
+<<<
+> add a.txt
+<<<
+> add f.txt
+<<<
+> add h.txt
+<<<
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+a.txt
+f.txt
+h.txt
+
+=== Removed Files ===
+c.txt
+d.txt
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+h.txt (modified)
+
+=== Untracked Files ===
+
+<<<
+
+# added f.txt, remove c.txt, d.txt, modify a.txt and h.txt
+> commit "added given branch"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added given branch
+
+===
+${COMMIT_HEAD}
+added split point
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+# End "given branch"
+
+# Prepare current branch
+> checkout foo
+<<<
+
+# Put not-b.txt into b.txt
++ b.txt not-b.txt
++ g.txt g.txt
++ h.txt not-h.txt
+> rm c.txt
+<<<
+> rm e.txt
+<<<
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+c.txt
+e.txt
+
+=== Modifications Not Staged For Commit ===
+b.txt (modified)
+h.txt (modified)
+
+=== Untracked Files ===
+g.txt
+
+<<<
+> add b.txt
+<<<
+> add h.txt
+<<<
+> add g.txt
+<<<
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+b.txt
+g.txt
+h.txt
+
+=== Removed Files ===
+c.txt
+e.txt
+
+=== Modifications Not Staged For Commit ===
+b.txt (modified)
+h.txt (modified)
+
+=== Untracked Files ===
+
+<<<
+
+# added g.txt, remove c.txt, e.txt, modify b.txt and h.txt as
+> commit "added current branch"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added current branch
+
+===
+${COMMIT_HEAD}
+added split point
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+# End "current branch"
+
+# Start merging
+> merge master
+Encountered a merge conflict.
+<<<
+
+# File status after merging
+= a.txt not-a.txt
+= b.txt not-b.txt
+= f.txt f.txt
+= g.txt g.txt
+
+# Conflicted file (changed in both current and given branch)
+= h.txt h-conflicted.txt
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+d.txt (deleted)
+h.txt (modified)
+
+=== Untracked Files ===
+f.txt
+
+<<<
+> log
+===
+${COMMIT_HEAD}
+added current branch
+
+===
+${COMMIT_HEAD}
+added split point
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+
+D beforeMargeID "${1}"
+
+# Resolving and commit
+
++ h.txt h.txt
+> add a.txt
+<<<
+> add h.txt
+<<<
+> add f.txt
+<<<
+> rm d.txt
+<<<
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+a.txt
+f.txt
+h.txt
+
+=== Removed Files ===
+d.txt
+
+=== Modifications Not Staged For Commit ===
+a.txt (modified)
+h.txt (modified)
+
+=== Untracked Files ===
+
+<<<
+
+# This won't be added to log, it just a placeholder (only in merged commit)
+> commit "resolved!"
+<<<
+> log
+===
+${COMMIT_HEAD}
+Merged master into foo.
+
+===
+${COMMIT_HEAD}
+added given branch
+
+===
+${COMMIT_HEAD}
+added current branch
+
+===
+${COMMIT_HEAD}
+added split point
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+
+D afterMargeID "${3}"
+= ${beforeMargeID} ${afterMargeID}

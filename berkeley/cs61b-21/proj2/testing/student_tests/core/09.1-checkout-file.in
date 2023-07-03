@@ -1,0 +1,40 @@
+I ../definitions.inc
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+
+# Put b.txt into a.txt
++ a.txt b.txt
+
+> checkout -- a.txt
+<<<
+
+= a.txt a.txt
+
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<

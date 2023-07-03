@@ -1,0 +1,9 @@
+I ../definitions.inc
+> init
+<<<
+> log
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*

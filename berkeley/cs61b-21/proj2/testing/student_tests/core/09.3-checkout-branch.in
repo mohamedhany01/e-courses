@@ -1,0 +1,117 @@
+I ../definitions.inc
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+> status
+=== Branches ===
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+> branch foo
+<<<
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
+> checkout foo
+<<<
+> log
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+> status
+=== Branches ===
+\*foo
+master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
++ b.txt b.txt
+> add b.txt
+<<<
+> commit "added b.txt"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added b.txt
+
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+<<<*
+> checkout master
+<<<
+> log
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
+> status
+=== Branches ===
+foo
+\*master
+
+=== Staged Files ===
+
+=== Removed Files ===
+
+=== Modifications Not Staged For Commit ===
+
+=== Untracked Files ===
+
+<<<
