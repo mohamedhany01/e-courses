@@ -1,0 +1,15 @@
+# Try commit while no change
+
+> init
+<<<
+> commit "added wug.txt"
+No changes added to the commit.
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug.txt"
+<<<
+> commit "added wug.txt"
+No changes added to the commit.
+<<<

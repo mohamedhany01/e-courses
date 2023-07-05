@@ -1,0 +1,8 @@
+# Try rm a file isn't tracked
+
+> init
+<<<
++ wug.txt wug.txt
+> rm wug.txt
+No reason to remove the file.
+<<<

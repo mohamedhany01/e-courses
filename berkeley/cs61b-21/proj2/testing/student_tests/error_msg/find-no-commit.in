@@ -1,0 +1,12 @@
+# No commit found
+
+> init
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit "added wug.txt"
+<<<
+> find "foo"
+Found no commit with that message.
+<<<
