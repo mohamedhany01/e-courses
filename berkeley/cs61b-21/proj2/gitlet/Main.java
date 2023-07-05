@@ -27,6 +27,9 @@ public class Main {
                 App.add(args[1]);
                 break;
             case "commit":
+                if (args.length < 2) {
+                    Utils.exit("Please enter a commit message.");
+                }
                 App.commit(args[1]);
                 break;
             case "log":
