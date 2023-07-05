@@ -1,0 +1,55 @@
+# CASE 1: Try to reset with a commit isn't exist
+
+I ../definitions.inc
+> init
+<<<
+> reset fake123
+No commit with that id exists.
+<<<
+
+# CASE 2: Try reset with files aren't tracked and exist in the rested commit
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt"
+<<<
++ b.txt b.txt
+> add b.txt
+<<<
+> commit "added b.txt"
+<<<
+> rm b.txt
+<<<
++ c.txt c.txt
+> add c.txt
+<<<
+> commit "added c.txt and removed b.txt"
+<<<
+> log
+===
+${COMMIT_HEAD}
+added c.txt and removed b.txt
+
+===
+${COMMIT_HEAD}
+added b.txt
+
+===
+${COMMIT_HEAD}
+added a.txt
+
+===
+${COMMIT_HEAD}
+initial commit
+
+<<<*
++ b.txt b.txt
+
+D hash "${2}"
+
+> reset ${hash}
+
+There is an untracked file in the way; delete it, or add and commit it first.
+<<<
+
+

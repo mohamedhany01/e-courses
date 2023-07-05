@@ -1,0 +1,12 @@
+# Try checkout a hash with a file is not exist
+
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt v1"
+<<<
+> checkout fake123 -- a.txt
+No commit with that id exists.
+<<<

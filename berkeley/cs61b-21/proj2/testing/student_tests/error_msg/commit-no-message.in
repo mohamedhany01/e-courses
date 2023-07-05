@@ -1,0 +1,19 @@
+# Try commit while no messaged is entered
+
+> init
+<<<
++ wug.txt wug.txt
+> add wug.txt
+<<<
+> commit
+Please enter a commit message.
+<<<
+> commit ""
+Please enter a commit message.
+<<<
+> commit
+Please enter a commit message.
+<<<
+> commit "          "
+Please enter a commit message.
+<<<

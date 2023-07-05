@@ -1,0 +1,14 @@
+# Create a branch with same name twice
+
+> init
+<<<
+> branch foo
+<<<
+> branch foo
+A branch with that name already exists.
+<<<
+
+
+
+
+

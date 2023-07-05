@@ -1,0 +1,7 @@
+# Try add a file is not exist
+
+> init
+<<<
+> add wug.txt
+File does not exist.
+<<<

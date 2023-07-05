@@ -1,0 +1,12 @@
+# Try checkout a file is not exist
+
+> init
+<<<
++ a.txt a.txt
+> add a.txt
+<<<
+> commit "added a.txt"
+<<<
+> checkout -- foo.txt
+File does not exist in that commit.
+<<<

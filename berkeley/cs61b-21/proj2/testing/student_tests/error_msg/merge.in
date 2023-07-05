@@ -1,0 +1,17 @@
+# CASE 1: Try to merge with a branch doesn't exist
+
+> init
+<<<
+> merge foo
+A branch with that name does not exist.
+<<<
+
+# CASE 2: Try to merge with a branch with itself
+
+> merge master
+Cannot merge a branch with itself.
+<<<
+
+CASE 3: You have uncommitted changes. [IN PROGRESS]
+
+CASE 4: There is an untracked file in the way; delete it, or add and commit it first. [IN PROGRESS]
