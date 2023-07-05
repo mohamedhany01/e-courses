@@ -235,12 +235,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     private int getHash(K key) {
-        int hash = key.hashCode() % this.initialSize;
-
-        if (hash < 0) {
-            return Math.abs(hash % this.initialSize);
-        }
-        return hash;
+        return Math.floorMod(key.hashCode(), this.initialSize) ;
     }
 
     private boolean isReachedMaxLoad() {
