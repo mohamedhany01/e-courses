@@ -7,7 +7,7 @@ import gitlet.trees.Repository;
  * Driver class for Gitlet, a subset of the Git version-control system.
  *
  * @author Mohamed Hany
- *
+ * <p>
  * GITLET 2021: https://sp21.datastructur.es/materials/proj/proj2/proj2
  */
 public class Main {

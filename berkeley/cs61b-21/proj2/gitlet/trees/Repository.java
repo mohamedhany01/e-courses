@@ -3,7 +3,6 @@ package gitlet.trees;
 import gitlet.MergeEntry;
 import gitlet.MergeTracker;
 import gitlet.Utils;
-import gitlet.app.App;
 import gitlet.interfaces.IBlob;
 import gitlet.interfaces.ICommit;
 import gitlet.interfaces.ITree;

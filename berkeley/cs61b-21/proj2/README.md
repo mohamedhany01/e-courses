@@ -1,7 +1,9 @@
 # Gitlet
 
 ## Running tests
-My implantation of `gitlet` is modular a little bit so, I added some extra packages, to make the integration tests work for me, I added extract `make` command to build all java file which is `build-all`[1].
+
+My implantation of `gitlet` is modular a little bit so, I added some extra packages, to make the integration tests work
+for me, I added extract `make` command to build all java file which is `build-all`[1].
 
 After the full build just run `make check` to run integration tests, and make everything work correctly
 
@@ -13,7 +15,8 @@ After the full build just run `make check` to run integration tests, and make ev
 4. Select `s`
 5. Go back to IDEA and run Debug button
 
-Note: to keep integration tests files and not remove them add `--keep` to `python3 tester.py` to be `python3 tester.py --verbose --keep <path to *.in file>`
+Note: to keep integration tests files and not remove them add `--keep` to `python3 tester.py` to
+be `python3 tester.py --verbose --keep <path to *.in file>`
 
 ### Integration Tests Syntax
 
@@ -22,10 +25,11 @@ See: https://www.youtube.com/watch?v=uMYpuQuHGu0
 ***
 
 ## Issues
-- For `runner.py` in /testing I didn't figure out how can I make it work!
 
+- For `runner.py` in /testing I didn't figure out how can I make it work!
 
 ***
 
-Resources: 
+Resources:
+
 - [1] https://stackoverflow.com/a/8769536

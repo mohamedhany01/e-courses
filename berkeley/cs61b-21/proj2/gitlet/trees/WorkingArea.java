@@ -1,7 +1,6 @@
 package gitlet.trees;
 
 import gitlet.Utils;
-import gitlet.app.App;
 import gitlet.interfaces.IStagingArea;
 import gitlet.interfaces.IWorkingArea;
 import gitlet.objects.Blob;
