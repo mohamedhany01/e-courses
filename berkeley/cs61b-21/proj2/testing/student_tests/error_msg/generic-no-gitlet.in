@@ -1,0 +1,38 @@
+# No gitlet directory/subdirectory
+
+> status
+Not in an initialized Gitlet directory.
+<<<
+> add
+Not in an initialized Gitlet directory.
+<<<
+> commit
+Not in an initialized Gitlet directory.
+<<<
+> log
+Not in an initialized Gitlet directory.
+<<<
+> global-log
+Not in an initialized Gitlet directory.
+<<<
+> rm
+Not in an initialized Gitlet directory.
+<<<
+> find
+Not in an initialized Gitlet directory.
+<<<
+> checkout
+Not in an initialized Gitlet directory.
+<<<
+> branch
+Not in an initialized Gitlet directory.
+<<<
+> rm-branch
+Not in an initialized Gitlet directory.
+<<<
+> reset
+Not in an initialized Gitlet directory.
+<<<
+> merge
+Not in an initialized Gitlet directory.
+<<<

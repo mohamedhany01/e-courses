@@ -41,9 +41,11 @@ public class App {
 
     /*  add: https://sp21.datastructur.es/materials/proj/proj2/proj2#add
      *
-     *   - Adds a copy of the file as it currently exists to the staging area (see the description of the commit command) [DONE]
+     *   - Adds a copy of the file as it currently exists to the staging area
+     *      (see the description of the commit command) [DONE]
      *
-     *   - Staging an already-staged file overwrites the previous entry in the staging area with the new contents [DONE]
+     *   - Staging an already-staged file overwrites the previous entry
+     *      in the staging area with the new contents [DONE]
      *
      *   - The staging area should be somewhere in .gitlet [DONE]
      *
@@ -51,9 +53,11 @@ public class App {
      *      it to be added, and remove it from the staging area if it is already there
      *      (as can happen when a file is changed, added, and then changed back to it’s original version) [DONE]
      *
-     *   - The file will no longer be staged for removal (see gitlet rm), if it was at the time of the command rm. [DONE]
+     *   - The file will no longer be staged for removal (see gitlet rm),
+     *      if it was at the time of the command rm. [DONE]
      *
-     *   - If the file does not exist, print the error message File does not exist. and exit without changing anything. [DONE]
+     *   - If the file does not exist, print the error message File does not exist.
+     *      and exit without changing anything. [DONE]
      *
      *   - 20 lines
      * */
@@ -221,7 +225,8 @@ public class App {
 
     /* global-log: https://sp21.datastructur.es/materials/proj/proj2/proj2#global-log
      *
-     *   - Like log, except displays information about all commits ever made. The order of the commits does not matter. [DONE]
+     *   - Like log, except displays information about all commits ever made.
+     *      The order of the commits does not matter. [DONE]
      *   - There is a useful method in gitlet.Utils that will help you iterate over files within a directory. [DONE]
      *   - Merge field. [DONE]
      * */
@@ -351,11 +356,15 @@ public class App {
     // DONE
     public static void checkout(String[] args) {
         /*
-         * - Takes all files in the commit at the head of the given branch, and puts them in the working directory, overwriting the versions of the files that are already there if they exist. [DONE]
+         * - Takes all files in the commit at the head of the given branch,
+         *      and puts them in the working directory, overwriting the versions of
+         *      the files that are already there if they exist. [DONE]
          *
-         * - Also, at the end of this command, the given branch will now be considered the current branch (HEAD). [DONE]
+         * - Also, at the end of this command, the given branch
+         *      will now be considered the current branch (HEAD). [DONE]
          *
-         * - Any files that are tracked in the current branch but are not present in the checked-out branch are deleted. [DONE]
+         * - Any files that are tracked in the current branch but are
+         *      not present in the checked-out branch are deleted. [DONE]
          *
          * - The staging area is cleared, unless the checked-out branch is the current branch [DONE]
          *
@@ -363,7 +372,10 @@ public class App {
          *
          * - If that branch is the current branch, print No need to checkout the current branch. [DONE]
          *
-         * -  If a working file is untracked in the current branch and would be overwritten by the checkout, print There is an untracked file in the way; delete it, or add and commit it first. and exit; perform this check before doing anything else. Do not change the CWD. [DONE]
+         * -  If a working file is untracked in the current branch
+         *      and would be overwritten by the checkout,
+         *      print There is an untracked file in the way; delete it, or add and commit it first. and exit;
+         *      perform this check before doing anything else. Do not change the CWD. [DONE]
          * */
         // Checkout branch
         // DONE

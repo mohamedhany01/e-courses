@@ -1,0 +1,25 @@
+# invalid operands
+
+> init
+<<<
+> add
+Incorrect operands.
+<<<
+> rm
+Incorrect operands.
+<<<
+> find
+Incorrect operands.
+<<<
+> branch
+Incorrect operands.
+<<<
+> rm-branch
+Incorrect operands.
+<<<
+> reset
+Incorrect operands.
+<<<
+> merge
+Incorrect operands.
+<<<

@@ -51,6 +51,10 @@ public class Repository {
         return Utils.readObject(new File(Path.of(Repository.getObjectPath(directory).toString(), object).toString()), type);
     }
 
+    public static boolean gitletDirectoryExist(String path) {
+        return Files.exists(Path.of(path));
+    }
+
     public static Path getObjectPath(String file) {
         return Path.of(Repository.OBJECTS, file);
     }

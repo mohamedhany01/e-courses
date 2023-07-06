@@ -384,4 +384,8 @@ public class Utils {
         }
         return file;
     }
+
+    public static boolean isValidArgsCount(String [] args, int count) {
+        return args.length >= count;
+    }
 }
