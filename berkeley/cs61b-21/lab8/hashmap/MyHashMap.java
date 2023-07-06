@@ -8,7 +8,9 @@ import java.util.*;
  * <p>
  * Assumes null keys will never be inserted, and does not resize down upon remove().
  *
- * @author YOUR NAME HERE
+ * @author Mohamed Hnay
+ *
+ * Lab8: https://sp21.datastructur.es/materials/lab/lab8/lab8
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
 
