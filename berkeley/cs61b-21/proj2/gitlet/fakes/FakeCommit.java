@@ -1,6 +1,7 @@
 package gitlet.fakes;
 
 import gitlet.interfaces.ICommit;
+import gitlet.objects.Commit;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -96,5 +97,10 @@ public class FakeCommit implements ICommit {
     @Override
     public void setMergeMessage(String mergeMessage) {
 
+    }
+
+    @Override
+    public Commit getRootCommit(boolean commitIt) {
+        return null;
     }
 }

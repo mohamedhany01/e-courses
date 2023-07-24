@@ -87,7 +87,13 @@ public class Repository {
 
         workingArea.clear();
 
-        workingArea.addBlobs(blobs);
+        // If the checkout is the root commit, there aren't blobs to write
+        // in the working directory
+        Commit commit = new Commit();
+        Commit rootCommit = commit.getRootCommit(false);
+        if (!hash.equals(rootCommit.getHash())) {
+            workingArea.addBlobs(blobs);
+        }
     }
 
     public static void switchTo(String hash, String file) {
@@ -97,26 +103,9 @@ public class Repository {
         Repository.checkGitletRepository();
         Repository.initializeCorePaths();
         StagingArea.initialize();
-
-        // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
-        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        // Prepare root commit
-        Blob blob = new Blob();
-        blob.setFileName("");
-
-        Tree tree = new Tree();
-        tree.addBlob(blob.getHash());
-
         Commit commit = new Commit();
-        commit.setMessage("initial commit");
-        commit.setDate(Utils.getFormattedDate(zeroDate));
-        commit.setTree(tree.getHash());
-        commit.setParent(null);
-        commit.setHash(Commit.calculateHash(commit));
-
-        Repository.commit(blob, tree, commit);
-        Branch.create("master", commit.getHash());
+        Commit rootCommit =  commit.getRootCommit(true);
+        Branch.create("master", rootCommit.getHash());
         HEAD.move("master");
     }
 

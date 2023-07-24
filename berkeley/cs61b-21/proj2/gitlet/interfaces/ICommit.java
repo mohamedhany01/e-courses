@@ -1,5 +1,7 @@
 package gitlet.interfaces;
 
+import gitlet.objects.Commit;
+
 import java.io.Serializable;
 
 public interface ICommit extends Serializable {
@@ -38,4 +40,6 @@ public interface ICommit extends Serializable {
     String getMergeMessage();
 
     void setMergeMessage(String mergeMessage);
+
+    Commit getRootCommit(boolean commitIt);
 }

@@ -2,8 +2,12 @@ package gitlet.objects;
 
 import gitlet.Utils;
 import gitlet.interfaces.ICommit;
+import gitlet.trees.Repository;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class Commit implements ICommit, Serializable {
     /**
@@ -152,5 +156,31 @@ public class Commit implements ICommit, Serializable {
     @Override
     public void setMergeMessage(String mergeMessage) {
         this.mergeMessage = mergeMessage;
+    }
+
+    @Override
+    public Commit getRootCommit(boolean commitIt) {
+        // Replace ZoneId.systemDefault() with ZoneId.of("UTC-8") should store data as Wed Dec 31 16:00:00 1969 -0800
+        LocalDateTime zeroDate = Instant.ofEpochSecond(0).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        // Prepare root commit
+        Blob blob = new Blob();
+        blob.setFileName("");
+
+        Tree tree = new Tree();
+        tree.addBlob(blob.getHash());
+
+        Commit commit = new Commit();
+        commit.setMessage("initial commit");
+        commit.setDate(Utils.getFormattedDate(zeroDate));
+        commit.setTree(tree.getHash());
+        commit.setParent(null);
+        commit.setHash(Commit.calculateHash(commit));
+
+        // Write objects to the file system
+        if (commitIt) {
+            Repository.commit(blob, tree, commit);
+        }
+        return commit;
     }
 }
