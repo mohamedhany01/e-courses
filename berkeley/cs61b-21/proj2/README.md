@@ -3,10 +3,15 @@
 ## Running tests
 
 My implantation of `gitlet` is modular a little bit so, I added some extra packages, to make the integration tests work
-for me, I added extract `make` command to build all java file which is `build-all`[1].
+for me, I added extra `make` command to build all java file which is `build-all`[1].
 
 After the full build just run `make check` to run integration tests, and make everything work correctly
 
+### Running single test from `/student_tests/*` directory
+1. Switch to `/testing` directory, using `cd testing`
+2. Run `python3 tester.py student_tests/*/<test name>.in`
+    - Or with `--verbose` option/flag to see the full flow
+    - Or with `--keep` option/flag to keep the test cache
 ### Running the Debugger
 
 1. Run IDEA -> Run -> Edit configurations... -> Add new -> Remote JVM Debug -> Set a name -> Apply
