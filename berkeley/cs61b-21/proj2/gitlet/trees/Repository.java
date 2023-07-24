@@ -18,9 +18,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -104,7 +101,7 @@ public class Repository {
         Repository.initializeCorePaths();
         StagingArea.initialize();
         Commit commit = new Commit();
-        Commit rootCommit =  commit.getRootCommit(true);
+        Commit rootCommit = commit.getRootCommit(true);
         Branch.create("master", rootCommit.getHash());
         HEAD.move("master");
     }
