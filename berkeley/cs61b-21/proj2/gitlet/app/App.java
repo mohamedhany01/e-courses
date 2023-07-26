@@ -563,15 +563,33 @@ public class App {
      *  - If the split point is the current branch, then the effect is to check out the given branch,
      *      and the operation ends after printing the message Current branch fast-forwarded. [DONE]
      *
-     *  -
-     *
      *  - If a branch with the given name does not exist, print the error
      *      message A branch with that name does not exist. [DONE]
      *
      *  - If attempting to merge a branch with itself,
      *      print the error message Cannot merge a branch with itself. [DONE]
      *
-     * - Enhance LCA algorithm TODO
+     *  - If an untracked file in the current commit would be overwritten or deleted by the merge,
+     *      print There is an untracked file in the way; delete it, or add and commit it first.
+     *      and exit; perform this check before doing anything else.
+     *
+     *  - If there are staged additions or removals present,
+     *      print the error message You have uncommitted changes. and exit. TODO
+     *
+     *  - Enhance LCA algorithm TODO
+     *
+     *  - Cases NOT needed to be handled
+     *      - Real Git does a more subtle job of merging files,
+     *          displaying conflicts only in places where both files have changed since the split point.
+     *
+     *      - Real Git has a different way to decide which of multiple possible split points to use.
+     *
+     *      - Real Git will force the user to resolve the merge conflicts before committing to complete the merge.
+     *          Gitlet just commits the merge, conflicts and all,
+     *          so that you must use a separate commit to resolve problems.
+     *
+     *      - Real Git will complain if there are unstaged changes to a file that would be changed by a merge.
+     *          You may do so as well if you want, but we will not test that case.
      *
      * */
     public static void merge(String other) {
