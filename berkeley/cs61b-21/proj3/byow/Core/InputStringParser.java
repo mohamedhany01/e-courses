@@ -19,7 +19,6 @@ public class InputStringParser {
 
         if (zeroIndexCommand.equals("n")) {
             System.out.println("New world");
-            System.out.println("Get seed");
 
             int startPosition = fullCommand.indexOf("s") + 1;
 
@@ -30,9 +29,8 @@ public class InputStringParser {
 
         } else if (zeroIndexCommand.equals("l")) {
             System.out.println("Load world");
-            System.out.println("Extra commands");
         } else {
-            ParserErrorHandler handler = new ParserErrorHandler();
+            ErrorHandler handler = new ErrorHandler();
             handler.throwError(String.valueOf(fullCommand.charAt(0)), 0);
         }
 
@@ -60,7 +58,7 @@ public class InputStringParser {
                 boolean isValidQuit = fullCommand.charAt(nextIndex + 1) == 'q';
 
                 if (!isValidQuit) {
-                    ParserErrorHandler errorHandler = new ParserErrorHandler();
+                    ErrorHandler errorHandler = new ErrorHandler();
                     errorHandler.throwError(String.valueOf(fullCommand.charAt(nextIndex + 1)), nextIndex);
                 }
 
@@ -71,7 +69,7 @@ public class InputStringParser {
             }
 
             if (table.getCommand(command) == Command.UNKNOWN) {
-                ParserErrorHandler errorHandler = new ParserErrorHandler();
+                ErrorHandler errorHandler = new ErrorHandler();
 
                 errorHandler.throwError(String.valueOf(command), nextIndex);
 
@@ -116,7 +114,7 @@ public class InputStringParser {
         Character command = tokenSmall.charAt(nextIndex);
 
         if (command != 's') {
-            ParserErrorHandler handler = new ParserErrorHandler();
+            ErrorHandler handler = new ErrorHandler();
             handler.throwError(String.valueOf(command), nextIndex);
         }
 

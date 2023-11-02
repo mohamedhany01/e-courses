@@ -1,19 +1,30 @@
 package byow.Core;
 
+import byow.Core.gui.Window;
+import byow.Core.gui.WindowBuilder;
+import byow.Core.world.World;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+import byow.lab13.Position;
 
 public class Engine {
+    public Engine() {
+    }
+
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int WIDTH = 60;
+    public static final int HEIGHT = 60;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        ter.initialize(WIDTH, HEIGHT);
+        World world = new World(WIDTH, HEIGHT, Tileset.TREE);
+        ter.renderFrame(world.getWorld());
     }
 
     /**
@@ -45,8 +56,42 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
+        int optionMargin = 40;
+        Window mainMenu = new Window(WIDTH, HEIGHT);
+        WindowBuilder builder = new WindowBuilder(mainMenu);
+        builder
+        .setTitle("The Game", 50, 50)
+        .setOption("New Game (N)", optionMargin -=2, 20)
+        .setOption("Load Game (L)", optionMargin -=2, 20)
+        .setOption("Quit (Q)", optionMargin -=2, 20)
+        .render();
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+       String userInput =  mainMenu.getUserInput(1);
+
+        if (userInput.equals("n")) {
+            builder.setTitle("Enter World Seed:", 50, 50).render();
+            String userSeed = mainMenu.printInputOn(
+                new Position(mainMenu.getWidth()/2, 45),
+                "Enter World Seed:",
+                new Position(mainMenu.getWidth()/2, 50)
+            );
+            int seed = Integer.parseInt(userSeed);
+
+            builder.setTitle("Starting Game", 50, 50).render();
+        } else if (userInput.equals("q")) {
+            System.exit(0);
+        }
+
+
+//        ter.initialize(WIDTH, HEIGHT);
+//        World world = new World(WIDTH, HEIGHT);
+//
+//        InputStringParser parser = new InputStringParser(input);
+//        GameConfigurations configurations = parser.getConfigurations();
+//        System.out.println(configurations.getSeed());
+//        System.out.println(configurations.getInstructions());
+//        ter.renderFrame(world.getWorld());
+
+        return null;
     }
 }
