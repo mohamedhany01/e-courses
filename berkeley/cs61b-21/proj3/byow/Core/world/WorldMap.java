@@ -1,5 +1,6 @@
 package byow.Core.world;
 
+import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import byow.Utilities.ds.quadtree.Dungeon;
@@ -15,10 +16,39 @@ public class WorldMap {
 
         this.initWorld(this.world, width, height);
 
+        // Create the tree and split it 3 levels
         Quadtree quadtree = new Quadtree(new Dungeon(0, 0, width, height));
-        quadtree.split(4);
 
-        this.drawAllSections(quadtree);
+        // The split-level is fine for 60x60 grid
+        quadtree.split(2);
+
+        drawInnerDungeons(quadtree);
+
+        // Debug the sections
+        //this.drawAllSections(quadtree);
+    }
+
+    // Get the split sections in the world and draw the dungeons inside
+    private void drawInnerDungeons(Quadtree qt) {
+        // Draw randomly using this random number
+        int drawDungeon = RandomUtils.uniform(new Random(), 4);
+
+
+        // Using the tree leafs to draw the dungeons
+        if (qt.children.isEmpty() && drawDungeon == 1) {
+            for (int x = qt.parent.x1; x < qt.parent.x2 - 2; x++) {
+                for (int y = qt.parent.y1; y < qt.parent.y2 - 2; y++) {
+                    if (x == qt.parent.x1 || x == qt.parent.x2 - 3 || y == qt.parent.y1 || y == qt.parent.y2 - 3) {
+                        world[x][y] = Tileset.WALL;
+                    }
+                }
+            }
+        }
+
+        // Skip parents
+        for (Quadtree quadtree : qt.children) {
+            drawInnerDungeons(quadtree);
+        }
     }
 
     private void drawAllSections(Quadtree qt) {
