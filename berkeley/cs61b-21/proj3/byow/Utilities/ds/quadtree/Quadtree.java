@@ -8,6 +8,8 @@ public class Quadtree {
     public Section section;
     public Dungeon parent;
     public Point center;
+    public boolean isDungeon;
+    public boolean isLeaf;
     public LinkedList<Quadtree> children;
 
     public Quadtree(Dungeon dungeon) {
@@ -19,6 +21,8 @@ public class Quadtree {
         this.parent = rectangle;
         this.children = new LinkedList<>();
         this.section = section;
+        this.isLeaf = false;
+        this.isDungeon = false;
     }
 
     @Override
