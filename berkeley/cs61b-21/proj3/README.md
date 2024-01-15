@@ -16,3 +16,16 @@
 - [Procedural Dungeon Generator](https://slsdo.github.io/procedural-dungeon/)
 - [Building the Java Crypt: A Dungeon Building Algorithm](https://medium.com/@laurheth/building-a-dungeon-cbf10ad6126f)
 - [Programming Mazes by javidx9 | video](https://www.youtube.com/watch?v=Y37-gB83HKE)
+
+**Extra**
+
+- [7YRL (the 7 Year Roguelike)](https://7yrl.wordpress.com/category/dungeon-generation-2/)
+- [Generating dungeons using BSP: An easy-to-understand demonstration](https://copyprogramming.com/howto/simple-example-of-bsp-dungeon-generation)
+- [Basic BSP Dungeon generation | Roguebasin](https://web.archive.org/web/20220413182956/http://roguebasin.com/?title=Basic_BSP_Dungeon_generation)
+- [Understanding roguelike dungeons](https://www.emanueleferonato.com/2009/06/02/understanding-roguelike-dungeons/)
+- [Richard Fleming Jr](https://www.youtube.com/@richardflemingjr9084)
+  - [Intro to Rogue Likes](https://www.youtube.com/watch?v=RAUwgu9eJhU)
+  - [Binary Trees](https://www.youtube.com/watch?v=S5y3ES4Rvkk)
+  - [Tree Logic](https://www.youtube.com/watch?v=Tb01dxMrIdc)
+- [Procedural Room Generation Methodology](https://www.youtube.com/watch?v=Pwq6OFiQ-lA)
+- [Procedurally Generated 3D Dungeons](https://www.youtube.com/watch?v=rBY2Dzej03A)
