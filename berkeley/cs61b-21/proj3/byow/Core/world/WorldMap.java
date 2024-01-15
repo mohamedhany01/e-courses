@@ -1,6 +1,5 @@
 package byow.Core.world;
 
-import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import byow.Utilities.ds.quadtree.Dungeon;
@@ -53,7 +52,8 @@ public class WorldMap {
     // Get the split sections in the world and draw the dungeons inside
     private void drawInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons) {
         // Draw randomly using this random number
-        int drawDungeon = RandomUtils.uniform(new Random(), 4);
+//        int drawDungeon = RandomUtils.uniform(new Random(), 4);
+        int drawDungeon = 1;
 
         // Set tree node a leaf
         if (qt.children.isEmpty()) {
@@ -105,8 +105,8 @@ public class WorldMap {
             }
         } else if (dungeon.section.equals(Section.BOTTOM_RIGHT)) {
             // TODO 0 is not safe to depend on
-            if (x1 == 0 || y2 >= world.getHeight() || x2 >= world.getWidth()) {
-//                System.out.println(dungeon);
+            if (x1 == 0 || y2 >= world.getHeight() || x2 >= world.getWidth() || y1 == 0) {
+                System.out.println(dungeon);
 //                System.out.println("BOTTOM_RIGHT | OUTSIDE");
                 return true;
             }
@@ -123,7 +123,32 @@ public class WorldMap {
     }
 
     private void linkDungeonWithCorridor(LinkedList<Quadtree> dungeons, WorldMap world) {
-        // TODO
+        for (Quadtree dungeon : dungeons) {
+            if (isDungeonOutsideTheWorld(dungeon, world)) {
+                // Do something
+//                System.out.println();
+            } else {
+                if (dungeon.section.equals(Section.BOTTOM_RIGHT)) {
+                    // Some odd logic
+                    int steps = Math.abs(dungeon.parent.y2 - dungeon.parent.x2);
+                    int mid1 = steps - 6;
+                    int mid2 = mid1 + 2;
+
+                    for (int x = dungeon.parent.x2; x < dungeon.parent.x2 + 4; x++) {
+                        world.getWorld()[x - 3][dungeon.parent.y2 - mid1] = Tileset.WALL;
+                    }
+
+                    world.getWorld()[dungeon.parent.x2 - 3][dungeon.parent.y2 - mid1 - 1] = Tileset.NOTHING;
+
+                    for (int x = dungeon.parent.x2; x < dungeon.parent.x2 + 4; x++) {
+                        world.getWorld()[x - 3][dungeon.parent.y2 - mid2] = Tileset.WALL;
+                    }
+
+                    world.getWorld()[dungeon.parent.x2][dungeon.parent.y2 - mid2 + 1] = Tileset.NOTHING;
+                }
+
+            }
+        }
     }
 
     private void drawAllSections(Quadtree qt) {
