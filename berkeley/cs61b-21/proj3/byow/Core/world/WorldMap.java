@@ -5,24 +5,16 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import byow.Utilities.ds.quadtree.Dungeon;
 import byow.Utilities.ds.quadtree.Quadtree;
-import byow.Utilities.ds.quadtree.Section;
 
-import java.util.LinkedList;
 import java.util.Random;
 
 public class WorldMap {
     private final TETile[][] world;
-    private final LinkedList<Quadtree> dungeons;
-    private final int width;
-    private final int height;
 
     public WorldMap(int width, int height) {
         this.world = new TETile[width][height];
 
         this.initWorld(this.world, width, height);
-
-        this.width = width;
-        this.height = height;
 
         // Create the tree and split it 3 levels
         Quadtree quadtree = new Quadtree(new Dungeon(0, 0, width, height));
@@ -30,43 +22,20 @@ public class WorldMap {
         // The split-level is fine for 60x60 grid
         quadtree.split(2);
 
-        this.dungeons = new LinkedList<>();
-
-        drawInnerDungeons(quadtree, this.dungeons);
-
-        linkDungeonWithCorridor(dungeons, this);
-
-        System.out.println(this.dungeons.size());
+        drawInnerDungeons(quadtree);
 
         // Debug the sections
         //this.drawAllSections(quadtree);
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     // Get the split sections in the world and draw the dungeons inside
-    private void drawInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons) {
+    private void drawInnerDungeons(Quadtree qt) {
         // Draw randomly using this random number
         int drawDungeon = RandomUtils.uniform(new Random(), 4);
 
-        // Set tree node a leaf
-        if (qt.children.isEmpty()) {
-            qt.isLeaf = true;
-        }
 
         // Using the tree leafs to draw the dungeons
         if (qt.children.isEmpty() && drawDungeon == 1) {
-            qt.isDungeon = true;
-
-            // Collect all valid dungeons to process them later
-            dungeons.add(qt);
-
             for (int x = qt.parent.x1; x < qt.parent.x2 - 2; x++) {
                 for (int y = qt.parent.y1; y < qt.parent.y2 - 2; y++) {
                     if (x == qt.parent.x1 || x == qt.parent.x2 - 3 || y == qt.parent.y1 || y == qt.parent.y2 - 3) {
@@ -74,56 +43,12 @@ public class WorldMap {
                     }
                 }
             }
-
         }
 
         // Skip parents
         for (Quadtree quadtree : qt.children) {
-            drawInnerDungeons(quadtree, dungeons);
+            drawInnerDungeons(quadtree);
         }
-    }
-
-    private boolean isDungeonOutsideTheWorld(Quadtree dungeon, WorldMap world) {
-        int x1 = dungeon.parent.x1;
-        int y1 = dungeon.parent.y1;
-        int x2 = dungeon.parent.x2;
-        int y2 = dungeon.parent.y2;
-
-        if (dungeon.section.equals(Section.TOP_RIGHT)) {
-            if (y2 >= world.getHeight() || x2 >= world.getWidth()) {
-//                System.out.println(dungeon);
-//                System.out.println("TOP_RIGHT | OUTSIDE");
-                return true;
-            }
-        } else if (dungeon.section.equals(Section.TOP_LEFT)) {
-
-            // TODO 0 is not safe to depend on
-            if (x1 == 0 || y2 >= world.getHeight()) {
-//                System.out.println(dungeon);
-//                System.out.println("TOP_LEFT | OUTSIDE");
-                return true;
-            }
-        } else if (dungeon.section.equals(Section.BOTTOM_RIGHT)) {
-            // TODO 0 is not safe to depend on
-            if (x1 == 0 || y2 >= world.getHeight() || x2 >= world.getWidth()) {
-//                System.out.println(dungeon);
-//                System.out.println("BOTTOM_RIGHT | OUTSIDE");
-                return true;
-            }
-
-            // TODO 0 is not safe to depend on
-        } else if (dungeon.section.equals(Section.BOTTOM_LEFT)) {
-            if (x1 == 0 || y1 == 0 || x2 >= world.getWidth()) {
-//                System.out.println(dungeon);
-//                System.out.println("BOTTOM_LEFT | OUTSIDE");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void linkDungeonWithCorridor(LinkedList<Quadtree> dungeons, WorldMap world) {
-        // TODO
     }
 
     private void drawAllSections(Quadtree qt) {
