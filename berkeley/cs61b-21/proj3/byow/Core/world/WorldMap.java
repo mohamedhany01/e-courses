@@ -6,48 +6,79 @@ import byow.TileEngine.Tileset;
 import byow.Utilities.ds.quadtree.Dungeon;
 import byow.Utilities.ds.quadtree.Quadtree;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 public class WorldMap {
     private final TETile[][] world;
+    private final LinkedList<Quadtree> dungeons;
+    private final int width;
+    private final int height;
 
     public WorldMap(int width, int height) {
         this.world = new TETile[width][height];
+        this.width = width;
+        this.height = height;
 
         this.initWorld(this.world, width, height);
 
         // Create the tree and split it 3 levels
         Quadtree quadtree = new Quadtree(new Dungeon(0, 0, width, height));
+        this.dungeons = new LinkedList<>();
 
         // The split-level is fine for 60x60 grid
         quadtree.split(2);
 
-        drawInnerDungeons(quadtree);
+        // TODO: Temp logic for static dungeons | remove it
+        int[] numbers = {
+                3, 1, 2, 1, 2, 1, 1, 2, 3, 3,
+                3, 2, 2, 2, 3, 2, 2, 2, 1, 1, 1
+        };
+        int counter = 0;
+        // END temp logic
+        drawInnerDungeons(quadtree, this.dungeons, counter, numbers);
 
         // Debug the sections
         //this.drawAllSections(quadtree);
     }
 
     // Get the split sections in the world and draw the dungeons inside
-    private void drawInnerDungeons(Quadtree qt) {
+    private void drawInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons, int counter, int[] numbers) {
         // Draw randomly using this random number
         int drawDungeon = RandomUtils.uniform(new Random(), 4);
 
+        // Set tree node a leaf
+        if (qt.children.isEmpty()) {
+            qt.isLeaf = true;
+        }
 
         // Using the tree leafs to draw the dungeons
-        if (qt.children.isEmpty() && drawDungeon == 1) {
+        // TODO: revert this if (qt.children.isEmpty() && drawDungeon == 1)
+        if (qt.children.isEmpty() && numbers[counter] == 1) {
+            counter++;
+            qt.isDungeon = true;
+
+            // Collect all valid dungeons to process them later
+            dungeons.add(qt);
+
+            // qt.parent.x2 - 2 and qt.parent.y2 - 2 and qt.center.getX() - 1 ...etc
+            // Are for padding
             for (int x = qt.parent.x1; x < qt.parent.x2 - 2; x++) {
                 for (int y = qt.parent.y1; y < qt.parent.y2 - 2; y++) {
                     if (x == qt.parent.x1 || x == qt.parent.x2 - 3 || y == qt.parent.y1 || y == qt.parent.y2 - 3) {
                         world[x][y] = Tileset.WALL;
+
+                        // Debug the center point of the dungeons
+                        world[qt.center.getX() - 1][qt.center.getY() - 1] = Tileset.WALL;
                     }
                 }
             }
+
         }
 
         // Skip parents
         for (Quadtree quadtree : qt.children) {
-            drawInnerDungeons(quadtree);
+            drawInnerDungeons(quadtree, dungeons, ++counter, numbers);
         }
     }
 
@@ -123,6 +154,8 @@ public class WorldMap {
     public TETile[][] getWorld() {
         return world;
     }
+
+//    private
 
     /*
      *   Build maze: https://www.youtube.com/watch?v=Y37-gB83HKE
