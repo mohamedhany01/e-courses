@@ -5,13 +5,14 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import byow.Utilities.ds.quadtree.Dungeon;
 import byow.Utilities.ds.quadtree.Quadtree;
+import byow.Utilities.ds.triangulation.DelaunayTriangulation;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class WorldMap {
     private final TETile[][] world;
-    private final LinkedList<Quadtree> dungeons;
     private final int width;
     private final int height;
 
@@ -24,7 +25,6 @@ public class WorldMap {
 
         // Create the tree and split it 3 levels
         Quadtree quadtree = new Quadtree(new Dungeon(0, 0, width, height));
-        this.dungeons = new LinkedList<>();
 
         // The split-level is fine for 60x60 grid
         quadtree.split(2);
@@ -36,7 +36,17 @@ public class WorldMap {
         };
         int counter = 0;
         // END temp logic
-        drawInnerDungeons(quadtree, this.dungeons, counter, numbers);
+
+        LinkedList<Quadtree> dungeons = new LinkedList<>();
+        drawInnerDungeons(quadtree, dungeons, counter, numbers);
+
+        // Start to build a mesh using the delaunay triangulation
+        DelaunayTriangulation triangulationBuilder = new DelaunayTriangulation();
+
+        // Get the edges of the mesh
+        List<Edge> edges = triangulationBuilder.getEdges(dungeons);
+
+        System.out.println(edges);
 
         // Debug the sections
         //this.drawAllSections(quadtree);

@@ -34,7 +34,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return "Cell{" +
+        return "Point{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';
