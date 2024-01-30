@@ -3,6 +3,8 @@ package byow.Core.world;
 import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import byow.Utilities.ds.graph.MST;
+import byow.Utilities.ds.graph.MSTNode;
 import byow.Utilities.ds.quadtree.Dungeon;
 import byow.Utilities.ds.quadtree.Quadtree;
 import byow.Utilities.ds.triangulation.DelaunayTriangulation;
@@ -46,7 +48,14 @@ public class WorldMap {
         // Get the edges of the mesh
         List<Edge> edges = triangulationBuilder.getEdges(dungeons);
 
-        System.out.println(edges);
+        MST minimumSpanningTree = new MST();
+        List<MSTNode> treeNodes = minimumSpanningTree.getMST(edges);
+
+        // Debug MST nodes
+//        for (MSTNode node : treeNodes) {
+//            System.out.println(node);
+//        }
+
 
         // Debug the sections
         //this.drawAllSections(quadtree);
