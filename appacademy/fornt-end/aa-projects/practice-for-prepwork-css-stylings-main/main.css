@@ -1,0 +1,41 @@
+html {
+    background-color: #666;
+}
+
+h1 {
+    font-size: 40px;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 0px;
+    margin: 0px;
+    font-weight: bold;
+    text-decoration: underline;
+    color: cadetblue;
+    background-color: transparent;
+}
+
+h2 {
+    font-size: 30px;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 0px;
+    margin: 20px 0px;
+    font-weight: 800;
+    color: burlywood;
+    background-color: transparent;
+}
+
+p {
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 5px;
+    margin: 10px;
+    color: whitesmoke;
+    background-color: transparent;
+}
+
+.logo {
+    background-size: cover;
+    background-image: url("./logo-emblem-black-1000.png");
+    background-color: #888;
+    height: 100px;
+    width: 100px;
+}
