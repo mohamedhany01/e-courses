@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Learning the Forms</title>
+</head>
+
+<body>
+    <h1>Favorite Programming Language</h1>
+    <form action="" method="post">
+        <fieldset>
+            <legend>Add user</legend>
+
+            <div>
+                <label for="firstName">First name</label>
+                <input type="text" id="firstName" name="firstName">
+            </div>
+
+            <div>
+                <label for="lastName">Last name</label>
+                <input type="text" id="lastName" name="lastName">
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div>
+                <label for="status">Status</label>
+                <select id="status" name="userStatusType">
+                    <option value="student">Student</option>
+                    <option value="instructor">Instructor</option>
+                    <option value="guest">Guest</option>
+                </select>
+            </div>
+
+            <div>
+                <p>Choose your favorite programming language:</p>
+                <div>
+                    <input type="radio" name="language" id="html" />
+                    <label for="html">HTML</label>
+                </div>
+                <div>
+                    <input type="radio" name="language" id="css" />
+                    <label for="css">CSS</label>
+                </div>
+                <div>
+                    <input type="radio" name="language" id="javascript" />
+                    <label for="javascript">JavaScript</label>
+                </div>
+            </div>
+
+            <div>
+                <label for="comment">Comment</label>
+                <textarea id="comment" name="comment"></textarea>
+            </div>
+
+            <div>
+                <label for="date">Current Date</label>
+                <input type="date" id="date" name="currentDate" />
+            </div>
+
+            <div>
+                <input type="checkbox" id="newsletter" name="newsletter" />
+                <label for="newsletter">Sign up for newsletter</label>
+            </div>
+
+            <div>
+                <input type="checkbox" id="terms" name="terms" />
+                <label for="terms">Agree to terms and conditions</label>
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+
+        </fieldset>
+    </form>
+</body>
+
+</html>
