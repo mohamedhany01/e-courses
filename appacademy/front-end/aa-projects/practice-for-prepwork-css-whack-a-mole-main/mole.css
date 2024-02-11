@@ -1,9 +1,49 @@
 /* Your code here */
 
+.molehill-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.molehill-row--center {
+  place-items: center;
+}
+
+.molehill {
+  display: inline-block;
+  height: 366px;
+  overflow: hidden;
+  position: relative;
+  width: 400px;
+}
+
+.molehill__head {
+  left: 46.5%;
+  position: absolute;
+  transform: translateX(-50%);
+  transition: margin-top 0.25s;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.molehill__head--hidden {
+  margin-top: 500px;
+}
+
+.molehill__head--whacked {
+  /* TODO */
+  /* Bonus code here */
+}
+
+.molehill__hill {
+  bottom: 17%;
+  position: absolute;
+}
 
 
-/* UNCOMMENT THE CODE BELOW WHEN DIRECTED */
-/* .sb {
+/* Score style */
+
+.sb {
   background-color: cornflowerblue;
   border-bottom: 1px solid #645DED;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
@@ -12,17 +52,17 @@
   font-size: 30px;
   margin-bottom: 50px;
   padding: 10px 20px;
-} */
+}
 
-/* .sb__mole-counter {
+.sb__mole-counter {
   flex: 1 0 0;
   text-align: right;
-} */
+}
 
-/* .sb__score-holder {
+.sb__score-holder {
   flex: 1 0 0;
-} */
+}
 
-/* .sb__game-over--hidden {
+.sb__game-over--hidden {
   display: none;
-} */
+}

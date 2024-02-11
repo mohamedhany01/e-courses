@@ -1,18 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="mole.css">
-    <script type="text/javascript" src="mole.js"></script>
-  </head>
-  <body>
 
-    <!-- UNCOMMENT THE CODE BELOW WHEN DIRECTED -->
-    <!-- <div class="sb">
-      <div class="sb__score-holder">Score <span class="sb__score">0</span></div>
-      <div class="sb__game-over sb__game-over--hidden">Game Over</div>
-      <div class="sb__mole-counter">Moles <span class="sb__moles">30</span></div>
-    </div> -->
-    
-    <!-- Your code here -->
-  </body>
+<head>
+  <link rel="stylesheet" type="text/css" href="mole.css">
+  <script type="text/javascript" src="mole.js"></script>
+</head>
+
+<body>
+
+  <!-- Score -->
+  <div class="sb">
+    <div class="sb__score-holder">Score <span class="sb__score">0</span></div>
+    <div class="sb__game-over sb__game-over--hidden">Game Over</div>
+    <div class="sb__mole-counter">Moles <span class="sb__moles">30</span></div>
+  </div>
+
+  <!-- Game -->
+  <main class="molehill-game">
+    <div class="molehill-row molehill-row--center">
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+    </div>
+    <div class="molehill-row molehill-row--center">
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+      <div class="molehill">
+        <img class="molehill__head molehill__head--whacked" src="mole-head-241.png" width="241" height="228" alt="Mole's head" />
+        <img class="molehill__hill" src="mole-hill-400.png" width="400" height="138" alt="Mole's hill" />
+      </div>
+    </div>
+  </main>
+
+  <!-- Debug the game -->
+  <!-- <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      setInterval(() => {
+        const moleHeads = document.querySelectorAll('.molehill__head');
+        for (let moleHead of moleHeads) {
+          moleHead.classList.toggle('molehill__head--hidden');
+        }
+      }, 1000);
+
+    });
+  </script> -->
+</body>
+
 </html>
