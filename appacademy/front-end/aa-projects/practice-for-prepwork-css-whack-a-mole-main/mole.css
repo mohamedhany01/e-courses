@@ -30,9 +30,21 @@
   margin-top: 500px;
 }
 
+
+@keyframes ripple {
+  to {
+    transform: scale(15);
+    opacity: 0.01;
+  }
+}
+
 .molehill__head--whacked {
-  /* TODO */
-  /* Bonus code here */
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  position: fixed;
+  border-radius: 50%;
+  border: 1px solid #645DED;
 }
 
 .molehill__hill {

@@ -20,7 +20,7 @@ function popUpRandomMole() {
 
   clickable = true;
 
-  moleHead.classList.remove('molehill__head--hidden', 'molehill__head--whacked');
+  moleHead.classList.remove('molehill__head--hidden');
 
   molesLeft -= 1;
   document.querySelector('.sb__moles').innerHTML = molesLeft;
@@ -33,6 +33,21 @@ function hideMole(mole) {
   mole.classList.add('molehill__head--hidden');
 
   setTimeout(popUpRandomMole, 500);
+}
+
+function showRippleEffect(mole, e) {
+  const moleDivParent = mole.parentElement;
+
+  const tempDiv = document.createElement("div");
+  tempDiv.classList.add("molehill__head--whacked");
+
+  moleDivParent.appendChild(tempDiv);
+
+  tempDiv.style.left = `${e.clientX}px`;
+  tempDiv.style.top = `${e.clientY}px`;
+  tempDiv.style.animation = "ripple .3s  linear";
+
+  tempDiv.onanimationend = () => moleDivParent.removeChild(tempDiv);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -53,7 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       event.target.classList.add('molehill__head--hidden');
 
-      event.target.classList.add('molehill__head--whacked');
+      showRippleEffect(moleHead, event);
     });
   }
 });
