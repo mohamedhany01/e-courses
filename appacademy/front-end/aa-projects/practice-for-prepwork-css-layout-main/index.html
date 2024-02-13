@@ -1,69 +1,82 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="layout.css">
-    </head>
-    <body>
-        <form action="/form-handling-url" method="post">
-            <fieldset>
-            <legend>Add user</legend>
-        
-            <div>
-                <label for="firstName">First name</label>
-                <input type="text" id="firstName" name="first_name">
-            </div>
-        
-            <div>
-                <label for="lastName">Last name</label>
-                <input type="text" id="lastName" name="last_name">
-            </div>
-        
-            <div>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email_address">
-            </div>
-        
-            <div>
-                <label for="role">Status</label>
-                <select id="role" name="user_role_name">
-                <option value="student">Student</option>
-                <option value="instructor">Instructor</option>
-                <option value="guest">Guest</option>
-                </select>
-            </div>
-            
-            <div>
-                <p>Choose your favorite Web language:</p>
-                <input type="radio" id="html" name="fav_language" value="HTML">
-                <label for="html">HTML</label><br>
-                <input type="radio" id="css" name="fav_language" value="CSS">
-                <label for="css">CSS</label><br>
-                <input type="radio" id="javascript" name="fav_language" value="JavaScript">
-                <label for="javascript">JavaScript</label>
-            </div>
 
-            <div>
-                <label for="comments">Comments</label>
-                <textarea id="comments" name="comments"></textarea>
-            </div>
+<head>
+    <link rel="stylesheet" type="text/css" href="layout.css">
+</head>
 
-            <div>
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date">
-            </div>
+<body>
+    <form action="/form-handling-url" method="post" class="main-form">
+        <fieldset class="main-form__fieldset">
+            <legend class="main-form__fieldset-legend">Add user</legend>
 
-            <div>
-                <input type="checkbox" id="signup" name="signup" value="Signup">
-                <label for="signup">Sign up for news letter</label><br>
-                <input type="checkbox" id="terms" name="terms" value="Terms">
-                <label for="terms"> Agree to terms and conditions</label>
+            <div class="main-form__inner-wrapper">
+                <div class="main-form__field-row main-form__field-row--text-centered">
+                    <label for="firstName">First name:</label>
+                    <input type="text" id="firstName" name="first_name">
+                </div>
+                <div class="main-form__field-row main-form__field-row--text-centered">
+                    <label for="lastName">Last name:</label>
+                    <input type="text" id="lastName" name="last_name">
+                </div>
+                <div class="main-form__field-row main-form__field-row--text-centered">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email_address">
+                </div>
+                <div class="main-form__field-row main-form__field-row--space-between main-form__field-row--row">
+                    <div class="main-form__field-column">
+                        <label for="role">Status:</label>
+                        <select id="role" name="user_role_name">
+                            <option value="student">Student</option>
+                            <option value="instructor">Instructor</option>
+                            <option value="guest">Guest</option>
+                        </select>
+                    </div>
+                    <div class="main-form__field-column">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date">
+                    </div>
+                </div>
+                <div class="main-form__chosen">
+                    <p class="main-form__choose-text-header">Choose your favorite Web language:</p>
+                    <div class="main-form__field-row main-form__field-row--row main-form__field-row--space-between">
+                        <div class="main-form__field-column main-form__field-column--row">
+                            <input class="main-form__chosen-input" type="radio" id="html" name="fav_language"
+                                value="HTML">
+                            <label for="html">HTML</label>
+                        </div>
+                        <div class="main-form__field-column main-form__field-column--row">
+                            <input class="main-form__chosen-input" type="radio" id="css" name="fav_language"
+                                value="CSS">
+                            <label for="css">CSS</label>
+                        </div>
+                        <div class="main-form__field-column main-form__field-column--row">
+                            <input class="main-form__chosen-input" type="radio" id="javascript" name="fav_language"
+                                value="JavaScript">
+                            <label for="javascript">JavaScript</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-form__field-row">
+                    <label for="comments">Comments:</label>
+                    <textarea class="main-form__textarea" id="comments" name="comments"></textarea>
+                </div>
+                <div class="main-form__field-row main-form__field-row--row">
+                    <div class="main-form__field-column main-form__field-column--row">
+                        <input type="checkbox" id="signup" name="signup" value="Signup">
+                        <label class="main-form__checkbox-label" for="signup">Sign up for news letter</label>
+                    </div>
+                    <div class="main-form__field-column main-form__field-column--row">
+                        <input type="checkbox" id="terms" name="terms" value="Terms">
+                        <label class="main-form__checkbox-label" for="terms"> Agree to terms and conditions</label>
+                    </div>
+                </div>
+                <div class="main-form__field-row main-form__field-row--row">
+                    <button class="main-form__submit-button" type="submit">Submit</button>
+                </div>
             </div>
-        
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        
-            </fieldset>
-        </form>
-    </body>
+        </fieldset>
+    </form>
+</body>
+
 </html>
