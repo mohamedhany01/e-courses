@@ -32,3 +32,4 @@ hs_err_pid*
 berkeley/cs61b-2021/gitletx/.gitignore
 berkeley/cs61b-2021/gitletx/.gitletx
 
+node_modules
