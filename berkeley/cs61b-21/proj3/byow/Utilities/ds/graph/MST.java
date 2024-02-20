@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MST {
-    public List<MSTNode> getMST(List<Edge> edges) {
+    public List<EdgeNode> getMST(List<Edge> edges) {
         return generateMST(edges);
     }
-    private List<MSTNode> generateMST(List<Edge> edges) {
+    private List<EdgeNode> generateMST(List<Edge> edges) {
         // Create a simple weighted graph
         Graph<Point, DefaultWeightedEdge> graph = GraphTypeBuilder
                 .<Point, DefaultWeightedEdge>undirected()
@@ -47,7 +47,7 @@ public class MST {
 
         // Get the minimum spanning tree
         Graph<Point, DefaultWeightedEdge> mstGraph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        List<MSTNode> MSTreeNodes = new ArrayList<>();
+        List<EdgeNode> MSTreeNodes = new ArrayList<>();
 
         for (DefaultWeightedEdge edge : primMST.getSpanningTree()) {
             Point source = graph.getEdgeSource(edge);
@@ -64,7 +64,7 @@ public class MST {
             DefaultWeightedEdge mstEdge = mstGraph.addEdge(source, target);
             mstGraph.setEdgeWeight(mstEdge, weight);
 
-            MSTreeNodes.add(new MSTNode(source, target, (int)weight));
+            MSTreeNodes.add(new EdgeNode(source, target, (int)weight));
 
             // Debugging | Print MST edges to the console
 //            System.out.println("MST Edge: " + source + " -> " + target + " | Weight: " + weight);

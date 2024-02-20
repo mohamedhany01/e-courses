@@ -3,14 +3,15 @@ package byow.Core.world;
 import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import byow.Utilities.ds.graph.EdgeNode;
 import byow.Utilities.ds.graph.MST;
-import byow.Utilities.ds.graph.MSTNode;
 import byow.Utilities.ds.quadtree.Dungeon;
 import byow.Utilities.ds.quadtree.Quadtree;
 import byow.Utilities.ds.triangulation.DelaunayTriangulation;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class WorldMap {
@@ -29,18 +30,11 @@ public class WorldMap {
         Quadtree quadtree = new Quadtree(new Dungeon(0, 0, width, height));
 
         // The split-level is fine for 60x60 grid
-        quadtree.split(2);
-
-        // TODO: Temp logic for static dungeons | remove it
-        int[] numbers = {
-                3, 1, 2, 1, 2, 1, 1, 2, 3, 3,
-                3, 2, 2, 2, 3, 2, 2, 2, 1, 1, 1
-        };
-        int counter = 0;
-        // END temp logic
+        quadtree.split(3);
 
         LinkedList<Quadtree> dungeons = new LinkedList<>();
-        drawInnerDungeons(quadtree, dungeons, counter, numbers);
+         drawStaticDungeons(quadtree, dungeons);
+        // drawInnerDungeons(quadtree, dungeons);
 
         // Start to build a mesh using the delaunay triangulation
         DelaunayTriangulation triangulationBuilder = new DelaunayTriangulation();
@@ -49,22 +43,60 @@ public class WorldMap {
         List<Edge> edges = triangulationBuilder.getEdges(dungeons);
 
         MST minimumSpanningTree = new MST();
-        List<MSTNode> treeNodes = minimumSpanningTree.getMST(edges);
+        List<EdgeNode> treeNodes = minimumSpanningTree.getMST(edges);
 
         // Debug MST nodes
-//        for (MSTNode node : treeNodes) {
+//        for (EdgeNode node : treeNodes) {
 //            System.out.println(node);
 //        }
 
+        Map<EdgeNode, List<Point>> corridorsMap = triangulationBuilder.getCorridorsMap();
+        drawCorridors(corridorsMap);
+
+        // Debug the word in console
+        //drawWorldInConsole(world);
 
         // Debug the sections
         //this.drawAllSections(quadtree);
     }
 
-    // Get the split sections in the world and draw the dungeons inside
-    private void drawInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons, int counter, int[] numbers) {
-        // Draw randomly using this random number
-        int drawDungeon = RandomUtils.uniform(new Random(), 4);
+    private void drawCorridors(Map<EdgeNode, List<Point>> map) {
+        for (Map.Entry<EdgeNode, List<Point>> entry : map.entrySet()) {
+            EdgeNode mstNode = entry.getKey();
+            List<Point> path = entry.getValue();
+
+//            System.out.println("Path from " + mstNode.getSource() + " to " + mstNode.getTarget() + ":");
+            for (Point point : path) {
+//                System.out.println("(" + point.getX() + ", " + point.getY() + ")");
+                world[point.getX()][point.getY()] = Tileset.GRASS;
+            }
+        }
+    }
+
+    private void drawWorldInConsole(TETile[][] realWorld) {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
+                if (realWorld[i][j] == Tileset.WALL) {
+                    System.out.print("*");
+                } else {
+                    System.out.print(".");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    private void drawStaticDungeons(Quadtree qt, LinkedList<Quadtree> dungeons) {
+        int[] numbers = {
+                3, 1, 2, 1, 2, 1, 1, 2, 3, 3,
+                3, 2, 2, 2, 3, 2, 2, 2, 1, 1, 1
+        };
+        int counter = 0;
+
+        drawStaticInnerDungeons(qt, dungeons, counter, numbers);
+    }
+
+    private void drawStaticInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons, int counter, int[] numbers) {
 
         // Set tree node a leaf
         if (qt.children.isEmpty()) {
@@ -72,7 +104,6 @@ public class WorldMap {
         }
 
         // Using the tree leafs to draw the dungeons
-        // TODO: revert this if (qt.children.isEmpty() && drawDungeon == 1)
         if (qt.children.isEmpty() && numbers[counter] == 1) {
             counter++;
             qt.isDungeon = true;
@@ -97,7 +128,45 @@ public class WorldMap {
 
         // Skip parents
         for (Quadtree quadtree : qt.children) {
-            drawInnerDungeons(quadtree, dungeons, ++counter, numbers);
+            drawStaticInnerDungeons(quadtree, dungeons, ++counter, numbers);
+        }
+    }
+
+    // Get the split sections in the world and draw the dungeons inside
+    private void drawInnerDungeons(Quadtree qt, LinkedList<Quadtree> dungeons) {
+        // Draw randomly using this random number
+        int drawDungeon = RandomUtils.uniform(new Random(), 4);
+
+        // Set tree node a leaf
+        if (qt.children.isEmpty()) {
+            qt.isLeaf = true;
+        }
+
+        // Using the tree leafs to draw the dungeons
+        if (qt.children.isEmpty() && drawDungeon == 1) {
+            qt.isDungeon = true;
+
+            // Collect all valid dungeons to process them later
+            dungeons.add(qt);
+
+            // qt.parent.x2 - 2 and qt.parent.y2 - 2 and qt.center.getX() - 1 ...etc
+            // Are for padding
+            for (int x = qt.parent.x1; x < qt.parent.x2 - 2; x++) {
+                for (int y = qt.parent.y1; y < qt.parent.y2 - 2; y++) {
+                    if (x == qt.parent.x1 || x == qt.parent.x2 - 3 || y == qt.parent.y1 || y == qt.parent.y2 - 3) {
+                        world[x][y] = Tileset.WALL;
+
+                        // Debug the center point of the dungeons
+                        world[qt.center.getX() - 1][qt.center.getY() - 1] = Tileset.WALL;
+                    }
+                }
+            }
+
+        }
+
+        // Skip parents
+        for (Quadtree quadtree : qt.children) {
+            drawInnerDungeons(quadtree, dungeons);
         }
     }
 
