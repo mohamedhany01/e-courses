@@ -28,8 +28,23 @@ let result4 = none([4, -5, 7, -1], function(n) {
 console.log(result4);   // false
 *******************************************************************************/
 
-let none = function() {
+let none = function (array, callback) {
+    let counter = 0;
 
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+
+        if (callback(element, i)) {
+            counter++;
+
+            // A small optimization
+            if (counter > 1) {
+                return false;
+            }
+        }
+    }
+
+    return counter === 0;
 };
 
 
