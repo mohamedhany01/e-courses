@@ -24,7 +24,21 @@ console.log(table2(75)); // STILL prints 6
 
 ***********************************************************************/
 function recVolume(height) {
-  // Your code here
+  let h = height;
+  let w;
+  let l;
+
+  return function (num) {
+    if (w === undefined) {
+      w = num;
+      return recVolume(h);
+    } else if (l === undefined) {
+      l = num;
+      return h * w * l;
+    } else {
+      return h * w * l;
+    }
+  };
 }
 
 /**************DO NOT MODIFY ANYTHING UNDER THIS  LINE*****************/

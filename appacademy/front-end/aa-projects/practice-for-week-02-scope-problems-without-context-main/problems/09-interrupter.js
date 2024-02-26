@@ -20,9 +20,12 @@ console.log(rudePerson2("I love dogs")); // prints "I yo love yo dogs"
 ***********************************************************************/
 
 function interrupter(interruptingWord) {
-  // Your code here
-}
+  return function (string) {
+    const split = string.split(" ");
 
+    return `${split.join(` ${interruptingWord} `)}`;
+  }
+}
 /**************DO NOT MODIFY ANYTHING UNDER THIS  LINE*****************/
 try {
   module.exports = interrupter;

@@ -24,7 +24,15 @@ console.log(smoothie2("pineapple"));
 ***********************************************************************/
 
 const smoothieMachine = (...ingredients) => {
-  // Your code here
+  const pool = ingredients;
+
+  return function (...extra) {
+    pool.push(...extra);
+
+    const theMix = `I'm having a smoothie with ${pool.join(" and ")}`;
+
+    return theMix;
+  };
 };
 
 /**************DO NOT MODIFY ANYTHING UNDER THIS  LINE*****************/
