@@ -22,7 +22,22 @@ sort([]); // []
 ***********************************************************************/
 
 function sort(nums, sorted = []) {
-  // your code here
+  // Base case: If nums is empty, return sorted
+  if (nums.length === 0) {
+    return sorted;
+  }
+
+  // Find the smallest element in nums
+  const smallest = Math.min(...nums);
+
+  // Add the smallest element to the end of sorted
+  sorted.push(smallest);
+
+  // Remove the smallest element from nums
+  nums.splice(nums.indexOf(smallest), 1);
+
+  // Recursively call sort with updated nums and sorted
+  return sort(nums, sorted);
 }
 
 /**************DO NOT MODIFY ANYTHING UNDER THIS LINE*****************/

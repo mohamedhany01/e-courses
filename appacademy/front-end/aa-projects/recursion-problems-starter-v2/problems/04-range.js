@@ -10,8 +10,21 @@ range(3, 4); // [3]
 range(7, 6); // []
 ***********************************************************************/
 
+const range = (start, end) => {
+  const result = [];
 
-// your code here
+  const getRang = (result, start, end) => {
+    debugger;
+    if (start === end || end - start < 0) {
+      return result;
+    } else {
+      result.push(start++)
+      return getRang(result, start, end);
+    }
+  }
+
+  return getRang(result, start, end);
+}
 
 
 /**************DO NOT MODIFY ANYTHING UNDER THIS LINE*****************/

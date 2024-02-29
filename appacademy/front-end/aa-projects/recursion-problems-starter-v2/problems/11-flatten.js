@@ -10,8 +10,20 @@ flatten([1, 2]); // [1, 2]
 flatten([1, [2, [3]]]); // [1, 2, 3]
 ***********************************************************************/
 
-// your code here
-  
+const flatten = array => {
+  let result = [];
+
+  for (let i = 0; i < array.length; i++) {
+    if (Array.isArray(array[i])) {
+      result = [...result, ...flatten(array[i])];
+    } else {
+      result.push(array[i])
+    }
+  }
+
+  return result;
+}
+
 /**************DO NOT MODIFY ANYTHING UNDER THIS LINE*****************/
 try {
   module.exports = flatten;

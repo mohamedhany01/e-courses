@@ -55,11 +55,41 @@ combinations.
 
 function greedyMakeChange(target, coins = [25, 10, 5, 1]) {
   // no tests for greedyMakeChange so make sure to test this on your own
-  // your code here
+  const change = [];
+  for (let i = 0; i < coins.length; i++) {
+    const coin = coins[i];
+    while (target >= coin) {
+      change.push(coin);
+      target -= coin;
+    }
+  }
+  return change;
 }
 
 function makeBetterChange(target, coins = [25, 10, 5, 1]) {
-  // your code here
+  if (target === 0) {
+    return [];
+  }
+
+  let bestChange = null;
+
+  coins.forEach((coin, index) => {
+    if (coin > target) {
+      return;
+    }
+
+    const remainder = target - coin;
+    const restChange = makeBetterChange(remainder, coins.slice(index));
+
+    if (restChange !== null) {
+      const change = [coin].concat(restChange);
+      if (bestChange === null || change.length < bestChange.length) {
+        bestChange = change;
+      }
+    }
+  });
+
+  return bestChange;
 }
 
 
