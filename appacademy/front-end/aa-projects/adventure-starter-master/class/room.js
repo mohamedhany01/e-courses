@@ -44,8 +44,8 @@ class Room {
     }
 
     getItemByName(name) {
-
-        // Fill this in
+        const [item] = this.items.filter(item => item.name === name);
+        return item;
     }
 
 }
