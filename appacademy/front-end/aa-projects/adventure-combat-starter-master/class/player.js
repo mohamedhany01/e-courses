@@ -1,6 +1,6 @@
-const {Character} = require('./character');
-const {Enemy} = require('./enemy');
-const {Food} = require('./food');
+const { Character } = require('./character');
+const { Enemy } = require('./enemy');
+const { Food } = require('./food');
 
 class Player extends Character {
 
@@ -27,7 +27,7 @@ class Player extends Character {
       console.log(`${this.name} is not carrying anything.`);
     } else {
       console.log(`${this.name} is carrying:`);
-      for (let i = 0 ; i < this.items.length ; i++) {
+      for (let i = 0; i < this.items.length; i++) {
         console.log(`  ${this.items[i].name}`);
       }
     }
@@ -35,37 +35,54 @@ class Player extends Character {
 
   takeItem(itemName) {
 
-    // Fill this in
+    // Copy the item from the room to the player's inventory
+    this.items = [...this.currentRoom.items];
+
+    // Find and remove the item from the room array
+    this._removeItem(this.currentRoom.items, itemName);
 
   }
 
   dropItem(itemName) {
 
-    // Fill this in
+    // Copy the item from the player's inventory to the room
+    this.currentRoom.items = [...this.items];
 
-  }
+    // Find and remove the item from the player array
+    this._removeItem(this.items, itemName);
+}
 
   eatItem(itemName) {
+    const itemIndex = this.items.findIndex((item) => item.name === itemName);
+    const item = this.items[itemIndex];
 
-    // Fill this in
+    if (!item.isFood) { return; }
 
-  }
+    // Find and remove the item from the player array
+    this._removeItem(this.items, itemName);
+}
 
   getItemByName(name) {
+    const [item] = this.items.filter(item => item.name === name);
 
-    // Fill this in
-
+    return item;
   }
 
   hit(name) {
+    const enemy = this.currentRoom.getEnemyByName(name);
 
-    // Fill this in
-
+    enemy.attackTarget = this;
   }
 
   die() {
     console.log("You are dead!");
     process.exit();
+  }
+
+  _removeItem(items, itemName) {
+    // Find and remove the item from the array
+    const itemIndex = items.findIndex((item) => item.name === itemName);
+    items.splice(itemIndex, 1);
   }
 
 }

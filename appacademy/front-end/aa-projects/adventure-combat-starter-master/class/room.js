@@ -5,6 +5,7 @@ class Room {
     this.description = description;
     this.exits = {};
     this.items = [];
+    this.enemies = [];
   }
 
   getEnemies() {
@@ -52,15 +53,16 @@ class Room {
   }
 
   getItemByName(name) {
-
-    // Fill this in
-
+    const [item] = this.items.filter(item => item.name === name);
+    
+    return item;
   }
 
   getEnemyByName(name) {
-
-    // Fill this in
-
+    const [enemy] = this.enemies.filter(n => n.name === name);
+    
+    return enemy;
+  }
 }
 
 module.exports = {
