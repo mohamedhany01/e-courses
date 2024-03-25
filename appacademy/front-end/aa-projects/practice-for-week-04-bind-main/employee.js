@@ -5,11 +5,15 @@ class Employee {
     }
 
     sayName() {
-        console.log(`${this.name} says hello`);
+        setTimeout(function () {
+            console.log(`${this.name} says hello`);
+        }.bind(this), 2000);
     }
 
     sayOccupation() {
-        console.log(`${this.name} is a ${this.occupation}`);
+        setTimeout(function () {
+            console.log(`${this.name} is a ${this.occupation}`);
+        }.bind(this), 3000);
     }
 }
 
