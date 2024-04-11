@@ -77,6 +77,20 @@ describe ('Connect Four', function () {
 
   });
 
+  
+  it('recognizes diagonal downward wins (corner case)', function () {
+
+    grid = [[' ',' ',' ',' ',' ',' ',' '],
+            [' ',' ',' ',' ',' ',' ',' '],
+            [' ',' ',' ','X',' ',' ',' '],
+            [' ',' ',' ',' ','X',' ',' '],
+            [' ',' ',' ',' ',' ','X',' '],
+            [' ',' ',' ',' ',' ',' ','X']]
+
+    expect(ConnectFour.checkWin(grid)).to.equal('X');
+    
+  });
+
   it('recognizes diagonal upward wins', function () {
 
     grid = [[' ',' ',' ',' ',' ',' ',' '],
@@ -88,6 +102,19 @@ describe ('Connect Four', function () {
 
     expect(ConnectFour.checkWin(grid)).to.equal('O');
 
+  });
+
+  it('recognizes diagonal upward wins (corner case)', function () {
+
+    grid = [[' ',' ',' ',' ',' ',' ',' '],
+            [' ',' ',' ',' ',' ',' ',' '],
+            [' ',' ',' ','O',' ',' ',' '],
+            [' ',' ','O',' ',' ',' ',' '],
+            [' ','O',' ',' ',' ',' ',' '],
+            ['O',' ',' ',' ',' ',' ',' ']]
+
+    expect(ConnectFour.checkWin(grid)).to.equal('O');
+    
   });
 
   it('recognizes ties', function () {
