@@ -5,98 +5,98 @@ justification for your answer. Assume `arr` is an array of length _n_.
 
 ## `arr.push()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(1)
+Space complexity: O(1)
+Justification: Does one operation on the array
 
 [push on MDN][push]
 
 
 ## `arr.pop()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(1)
+Space complexity: O(1)
+Justification: Does one operation on the array
 
 [pop on MDN][pop]
 
 ## `arr.shift()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(1)
+Justification: After shifting the array needs to be rearranged
 
 [shift on MDN][shift]
 
 ## `arr.unshift()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: After unshifting the array needs to be rearranged and create a new array
 
 [unshift on MDN][unshift]
 
 ## `arr.splice()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: After splice the array needs to be rearranged and create a new array
 
 [splice on MDN][splice]
 
 ## `arr.slice()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: After slice the array needs to be rearranged and create a new array
 
 [slice on MDN][slice]
 
 ## `arr.indexOf()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(1)
+Justification: Need to loop on the whole array 
 
 [indexOf on MDN][indexOf]
 
 ## `arr.map()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: Need to loop on the whole array and create a new array
 
 [map on MDN][map]
 
 ## `arr.filter()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: Need to loop on the whole array and create a new array
 
 [filter on MDN][filter]
 
 ## `arr.reduce()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(1)
+Justification: Need to loop on the whole array
 
 [reduce on MDN][reduce]
 
 ## `arr.reverse()`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(1)
+Justification: Need to loop on the whole array
 
 [reverse on MDN][reverse]
 
 ## `[...arr]`
 
-Time complexity: O(?)
-Space complexity: O(?)
-Justification: _Fill this in_
+Time complexity: O(N)
+Space complexity: O(N)
+Justification: Need to loop on the whole array and create a new array
 
 [spread on MDN][spread]
 
