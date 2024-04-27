@@ -3,7 +3,16 @@
 /******************************************************************************/
 
 const convertToBase10 = str => {
-  // Your code here
+  const base = str[1];
+
+  const bin = str.split("").splice(2, str.length).join("");
+
+  if (base === "b") {
+    return parseInt(bin, 2);
+  } else {
+    return parseInt(bin, 16);
+  }
+  
 };
 
 /******************************************************************************/

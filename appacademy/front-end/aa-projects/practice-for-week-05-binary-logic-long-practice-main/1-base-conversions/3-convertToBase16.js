@@ -3,7 +3,13 @@
 /******************************************************************************/
 
 const convertToBase16 = element => {
-  // Your code here
+  if (typeof element === 'number') {
+    return "0x" + element.toString(16);
+  }
+
+  const bin = element.split("").splice(2, element.length).join("");
+
+  return "0x" + parseInt(bin, 2).toString(16);
 };
 
 /******************************************************************************/
