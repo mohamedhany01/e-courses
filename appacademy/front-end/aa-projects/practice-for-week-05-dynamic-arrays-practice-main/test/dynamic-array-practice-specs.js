@@ -10,7 +10,7 @@ describe('Dynamic array', () => {
   let noUnshiftSpy = chai.spy.on(Array.prototype, "unshift");
 
   beforeEach(function () {
-    
+
     dynamicArr = new DynamicArray();
 
 
@@ -75,6 +75,50 @@ describe('Dynamic array', () => {
     expect(dynamicArr.data[2]).to.deep.equal(1);
 
     expect(noUnshiftSpy).to.have.not.been.called()
+  });
+
+  it('can resize and add new value', function () {
+
+    expect(dynamicArr.length).to.equal(0);
+    expect(dynamicArr.capacity).to.equal(4);
+
+    dynamicArr.unshift(1);
+
+    expect(dynamicArr.length).to.equal(1);
+    expect(dynamicArr.capacity).to.equal(4);
+    expect(dynamicArr.data[0]).to.deep.equal(1);
+
+    dynamicArr.unshift(2);
+
+    expect(dynamicArr.length).to.equal(2);
+    expect(dynamicArr.capacity).to.equal(4);
+    expect(dynamicArr.data[0]).to.deep.equal(2);
+    expect(dynamicArr.data[1]).to.deep.equal(1);
+
+    dynamicArr.unshift(3);
+
+    expect(dynamicArr.length).to.equal(3);
+    expect(dynamicArr.capacity).to.equal(4);
+    expect(dynamicArr.data[0]).to.deep.equal(3);
+    expect(dynamicArr.data[1]).to.deep.equal(2);
+    expect(dynamicArr.data[2]).to.deep.equal(1);
+
+    expect(noUnshiftSpy).to.have.not.been.called();
+
+    dynamicArr.unshift(10);
+
+    dynamicArr.unshift(6);
+
+    dynamicArr.unshift(90);
+
+    dynamicArr.unshift(8);
+
+    dynamicArr.unshift(1000);
+
+    expect(dynamicArr.length).to.equal(8);
+    expect(dynamicArr.capacity).to.equal(8);
+    expect(dynamicArr.data[0]).to.deep.equal(1000);
+    expect(dynamicArr.data[7]).to.deep.equal(1);
   });
 
 });
