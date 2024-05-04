@@ -10,6 +10,7 @@ class SinglyLinkedNode {
 class SinglyLinkedList {
     constructor(head = null) {
         this.head = head;
+        this.length = 0;
     }
 
     addToTail(val) {
@@ -17,6 +18,7 @@ class SinglyLinkedList {
 
         if (!this.head) {
             this.head = newNode;
+            this.length++;
             return this.head;
         }
 
@@ -26,50 +28,151 @@ class SinglyLinkedList {
         }
 
         curr.next = newNode;
+        this.length++;
+
         return this.head;
     }
 
+    // Time O(1)
+    // Space O(1)
     listLength() {
-        // Returns the length of the list
-        // Implement in O(n) and in O(1) time complexity
+        return this.length;
     }
 
+    // Time O(N)
+    // Space O(1)
     sumOfNodes() {
-        // Returns the sum of the values of all the nodes
+        let total = 0;
 
-        // Write your hypothesis on the time complexity of this method here
+        if (!this.head) {
+            return total;
+        }
+
+        let currentNode = this.head;
+
+        while (currentNode.next) {
+            total += currentNode.value;
+            currentNode = currentNode.next;
+        }
+
+        total += currentNode.value;
+
+        return total;
     }
 
+    // Time O(N)
+    // Space O(1)
     averageValue() {
-        // Returns the average value of all the nodes
-
-        // Write your hypothesis on the time complexity of this method here
+        return this.sumOfNodes() / this.length;
     }
 
+    // Time O(N)
+    // Space O(1)
     findNthNode(n) {
-        // Returns the node at the nth index from the head
+        let result = null;
 
-        // Write your hypothesis on the time complexity of this method here
+        if (!this.head) {
+            return result;
+        }
+
+        if (n > this.length) {
+            return result;
+        }
+
+        let currentNode = this.head;
+
+        let counter = 0;
+
+        while (currentNode.next) {
+            if (counter === n) {
+                return result = currentNode;
+            }
+
+            currentNode = currentNode.next;
+            counter++;
+        }
+
+        return result;
     }
 
+    // Time O(N)
+    // Space O(1)
     findMid() {
-        // Returns the middle node
-        // Implement this as a singly linked list then as a doubly linked list
-            // How do the implementation for singly and doubly vary if at all?
+        if (!this.head) {
+            return null;
+        }
 
-        // Write your hypothesis on the time complexity of this method here
+        if (this.length === 1) {
+            return this.head.value;
+        }
+
+        const mid = Math.ceil(this.length / 2) - 1;
+
+        let currentNode = this.head;
+
+        let counter = 0;
+
+        while (currentNode.next) {
+            if (counter === mid) {
+                return currentNode;
+            }
+
+            currentNode = currentNode.next;
+            counter++;
+        }
+
+        return null;
     }
 
+    // Time O(N)
+    // Space O(N)
     reverse() {
-        // Returns a new reversed version of the linked list
-
-        // Write your hypothesis on the time complexity of this method here
+        this.head = this._reverseUtil(this.head);
+        return this;
     }
 
-    reverseInPlace() {
-        // Reverses the linked list in-place
+    _reverseUtil(node) {
 
-        // Write your hypothesis on the time complexity of this method here
+        if (!node) {
+            return null;
+        }
+
+        if (!node.next) {
+            return node;
+        }
+
+        let newHead = this._reverseUtil(node.next);
+        node.next.next = node;
+        node.next = null;
+
+        return newHead;
+    }
+
+    // Time O(N)
+    // Space O(1)
+    reverseInPlace() {
+        if (!this.head) {
+            return null;
+        }
+
+        if (this.length === 1) {
+            return this.head;
+        }
+
+        let currentNode = this.head;
+        let nextNode = null;
+        let previousNode = null;
+
+        while (currentNode) {
+            nextNode = currentNode.next;
+            currentNode.next = previousNode;
+            previousNode = currentNode;
+            currentNode = nextNode;
+        }
+
+        this.head = previousNode;
+
+        return this;
     }
 }
 
@@ -85,6 +188,7 @@ class DoublyLinkedList {
     constructor() {
         this.head = null;
         this.tail = null;
+        this.length = 0;
     }
 
     addToTail(val) {
@@ -93,34 +197,99 @@ class DoublyLinkedList {
         if (!this.head) {
             this.head = newNode;
             this.tail = newNode;
+            this.length++;
             return this.head;
         }
 
         this.tail.next = newNode;
         newNode.prev = this.tail;
         this.tail = newNode;
+        this.length++;
 
         return this.head;
     }
 
+    // Time O(N)
+    // Space O(1)
     findMid() {
-        // Returns the middle node
-        // Implement this as a singly linked list then as a doubly linked list
-            // How do the implementation for singly and doubly vary if at all?
+        if (!this.head) {
+            return null;
+        }
 
-        // Write your hypothesis on the time complexity of this method here
+        if (this.length === 1) {
+            return this.head.value;
+        }
+
+        const mid = Math.ceil(this.length / 2) - 1;
+
+        let currentNode = this.head;
+
+        let counter = 0;
+
+        while (currentNode.next) {
+            if (counter === mid) {
+                return currentNode;
+            }
+
+            currentNode = currentNode.next;
+            counter++;
+        }
+
+        return null;
     }
 
+    // Time O(N)
+    // Space O(N)
     reverse() {
-        // Returns a new reversed version of the linked list
-
-        // Write your hypothesis on the time complexity of this method here
+        this.head = this._reverseUtil(this.head);
+        return this;
     }
 
-    reverseInPlace() {
-        // Reverses the linked list in-place
+    _reverseUtil(node) {
 
-        // Write your hypothesis on the time complexity of this method here
+        if (!node) {
+            return null;
+        }
+
+        if (!node.next) {
+            node.prev = null;
+            return node;
+        }
+
+        let newHead = this._reverseUtil(node.next);
+        node.prev = node.next;
+        node.next.next = node;
+        node.next = null;
+
+        return newHead;
+    }
+
+
+    // Time O(N)
+    // Space O(1)
+    reverseInPlace() {
+        if (!this.head) {
+            return null;
+        }
+
+        if (this.length === 1) {
+            return this.head;
+        }
+
+        let currentNode = this.head;
+        let nextNode = null;
+        let previousNode = null;
+
+        while (currentNode) {
+            nextNode = currentNode.next;
+            currentNode.next = previousNode;
+            previousNode = currentNode;
+            currentNode = nextNode;
+        }
+
+        this.head = previousNode;
+
+        return this;
     }
 }
 

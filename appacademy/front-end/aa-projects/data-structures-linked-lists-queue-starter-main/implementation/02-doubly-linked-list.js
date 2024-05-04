@@ -14,53 +14,107 @@ class DoublyLinkedList {
         this.length = 0;
     }
 
+    // Time O(1)
+    // Space O(1)
     addToHead(val) {
-        // There are bugs in this method! Fix them!!!
-        // Write your hypothesis on the time complexity of this method here
-
-        // Add node of val to head of linked list
-        let newNode = new DoublyLinkedNode(val);
-
-        if (this.length >= 0) {
-            this.head.previous = newNode;
-            newNode.next = this.head;
-            this.head = newNode;
-        } else {
-            this.head = newNode;
-            this.tail = newNode;
+        if (!this.head) {
+            this.head = new DoublyLinkedNode(val);
+            this.tail = this.head;
+            this.length++;
+            return
         }
+
+        const newNode = new DoublyLinkedNode(val);
+        this.head.prev = newNode;
+        newNode.next = this.head;
+        this.head = newNode;
+        this.length++;
+    }
+
+    // Time O(1)
+    // Space O(1)
+    addToTail(val) {
+        if (!this.head) {
+            this.addToHead(val);
+            return;
+        }
+
+        const newNode = new DoublyLinkedNode(val);
+
+        newNode.prev = this.tail;
+        this.tail.next = newNode;
+        this.tail = newNode;
 
         this.length++;
     }
 
-    addToTail(val) {
-        // Add node of val to tail of linked list
-
-        // Write your hypothesis on the time complexity of this method here
-    }
-
+    // Time O(1)
+    // Space O(1)
     removeFromHead() {
-        // Remove node at head
+        if (!this.head) {
+            return undefined;
+        }
 
-        // Write your hypothesis on the time complexity of this method here
+        if (this.length === 1) {
+            return this.removeFromTail();
+        }
+
+        const currentValue = this.head.value;
+
+        this.head = this.head.next;
+        this.head.prev = null;
+
+        this.length--;
+
+        return currentValue;
     }
 
+    // Time O(1)
+    // Space O(1)
     removeFromTail() {
-        // Remove node at tail
+        if (!this.head) {
+            return undefined;
+        }
 
-        // Write your hypothesis on the time complexity of this method here
+        if (this.length === 1) {
+            const currentValue = this.head.value;
+
+            this.head = null;
+            this.tail = this.head;
+
+            this.length--;
+
+            return currentValue;
+        }
+
+        const currentValue = this.tail.value;
+
+        this.tail = this.tail.prev;
+        this.tail.next = null;
+
+        this.length--;
+
+        return currentValue;
     }
 
+    // Time O(1)
+    // Space O(1)
     peekAtHead() {
-        // Return value of head node
+        if (!this.head) {
+            return undefined;
+        }
 
-        // Write your hypothesis on the time complexity of this method here
+        return this.head.value;
     }
 
+    // Time O(1)
+    // Space O(1)
     peekAtTail() {
-        // Return value of tail node
-        
-        // Write your hypothesis on the time complexity of this method here
+        if (!this.head) {
+            return undefined;
+        }
+
+        return this.tail.value;
     }
 }
 
