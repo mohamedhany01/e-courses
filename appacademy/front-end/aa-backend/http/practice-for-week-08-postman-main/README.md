@@ -56,9 +56,24 @@ path of the request should be [http://localhost:5000/posts].
 Your goal is to request the following operations on the server using Postman:
 
 - create a post
+``` shell
+curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d 'title=post1&description=foo' http://localhost:5000/posts
+```
 - leave two comments on the post
+``` shell
+curl.exe -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d 'text=hello 1' http://localhost:5000/posts/3/comments
+```
+``` shell
+curl.exe -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d 'text=hello 2' http://localhost:5000/posts/3/comments
+```
 - edit the post
+``` shell
+curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d 'title=hello 1 updated&description=buz' http://localhost:5000/posts/3
+```
 - delete one of the comments on the post
+``` shell
+curl.exe -X POST http://localhost:5000/comments/5/delete
+```
 
 Formulate the requests in Postman and each request should be sent with all the
 necessary request components. All requests that require a body should have the
