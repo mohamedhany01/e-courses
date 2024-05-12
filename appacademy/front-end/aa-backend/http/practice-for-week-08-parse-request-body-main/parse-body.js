@@ -1,25 +1,31 @@
 function firstStep(input) {
-  // Your code here
+  return input.split("&");
 }
 
 function secondStep(input) {
-  // Your code here
+  return input.map((entry) => entry.split("=")).map((twoPairs) => [twoPairs[0], twoPairs[1]]);
 }
 
 function thirdStep(input) {
-  // Your code here
+  // Remove "+"
+  return input.map((twoPairs) => [twoPairs[0], twoPairs[1].split("+").join(" ")]);
 }
 
 function fourthStep(input) {
-  // Your code here
+
+  // Decode percent-encoding
+  // https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding
+  return input.map((twoPairs) => [twoPairs[0], decodeURIComponent(twoPairs[1])]);
 }
 
 function fifthStep(input) {
-  // Your code here
+  return input.reduce((obj, arr) => ({ ...obj, [arr[0]]: arr[1] }), {});
 }
 
 function parseBody(str) {
-  // Your code here
+  if (!str) return;
+
+  return [firstStep, secondStep, thirdStep, fourthStep, fifthStep].reduce((result, fun) => fun(result), str);
 }
 
 /******************************************************************************/
