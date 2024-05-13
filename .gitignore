@@ -33,3 +33,8 @@ berkeley/cs61b-2021/gitletx/.gitignore
 berkeley/cs61b-2021/gitletx/.gitletx
 
 node_modules
+
+# Cypress cache
+**/cypress/plugins/
+**/cypress/screenshots/
+**/cypress/support/

@@ -4,5 +4,6 @@
         "**/__image_snapshots__/*"
     ],
     "video": false,
-    "specPattern": "cypress/integration/*"
+    "specPattern": "cypress/integration/*",
+    "chromeWebSecurity": false
 }
