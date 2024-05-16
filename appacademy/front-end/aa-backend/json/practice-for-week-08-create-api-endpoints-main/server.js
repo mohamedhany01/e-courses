@@ -1,6 +1,6 @@
 const http = require('http');
 
-const dogs = [
+let dogs = [
   {
     dogId: 1,
     name: "Fluffy",
@@ -53,46 +53,114 @@ const server = http.createServer((req, res) => {
 
     // GET /dogs
     if (req.method === 'GET' && req.url === '/dogs') {
-      // Your code here
 
-      return res.end();
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      return res.end(JSON.stringify(dogs));
     }
 
     // GET /dogs/:dogId
     if (req.method === 'GET' && req.url.startsWith('/dogs/')) {
       const urlParts = req.url.split('/'); // ['', 'dogs', '1']
+      let responseData;
+
       if (urlParts.length === 3) {
-        const dogId = urlParts[2];
-        // Your code here
+        const dogId = parseInt(urlParts[2]);
+        responseData = dogs.filter(dog => dog.dogId === dogId);
+
+        if (responseData.length > 0) {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          responseData = JSON.stringify(responseData[0]);
+        } else {
+          responseData = "No dog with this ID";
+          res.statusCode = 404;
+          res.setHeader("Content-Type", "text/html");
+        }
       }
-      return res.end();
+
+      return res.end(responseData);
     }
 
     // POST /dogs
     if (req.method === 'POST' && req.url === '/dogs') {
       const { name, age } = req.body;
-      // Your code here
-      return res.end();
+
+      const newDog = {
+        dogId: getNewDogId(),
+        name: name,
+        age: age
+      };
+
+      dogs.push(newDog);
+
+      res.statusCode = 201;
+      res.setHeader("Content-Type", "application/json");
+
+      return res.end(JSON.stringify(newDog));
     }
 
     // PUT or PATCH /dogs/:dogId
-    if ((req.method === 'PUT' || req.method === 'PATCH')  && req.url.startsWith('/dogs/')) {
+    if ((req.method === 'PUT' || req.method === 'PATCH') && req.url.startsWith('/dogs/')) {
       const urlParts = req.url.split('/');
+
+      let responseData;
+
       if (urlParts.length === 3) {
-        const dogId = urlParts[2];
-        // Your code here
+
+        const dogId = parseInt(urlParts[2]);
+        const { name, age } = req.body;
+
+        const dogIndex = dogs.findIndex(dog => dog.dogId === dogId);
+
+        if (dogIndex === -1) {
+          responseData = "No dog with this ID";
+
+          res.statusCode = 404;
+          res.setHeader("Content-Type", "text/html");
+        } else {
+          dogs[dogIndex].age = age;
+          dogs[dogIndex].name = name;
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          responseData = JSON.stringify(dogs[dogIndex]);
+        }
       }
-      return res.end();
+
+      return res.end(responseData);
     }
 
     // DELETE /dogs/:dogId
     if (req.method === 'DELETE' && req.url.startsWith('/dogs/')) {
+
       const urlParts = req.url.split('/');
+
+      let responseData;
+
       if (urlParts.length === 3) {
-        const dogId = urlParts[2];
-        // Your code here
+
+        const dogId = parseInt(urlParts[2]);
+
+        const dogIndex = dogs.findIndex(dog => dog.dogId === dogId);
+
+        if (dogIndex === -1) {
+          responseData = "No dog with this ID";
+
+          res.statusCode = 404;
+          res.setHeader("Content-Type", "text/html");
+        } else {
+          dogs = dogs.filter(dog => dog.dogId !== dogId)
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          responseData = JSON.stringify({
+            message: "Successfully deleted"
+          });
+        }
       }
-      return res.end();
+
+      return res.end(responseData);
     }
 
     // No matching endpoint
@@ -105,8 +173,8 @@ const server = http.createServer((req, res) => {
 
 
 if (require.main === module) {
-    const port = 8000;
-    server.listen(port, () => console.log('Server is listening on port', port));
+  const port = 8000;
+  server.listen(port, () => console.log('Server is listening on port', port));
 } else {
-    module.exports = server;
+  module.exports = server;
 }
