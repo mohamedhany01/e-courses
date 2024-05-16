@@ -9,7 +9,10 @@ Paste your code for fetch requests here once you finish each task.
   components to the console.
 */
 
-// Your code here
+fetch('http://localhost:5000/posts')
+  .then(res => res.json());
+
+[{ "postId": 1, "message": "Hello World!" }, { "postId": 2, "message": "Ciao!" }]
 
 
 
@@ -19,4 +22,15 @@ Paste your code for fetch requests here once you finish each task.
   components to the console.
 */
 
+fetch('/posts', {
+  method: 'POST',
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "Foo"
+  })
+})
+
 // Your code here
+[{ "postId": 3, "message": "Foo" }]
