@@ -1,36 +1,58 @@
+const THEME_NAME_KEY = "theme";
+
+function isLocalStorageEmpty() {
+    return localStorage.getItem(THEME_NAME_KEY) === null;
+}
+
+function isSessionStorageEmpty() {
+    return sessionStorage.getItem(THEME_NAME_KEY) === null;
+}
+
 /* ================================ PHASE 1 ================================ */
 
 // For storing user's theme selection in the browser
 function storeTheme(themeName) {
-    // Your code here
+    localStorage.setItem(THEME_NAME_KEY, themeName);
 }
 
 // For restoring theme, if selected by the user in the past
 function restoreTheme() {
-    // Your code here
+    if (!isLocalStorageEmpty()) {
+        const theme = localStorage.getItem(THEME_NAME_KEY);
+
+        setTheme(theme);
+
+        // document.cookie = `${THEME_NAME_KEY}=${theme}; expires=Fri, 31 Dec 9999 23:59:59 UTC; path=/`;
+    }
 }
 
 // For clearing theme selection from the browser's storage (reset to default)
 
 function clearTheme() {
-    // Your code here
+    if (!isLocalStorageEmpty()) {
+        localStorage.removeItem(THEME_NAME_KEY);
+    }
 }
 
 /* ================================ PHASE 2 ================================ */
 
 // For storing user's display name
 function storeName(displayName) {
-    // Your code here
+    sessionStorage.setItem(THEME_NAME_KEY, displayName);
 }
 
 // For restoring user's display name, if set in the past
 function restoreName() {
-    // Your code here
+    if (!isSessionStorageEmpty()) {
+        setInputValue("display-name", sessionStorage.getItem(THEME_NAME_KEY))
+    }
 }
 
 // For clearing user's display name from browser storage
 function clearName() {
-    // Your code here
+    if (!isSessionStorageEmpty()) {
+        sessionStorage.removeItem(THEME_NAME_KEY);
+    }
 }
 
 /* ========================================================================= */
