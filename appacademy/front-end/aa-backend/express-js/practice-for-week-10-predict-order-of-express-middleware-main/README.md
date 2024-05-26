@@ -23,19 +23,38 @@ Write down your predictions for each of the following scenarios.
 If a client makes a request to `GET /`, what will be logged in the server logs
 and in what order?
 
+``` Text
+First
+Fifth
+Seventh
+```
+
 ### Scenario #2 `GET /other-resource`
 
 If a client makes a request to `GET /other-resource`, what will be logged in
 the server logs and in what order?
+
+``` Text
+First
+Fifth
+Sixth
+Seventh
+```
 
 ### Scenario #3 `GET /not-found`
 
 If a client makes a request to `GET /not-found`, what will be logged in the
 server logs and in what order?
 
+``` Text
+First
+Fifth
+Seventh
+```
+
 ## Verify your predictions
 
-Now, it is time to run the application and use the browser or Postman to verify 
+Now, it is time to run the application and use the browser or Postman to verify
 your predictions.
 
 ## Set up
@@ -50,5 +69,5 @@ Run `npm start` to start the server on `localhost` port `5000`.
 
 Request each of the urls. If your prediction matches, that's great! If not,
 that's ok. This is a skill that needs practice. Review your diagram and use your
-debugging skills to discover what happened. As needed, formulate good questions 
+debugging skills to discover what happened. As needed, formulate good questions
 for your instructors.
