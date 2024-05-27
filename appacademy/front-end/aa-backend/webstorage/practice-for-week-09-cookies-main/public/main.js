@@ -1,35 +1,71 @@
+const THEME_NAME_KEY = "theme";
+const USER_INPUT_KEY = "input";
+
 /* ============================== PHASE 1 + 2 ============================== */
 
 // For storing user's theme selection in cookies
 function storeTheme(themeName) {
-    // Your code here
+    // document.cookie = `${THEME_NAME_KEY}=${themeName}; path=/`;
+
+    document.cookie = `${THEME_NAME_KEY}=${themeName}; expires=Fri, 31 Dec 9999 23:59:59 UTC; path=/`;
 }
 
 // For restoring theme from cookies, if selected by the user in the past
 function restoreTheme() {
-    // Your code here
+
+    const allCookies = document.cookie.split(" ");
+
+    if (allCookies.length > 0 && allCookies[0] !== "") {
+
+        const themeCookie = allCookies.filter(cookie => cookie.startsWith(THEME_NAME_KEY));
+
+        if (themeCookie.length > 0) {
+
+            const [userTheme, themeName] = themeCookie[0].split("=");
+
+            const name = themeName.indexOf(";") === -1 ? themeName : themeName.slice(0, themeName.length - 1);
+
+            setTheme(name);
+        }
+    }
 }
 
 // For clearing theme selection from cookies (reset to default)
 function clearTheme() {
-    // Your code here
+    document.cookie = `${THEME_NAME_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 }
 
 /* ================================ PHASE 3 ================================ */
 
 // For storing user's display name in cookies
 function storeName(displayName) {
-    // Your code here
+
+    document.cookie = `${USER_INPUT_KEY}=${displayName}; expires=Fri, 31 Dec 9999 23:59:59 UTC; path=/`;
 }
 
 // For restoring user's display name from cookies, if set in the past
 function restoreName() {
-    // Your code here
+
+    const allCookies = document.cookie.split(" ");
+
+    if (allCookies.length > 0 && allCookies[0] !== "") {
+
+        const inputCookie = allCookies.filter(cookie => cookie.startsWith(USER_INPUT_KEY));
+
+        if (inputCookie.length > 0) {
+
+            const [userInput, inputValue] = inputCookie[0].split("=");
+
+            const name = inputValue.indexOf(";") === -1 ? inputValue : inputValue.slice(0, inputValue.length - 1);
+
+            setInputValue("display-name", name);
+        }
+    }
 }
 
 // For clearing user's display name from cookies
 function clearName() {
-    // Your code here
+    document.cookie = `${USER_INPUT_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 }
 
 /* ========================================================================= */
