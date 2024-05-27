@@ -23,6 +23,10 @@ when running:
 Run `index.js` again, but this time with the `NODE_ENV` environment variable set
 to "production" and declared within the command-line.
 
+``` Shell
+NODE_ENV=production node index.js
+```
+
 ## Part 2: Using a `.env` file
 
 The `app.js` file contains some boilerplate code for an Express server. However,
