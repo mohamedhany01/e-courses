@@ -1,3 +1,5 @@
+import { storageManager } from "./storage.js";
+
 export const createCommentSection = () => {
     const container = document.querySelector(".container");
 
@@ -6,6 +8,12 @@ export const createCommentSection = () => {
 
     container.appendChild(commentForm);
     container.appendChild(commentsList);
+
+    const currentComments = storageManager.loadItem.comments();
+
+    if (currentComments && currentComments.length > 0) {
+        currentComments.forEach(comment => createComment(comment));
+    }
 };
 
 const createCommentsList = () => {
@@ -78,6 +86,8 @@ const submitComment = e => {
     const commentText = commentInput.value;
     createComment(commentText);
     commentInput.value = "";
+
+    storageManager.storeItem.comments(commentText);
 }
 
 const createComment = (commentText) => {
@@ -93,6 +103,15 @@ const createComment = (commentText) => {
     deleteButton.style.marginLeft = "15px";
     deleteButton.innerText = 'Delete';
     deleteButton.addEventListener('click', e => {
+
+        let comments = storageManager.loadItem.comments();
+
+        comments = comments.filter(comment => comment !== commentText);
+
+        storageManager.extra.resetComments();
+
+        storageManager.storeItem.comments(comments);
+
         // Remove comment from HTML DOM
         newCommentContainer.remove();
     });
@@ -107,4 +126,5 @@ const createComment = (commentText) => {
 export const resetComments = () => {
     const comments = document.querySelector(".comments");
     Array.from(comments.children).forEach(child => child.remove());
+    storageManager.extra.resetComments();
 };

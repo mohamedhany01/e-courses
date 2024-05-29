@@ -1,7 +1,11 @@
 import { resetScore } from './score.js';
 import { resetComments } from './comments.js';
+import { storageManager } from './storage.js';
 
 export const createMainContent = () => {
+
+    const currentImage = storageManager.loadItem.image();
+
     // Create h1
     const h1 = document.createElement("h1");
     h1.innerText = "Catstagram";
@@ -11,6 +15,10 @@ export const createMainContent = () => {
     img.style.margin = "20px";
     img.style.maxWidth = "750px";
 
+    if (currentImage) {
+        img.src = currentImage;
+    }
+
     const newKittenBtn = createNewKittenBtn();
 
     const container = document.querySelector(".container");
@@ -18,7 +26,9 @@ export const createMainContent = () => {
     container.append(newKittenBtn);
     container.appendChild(img);
 
-    fetchImage();
+    if (!currentImage) {
+        fetchImage();
+    }
 };
 
 const fetchImage = async () => {
@@ -31,6 +41,9 @@ const fetchImage = async () => {
         const kittenImgUrl = kittenData[0].url;
         const kittenImg = document.querySelector("img");
         kittenImg.src = kittenImgUrl;
+
+        // Save new image
+        storageManager.storeItem.image(kittenImgUrl);
 
         // After the image is finished loading, reset the score and comments
         kittenImg.addEventListener('load', () => {
@@ -47,6 +60,8 @@ const createNewKittenBtn = () => {
     const newKittenBtn = document.createElement("button");
     newKittenBtn.id = "new-kitten";
     newKittenBtn.innerText = "New Kitten";
-    newKittenBtn.addEventListener('click', fetchImage);
+    newKittenBtn.addEventListener('click', () => {
+        fetchImage();
+    });
     return newKittenBtn;
 };

@@ -1,3 +1,5 @@
+import { storageManager } from "./storage.js";
+
 export const createScoreContainer = () => {
     // Create score container
     const scoreContainer = document.createElement("div");
@@ -17,6 +19,8 @@ export const createScoreContainer = () => {
 };
 
 const createScoreDisplay = () => {
+    const currentScore = storageManager.loadItem.vote();
+
     // Create score display
     const scoreDisplay = document.createElement("div");
     scoreDisplay.className = "score-display";
@@ -27,7 +31,7 @@ const createScoreDisplay = () => {
 
     const score = document.createElement("span");
     score.className = "score";
-    score.innerText = "0";
+    score.innerText = currentScore !== null ? currentScore : "0";
 
     scoreDisplay.appendChild(scoreTitle);
     scoreDisplay.appendChild(score);
@@ -65,7 +69,7 @@ const vote = e => {
     } else {
         newScore = parseInt(newScore) - 1;
     }
-    
+
     // update score
     updateScore(newScore);
 };
@@ -73,9 +77,11 @@ const vote = e => {
 export const resetScore = () => {
     // reset score to 0
     updateScore(0);
+    storageManager.extra.resetScore();
 };
 
 const updateScore = (newScore) => {
     const score = document.querySelector('.score');
     score.innerText = newScore;
+    storageManager.storeItem.vote(newScore);
 };
