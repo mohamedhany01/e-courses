@@ -1,0 +1,29 @@
+#voting {
+    text-align: center;
+}
+
+#voting .buttons {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 2rem;
+}
+
+#comment {
+    margin-top: 2rem;
+}
+
+#comments {
+    margin-top: 1rem;
+    background-color: grey;
+    width: 500px;
+    min-height: 300px;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+#comments .comment {
+    background-color: azure;
+    color: black;
+    padding: 0.5rem;
+    margin: 0.3rem;
+}

@@ -1,4 +1,4 @@
-import { createMainContent } from './main.js';
+import { createMainContent, setVote, setComments } from './main.js';
 
 const initializePage = () => {
     // Create container
@@ -14,4 +14,6 @@ const initializePage = () => {
 window.onload = () => {
     initializePage();
     createMainContent();
+    setVote();
+    setComments();
 };
