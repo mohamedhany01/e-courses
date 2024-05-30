@@ -1,4 +1,4 @@
-// ------------------------------  SERVER DATA ------------------------------  
+// ------------------------------  SERVER DATA ------------------------------
 
 let nextFoodId = 1;
 function getNewFoodId() {
@@ -25,7 +25,7 @@ const foods = [
   }
 ];
 
-// ------------------------------  MIDDLEWARES ------------------------------ 
+// ------------------------------  MIDDLEWARES ------------------------------
 
 const validateFoodInfo = (req, res, next) => {
   if (!req.body || !req.body.name) {
@@ -36,7 +36,7 @@ const validateFoodInfo = (req, res, next) => {
   next();
 };
 
-// ------------------------------  ROUTE HANDLERS ------------------------------  
+// ------------------------------  ROUTE HANDLERS ------------------------------
 
 // GET /dogs/:dogId/foods
 const getFoodsByDogId = (req, res) => {
@@ -57,6 +57,13 @@ const createFood = (req, res) => {
   res.json(newFood);
 };
 
-// ------------------------------  ROUTER ------------------------------  
+// ------------------------------  ROUTER ------------------------------
 
-// Your code here
+const express = require("express");
+const router = express.Router({ mergeParams: true });
+
+router.get("/", getFoodsByDogId);
+
+router.post("/", validateFoodInfo, createFood);
+
+module.exports = router;
