@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "db:create": "sqlite3 app.db '.read seed-data.sql'"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "nodemon": "^2.0.12"
   }
 }
