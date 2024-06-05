@@ -5,13 +5,13 @@ CREATE TABLE bands (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(100)
 );
-
 CREATE TABLE musicians (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100),
   band_id INTEGER,
-  FOREIGN KEY (band_id) REFERENCES bands(id)
+  -- Q2
+  FOREIGN KEY (band_id) REFERENCES bands(id) ON DELETE CASCADE
 );
 INSERT INTO bands
 VALUES (1, 'The Falling Box'),
@@ -30,3 +30,6 @@ VALUES (1, 'Adam', 'Appleby', 1),
   (8, 'Camila', 'Nenci', 4),
   (9, 'Rosemarie', 'Affini', 5),
   (10, 'Victoria', 'Cremonesi', 5);
+-- Q1/Q3
+DELETE FROM bands
+WHERE id = 1;
