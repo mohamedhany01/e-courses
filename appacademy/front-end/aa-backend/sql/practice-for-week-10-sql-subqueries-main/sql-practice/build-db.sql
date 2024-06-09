@@ -1,44 +1,36 @@
-PRAGMA foreign_keys=on; -- Turns on foreign key support in SQLite3
-
+PRAGMA foreign_keys = on;
+-- Turns on foreign key support in SQLite3
 -- Create / re-create tables
 DROP TABLE IF EXISTS toys;
 DROP TABLE IF EXISTS cats;
-
 CREATE TABLE cats (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   birth_year INTEGER
 );
-
 CREATE TABLE toys (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   cat_id INTEGER,
   FOREIGN KEY (cat_id) REFERENCES cats(id) ON DELETE CASCADE
 );
-
 -- Create/recreate BONUS tables
 DROP TABLE IF EXISTS toys_backup;
 DROP TABLE IF EXISTS cats_backup;
-
 CREATE TABLE cats_backup (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   birth_year INTEGER
 );
-
 CREATE TABLE toys_backup (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   cat_id INTEGER,
   FOREIGN KEY (cat_id) REFERENCES cats_backup(id) ON DELETE CASCADE
 );
-
 -- Seed Data
-INSERT INTO cats
-  (name, birth_year)
-VALUES
-  ('Smudge', 2014),
+INSERT INTO cats (name, birth_year)
+VALUES ('Smudge', 2014),
   ('Molly', 2015),
   ('Lucky', 2016),
   ('Bella', 2020),
@@ -46,11 +38,8 @@ VALUES
   ('Oscar', 2010),
   ('Garfield', 2009),
   ('Crookshanks', 2017);
-
-INSERT INTO toys
-  (cat_id, name)
-VALUES
-  (1, 'Catnip Mouse'),
+INSERT INTO toys (cat_id, name)
+VALUES (1, 'Catnip Mouse'),
   (2, 'Feather Wand'),
   (2, 'Scratcher'),
   (2, 'Laser Pointer'),
@@ -60,3 +49,44 @@ VALUES
   (5, 'Crinkle Ball'),
   (7, 'Cheetos'),
   (8, 'Yarn');
+-- Q1
+SELECT cats.name AS cat_name,
+  toys.name AS toy_name
+FROM cats
+  JOIN toys ON cats.id = toys.cat_id
+WHERE cats.name = "Garfield";
+Method 2
+SELECT toys.name AS toy_name
+FROM toys
+WHERE cat_id IN (
+    SELECT id
+    FROM cats
+    WHERE cats.name = "Garfield"
+  );
+-- OR
+SELECT name
+FROM toys
+WHERE cat_id = (
+    SELECT id
+    FROM cats
+    WHERE name = 'Garfield'
+  );
+-- Q2
+INSERT INTO toys (cat_id, name)
+SELECT id,
+  'Pepperoni'
+FROM cats
+WHERE name = 'Garfield';
+-- BONUS | Q1
+INSERT INTO toys (cat_id, name)
+SELECT cats.id,
+  "Cat Bed"
+FROM cats
+WHERE birth_year < 2013;
+-- BONUS | Q2
+INSERT INTO cats_backup
+SELECT *
+FROM cats;
+INSERT INTO toys_backup
+SELECT *
+FROM toys;
