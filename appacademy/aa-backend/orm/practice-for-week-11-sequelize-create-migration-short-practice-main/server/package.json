@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "db:migrate": "npx dotenv sequelize db:migrate",
+    "db:migrate:undo": "npx dotenv sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "",
