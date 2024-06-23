@@ -8,7 +8,9 @@
     "dev": "nodemon app.js",
     "reset-files": "node test/utils/reset-files.js",
     "test": "NODE_ENV=test mocha --timeout 60000",
-    "test-with-json": "NODE_ENV=test mocha --reporter json --timeout 10000"
+    "test-with-json": "NODE_ENV=test mocha --reporter json --timeout 10000",
+    "db:migrate": "npx dotenv sequelize db:migrate",
+    "db:migrate:undo": "npx dotenv sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "",
