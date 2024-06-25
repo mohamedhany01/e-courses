@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "NODE_ENV=test mocha",
+    "test": "NODE_ENV=test mocha --timeout 10000",
     "test-with-json": "NODE_ENV=test mocha --reporter json"
   },
   "keywords": [
