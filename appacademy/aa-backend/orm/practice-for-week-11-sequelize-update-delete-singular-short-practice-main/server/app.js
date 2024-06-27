@@ -12,7 +12,7 @@ const { Puppy } = require('./db/models');
 
 // Index of all puppies - DO NOT MODIFY
 app.get('/puppies', async (req, res, next) => {
-    const allPuppies = await Puppy.findAll({order: [['name', 'ASC']]});
+    const allPuppies = await Puppy.findAll({ order: [['name', 'ASC']] });
 
     res.json(allPuppies);
 });
@@ -20,13 +20,53 @@ app.get('/puppies', async (req, res, next) => {
 
 // STEP 1: Update a puppy by id
 app.put('/puppies/:puppyId', async (req, res, next) => {
-    // Your code here
+    const { puppyId } = req.params;
+
+    const { name, ageYrs, breed, weightLbs, microchipped } = req.body;
+
+    const puppy = await Puppy.findByPk(puppyId);
+
+    if (!puppy) {
+        res.status(404);
+        return res.json({ message: 'Puppy not found' });
+    }
+
+    await Puppy.update(
+        {
+            name: name || puppy.name,
+            ageYrs: ageYrs || puppy.ageYrs,
+            breed: breed || puppy.breed,
+            weightLbs: weightLbs || puppy.weightLbs,
+            microchipped: microchipped || puppy.microchipped
+        }, { where: { id: puppyId } }
+    );
+
+    const updatedPuppy = await Puppy.findByPk(puppyId);
+
+    res.json({
+        message: `Successfully updated puppy with id ${puppyId}.`,
+        puppy: updatedPuppy
+    });
 })
 
 
 // STEP 2: Delete a puppy by id
 app.delete('/puppies/:puppyId', async (req, res, next) => {
-    // Your code here
+    const { puppyId } = req.params;
+
+    const puppy = await Puppy.findByPk(puppyId);
+
+    if (!puppy) {
+        res.status(404);
+        return res.json({ message: 'Puppy not found' });
+    }
+
+    await puppy.destroy();
+
+    res.json({
+        message: `Successfully deleted puppy with id ${puppyId}.`,
+        puppy: puppy
+    });
 })
 
 
