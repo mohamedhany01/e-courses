@@ -24,6 +24,18 @@ router.get('/trees-insects', async (req, res, next) => {
 
     trees = await Tree.findAll({
         attributes: ['id', 'tree', 'location', 'heightFt'],
+        include: [{
+            attributes: ['id', 'name'],
+            model: Insect,
+            through: {
+                attributes: []
+            },
+            required: true
+        }],
+        order: [
+            ['heightFt', 'DESC'],
+            [Insect, 'name']
+        ]
     });
 
     res.json(trees);
@@ -47,7 +59,7 @@ router.get('/insects-trees', async (req, res, next) => {
 
     const insects = await Insect.findAll({
         attributes: ['id', 'name', 'description'],
-        order: [ ['name'] ],
+        order: [['name']],
     });
     for (let i = 0; i < insects.length; i++) {
         const insect = insects[i];
@@ -55,11 +67,17 @@ router.get('/insects-trees', async (req, res, next) => {
             id: insect.id,
             name: insect.name,
             description: insect.description,
+            trees: await insect.getTrees({
+                attributes: ['id', 'tree'],
+                order: ['tree'],
+                joinTableAttributes: []
+            })
         });
     }
 
     res.json(payload);
 });
+
 
 /**
  * ADVANCED PHASE 3 - Record information on an insect found near a tree
@@ -88,7 +106,69 @@ router.get('/insects-trees', async (req, res, next) => {
  *   - Could not create association (use details for specific reason)
  *   - (Any others you think of)
  */
-// Your code here
+router.post('/associate-tree-insect', async (req, res, next) => {
+    try {
+        const error = new Error();
+
+        const { tree, insect } = req.body;
+        let foundInsect, foundTree
+        if (!tree) {
+            error.message = 'tree missing in request';
+            throw error;
+        }
+        if (!insect) {
+            error.message = 'insect missing in request';
+            throw error;
+        }
+
+        if (tree) {
+            if (tree.id) {
+                foundTree = await Tree.findByPk(tree.id);
+                if (!foundTree) {
+                    error.message = `Tree ${tree.id} not found`
+                }
+            } else {
+                // no tree id
+                foundTree = await Tree.build({
+                    tree: tree.name,
+                    location: tree.location,
+                    heightFt: tree.height,
+                    groundCircumferenceFt: tree.size
+                });
+                await foundTree.save();
+            }
+        }
+
+        if (insect) {
+            if (insect.id) {
+                foundInsect = await Insect.findByPk(insect.id);
+                if (!foundInsect) {
+                    error.message = `Insect ${insect.id} not found`;
+                    throw error;
+                }
+            } else {
+                foundInsect = await Insect.build(insect);
+                await foundInsect.save();
+            }
+        }
+
+        if (tree && insect) {
+            if (await foundInsect.hasTree(foundTree) && await foundTree.hasInsect(foundInsect)) {
+                error.message = `Association already exists between ${foundTree.tree} and ${foundInsect.name}`;
+                throw error;
+            } else {
+                await foundInsect.addTree(foundTree);
+                res.json({
+                    status: 'success',
+                    message: 'Successfully created association',
+                    data: { tree, insect }
+                })
+            }
+        }
+    } catch (error) {
+        next(error)
+    }
+})
 
 // Export class - DO NOT MODIFY
 module.exports = router;

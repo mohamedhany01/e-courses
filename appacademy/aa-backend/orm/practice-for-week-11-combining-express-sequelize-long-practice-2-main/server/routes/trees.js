@@ -5,13 +5,14 @@ const router = express.Router();
 /**
  * BASIC PHASE 1, Step A - Import model
  */
-// Your code here
+const { Tree } = require('../db/models');
 
 /**
  * INTERMEDIATE BONUS PHASE 1 (OPTIONAL), Step A:
  *   Import Op to perform comparison operations in WHERE clauses
  **/
-// Your code here
+
+const { Op } = require("sequelize");
 
 /**
  * BASIC PHASE 1, Step B - List of all trees in the database
@@ -24,9 +25,12 @@ const router = express.Router();
  *   - Ordered by the heightFt from tallest to shortest
  */
 router.get('/', async (req, res, next) => {
-    let trees = [];
-
-    // Your code here
+    let trees = await Tree.findAll({
+        attributes: ['id', 'tree', 'heightFt'],
+        order: [
+            ['heightFt', 'DESC']
+        ],
+    });
 
     res.json(trees);
 });
@@ -44,7 +48,7 @@ router.get('/:id', async (req, res, next) => {
     let tree;
 
     try {
-        // Your code here
+        tree = await Tree.findByPk(req.params.id);
 
         if (tree) {
             res.json(tree);
@@ -55,7 +59,7 @@ router.get('/:id', async (req, res, next) => {
                 details: 'Tree not found'
             });
         }
-    } catch(err) {
+    } catch (err) {
         next({
             status: "error",
             message: `Could not find tree ${req.params.id}`,
@@ -82,11 +86,36 @@ router.get('/:id', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     try {
-        res.json({
-            status: "success",
-            message: "Successfully created new tree",
+        const { name, location, height, size } = req.body;
+
+        const newTree = Tree.build({
+            tree: name,
+            location,
+            heightFt: height,
+            groundCircumferenceFt: size
         });
-    } catch(err) {
+
+
+        const tree = await Tree.findOne({ where: { tree: name } });
+
+        if (!tree) {
+            await newTree.save();
+
+            res.json({
+                status: "success",
+                message: "Successfully created new tree",
+                data: newTree,
+            });
+
+        } else {
+            next({
+                status: 400,
+                message: 'Could not create new tree',
+                details: 'Tree already exists'
+            });
+        }
+
+    } catch (err) {
         next({
             status: "error",
             message: 'Could not create new tree',
@@ -117,11 +146,26 @@ router.post('/', async (req, res, next) => {
  */
 router.delete('/:id', async (req, res, next) => {
     try {
+
+        const tree = await Tree.findByPk(req.params.id);
+
+        if (!tree) {
+            next({
+                status: "not-found",
+                message: `Could not remove tree ${req.params.id}`,
+                details: 'Tree not found'
+            })
+        }
+
+        await tree.destroy();
+
         res.json({
             status: "success",
             message: `Successfully removed tree ${req.params.id}`,
+            details: tree
         });
-    } catch(err) {
+
+    } catch (err) {
         next({
             status: "error",
             message: `Could not remove tree ${req.params.id}`,
@@ -166,8 +210,44 @@ router.delete('/:id', async (req, res, next) => {
  */
 router.put('/:id', async (req, res, next) => {
     try {
-        // Your code here
-    } catch(err) {
+
+        if (parseInt(req.params.id) !== parseInt(req.body.id)) {
+            next({
+                status: "error",
+                message: `Could not update tree`,
+                details: `${req.params.id} does not match ${req.body.id}`
+            });
+        }
+
+        const tree = await Tree.findByPk(req.params.id);
+
+        if (!tree) {
+            next({
+                status: "not-found",
+                message: `Could not update tree ${req.params.id}`,
+                details: "Tree not found"
+            });
+        } else {
+
+            const { name, location, height, size } = req.body;
+
+            await tree.update({
+                tree: name || tree.name,
+                location: location || tree.location,
+                heightFt: height || tree.heightFt,
+                groundCircumferenceFt: size || tree.groundCircumferenceFt
+            });
+
+            const updatedTree = await Tree.findByPk(req.params.id);
+
+            res.json({
+                status: "success",
+                message: "Successfully updated tree",
+                data: updatedTree
+            });
+        }
+
+    } catch (err) {
         next({
             status: "error",
             message: 'Could not update new tree',
@@ -188,7 +268,18 @@ router.put('/:id', async (req, res, next) => {
  *   - Ordered by the heightFt from tallest to shortest
  */
 router.get('/search/:value', async (req, res, next) => {
-    let trees = [];
+
+    let trees = await Tree.findAll({
+        attributes: ['id', 'tree', 'heightFt'],
+        where: {
+            tree: {
+                [Op.substring]: req.params.value
+            }
+        },
+        order: [
+            ['heightFt', 'DESC']
+        ],
+    });
 
 
     res.json(trees);
