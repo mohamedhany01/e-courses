@@ -36,14 +36,22 @@ app.get('/test-benchmark-logging', async (req, res) => {   // > 100 ms execution
 // STEP #1: Benchmark a Frequently-Used Query
 app.get('/books', async (req, res) => {
 
-    let books = await Book.findAll({
+    let query = {
         include: Author,
-    });
+    }
 
     // Filter by price if there is a maxPrice defined in the query params
-    if (req.query.maxPrice) {
-        books = books.filter(book => book.price < parseInt(req.query.maxPrice));
+    const { maxPrice } = req.query
+    if (maxPrice) {
+        query.where = {
+            price: {
+                [Op.lt]: maxPrice
+            }
+        }
     };
+
+    const books = await Book.findAll(query);
+
     res.json(books);
 });
 
@@ -51,17 +59,33 @@ app.get('/books', async (req, res) => {
 
         // Record Executed Query and Baseline Benchmark Below:
 
+            // ==== ANSWER ====
+
+            // Exection time is between 80 - 45 ms
+
         // - What is happening in the code of the query itself?
 
+            // ==== ANSWER ====
+            
+            // It joins two tables Books and Authors
 
         // - What exactly is happening as SQL executes this query? 
- 
+
+            // ==== ANSWER ====
+
+            // With Authors table the SQL engine serach the cols, while scanning each col in Books
+
 
 
 
 // 1b. Identify Opportunities to Make Query More Efficient
 
     // - What could make this query more efficient?
+
+        // ==== ANSWER ====
+
+        // Adding an index to all cols in Books table doesn't affect, event price col only
+        // It seems the bottleneck is from using JS to filter the books
 
 
 // 1c. Refactor the Query in GET /books
@@ -72,7 +96,15 @@ app.get('/books', async (req, res) => {
 
     // Record Executed Query and Baseline Benchmark Below:
 
+        // ==== ANSWER ====
+
+        // Exection time is between 43 - 16 ms
+
     // Is the refactored query more efficient than the original? Why or Why Not?
+
+        // ==== ANSWER ====
+
+        // To filter out the max price we should use SQL to do the job not JS, since SQL is a bit faster than JS 
 
 
 
@@ -80,12 +112,10 @@ app.get('/books', async (req, res) => {
 
 // STEP #2: Benchmark and Refactor Another Query
 app.patch('/authors/:authorId/books', async (req, res) => {
-    const author = await Author.findOne({
-        include: { model: Book },
-        where: {
-            id: req.params.authorId
-        }
-    });
+
+    const { authorId } = req.params;
+
+    const author = await Author.findByPk(parseInt(authorId));
 
     if (!author) {
         res.status(404);
@@ -94,14 +124,20 @@ app.patch('/authors/:authorId/books', async (req, res) => {
         });
     }
 
-    for (let book of author.Books) {
-        book.price = req.body.price;
-        await book.save();
-    }
+    await Book.update({
+        price: req.body.price
+    },
+        {
+            where: {
+                authorId: authorId
+            }
+        },
+    );
+
 
     const books = await Book.findAll({
         where: {
-            authorId: author.id
+            authorId: authorId
         }
     });
 

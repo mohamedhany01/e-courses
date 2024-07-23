@@ -7,8 +7,7 @@ module.exports = {
     typeValidation: true,
 
     // STEP #0a: Configure Benchmarking
-
-    // Your code here
+    benchmark: true,
   },
   test: {
     storage: process.env.DB_TEST_FILE,
