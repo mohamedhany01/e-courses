@@ -1,0 +1,4 @@
+*.db
+.env
+node_modules/
+server/test.js
