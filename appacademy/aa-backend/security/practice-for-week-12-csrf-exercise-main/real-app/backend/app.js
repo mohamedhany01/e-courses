@@ -30,28 +30,28 @@ app.use(cors({
 
 /* ---------------------- Enable CSRF Protection --------------------- */
 
-// app.use(csurf({
-//   cookie: {
-//     sameSite: 'strict',
-//     secure: true,
-//     httpOnly: true
-//   }
-// }));
+app.use(csurf({
+  cookie: {
+    sameSite: 'strict',
+    secure: true,
+    httpOnly: true
+  }
+}));
 
 /* ------------------------ Frontend Files -------------------------- */
 
 app.get('/', (req, res) => {
-  // res.cookie('XSRF-Token', req.csrfToken());
+  res.cookie('XSRF-Token', req.csrfToken());
   return res.sendFile(path.resolve(__dirname, "../frontend", "home.html"));
 });
 
 app.get('/login', (req, res) => {
-  // res.cookie('XSRF-Token', req.csrfToken());
+  res.cookie('XSRF-Token', req.csrfToken());
   return res.sendFile(path.resolve(__dirname, "../frontend", "login.html"));
 });
 
 app.get('/profile', (req, res) => {
-  // res.cookie('XSRF-Token', req.csrfToken());
+  res.cookie('XSRF-Token', req.csrfToken());
   return res.sendFile(path.resolve(__dirname, "../frontend", "profile.html"));
 });
 
