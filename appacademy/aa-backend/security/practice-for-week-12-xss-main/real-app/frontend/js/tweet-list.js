@@ -73,8 +73,11 @@ const createTweetBody = (tweet) => {
   tweetBody.classList.add("tweet-body");
 
   /* ------------------------- Prevent XSS Attacks ------------------------ */
-  // const bodyText = document.createTextNode(tweet.body);
-  // tweetBody.appendChild(bodyText);
+  const bodyText = document.createTextNode(tweet.body);
+  tweetBody.appendChild(bodyText);
+
+  // OR
+  // tweetBody.insertAdjacentText("beforeend", tweet.body);
   /* ---------------------------------------------------------------------- */
 
   /* -------------------------- Allow XSS Attacks ------------------------- */
