@@ -35,8 +35,6 @@ module.exports = (sequelize, DataTypes) => {
         min: 1,
       }
     },
-    // Phase 5: Alternate solution 3
-    // Your code here
   }, {
     sequelize,
     modelName: 'Classroom',

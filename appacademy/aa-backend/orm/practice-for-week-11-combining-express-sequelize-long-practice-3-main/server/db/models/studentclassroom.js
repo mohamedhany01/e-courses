@@ -19,8 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     studentId: DataTypes.INTEGER,
     classroomId: DataTypes.INTEGER,
     grade: DataTypes.INTEGER,
-    // Optional Phase 5D: Alternate solution 3
-    // Your code here
   }, {
     sequelize,
     modelName: 'StudentClassroom',

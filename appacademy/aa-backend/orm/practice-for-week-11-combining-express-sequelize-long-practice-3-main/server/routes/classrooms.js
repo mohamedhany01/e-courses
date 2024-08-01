@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 // Import model(s)
-const { Classroom } = require('../db/models');
-const { Op } = require('sequelize');
+const { Classroom, Supply, Student, StudentClassroom, sequelize } = require('../db/models');
+const { Op, where } = require('sequelize');
 
 // List of classrooms
 router.get('/', async (req, res, next) => {
@@ -36,12 +36,81 @@ router.get('/', async (req, res, next) => {
     */
     const where = {};
 
-    // Your code here
+    const { name, studentLimit } = req.query;
+
+    if (name) {
+        where.name = {
+            [Op.substring]: name
+        }
+    }
+
+    if (studentLimit) {
+        const params = studentLimit.split(",");
+
+        if (params.length === 1) {
+
+            const validLimit = parseInt(params);
+
+            if (!validLimit) {
+
+                errorResult.errors.push({ message: 'Student Limit should be an integer' });
+
+                return res.json(errorResult);
+            }
+
+            where.studentLimit = {
+                [Op.eq]: validLimit,
+            }
+
+        } else {
+
+            const [minStr, maxStr] = params;
+
+            const [min, max] = [parseInt(minStr), parseInt(maxStr)];
+
+            const isValidParams = (min || max);
+            const isMinParamValid = min < max;
+            const isParamsLengthValid = params.length <= 2;
+
+            if (
+                !isValidParams      ||
+                !isMinParamValid    ||
+                !isParamsLengthValid
+            ) {
+                errorResult.errors.push({ message: 'Student Limit should be two numbers: min,max' });
+
+                return res.json(errorResult);
+            }
+
+            where.studentLimit = {
+                [Op.between]: [min, max],
+            }
+        }
+    }
+
 
     const classrooms = await Classroom.findAll({
-        attributes: [ 'id', 'name', 'studentLimit' ],
+        attributes: [
+            'id',
+            'name',
+            'studentLimit',
+            'createdAt',
+            'updatedAt',
+            [sequelize.fn('AVG', sequelize.col('StudentClassrooms.grade')), 'avgGrade'],
+            [sequelize.fn('COUNT', sequelize.col('StudentClassrooms.studentId')), 'numStudents'],
+        ],
         where,
         // Phase 1B: Order the Classroom search results
+        order: [
+            ['name']
+        ],
+        include: [
+            {
+                model: StudentClassroom,
+                attributes: [],
+            }
+        ],
+        group: 'Classroom.id', // Without group by you wont get the correct input
     });
 
     res.json(classrooms);
@@ -49,7 +118,11 @@ router.get('/', async (req, res, next) => {
 
 // Single classroom
 router.get('/:id', async (req, res, next) => {
-    let classroom = await Classroom.findByPk(req.params.id, {
+
+    const { id } = req.params;
+    const idNum = parseInt(id);
+
+    let classroom = await Classroom.findByPk(idNum, {
         attributes: ['id', 'name', 'studentLimit'],
         // Phase 7:
             // Include classroom supplies and order supplies by category then
@@ -57,13 +130,15 @@ router.get('/:id', async (req, res, next) => {
             // Include students of the classroom and order students by lastName
                 // then firstName (both in ascending order)
                 // (Optional): No need to include the StudentClassrooms
-        // Your code here
+        raw: true
     });
 
     if (!classroom) {
         res.status(404);
         res.send({ message: 'Classroom Not Found' });
     }
+
+
 
     // Phase 5: Supply and Student counts, Overloaded classroom
         // Phase 5A: Find the number of supplies the classroom has and set it as
@@ -74,9 +149,98 @@ router.get('/:id', async (req, res, next) => {
             // studentLimit of the classroom to the number of students in the
             // classroom
         // Optional Phase 5D: Calculate the average grade of the classroom 
-    // Your code here
+    const [
+        suppliesData, 
+        suppliesAggregation, 
+        studentsData, 
+        studentsAggregation, 
+        averageData,
+    ] = await Promise.all([
+        Supply.findAll({
+            attributes: {
+                exclude: ['classroomId', 'createdAt', 'updatedAt']
+            },
+            where: {
+                classroomId: {
+                    [Op.eq]: idNum
+                }
+            },
+            order: [
+                ['category'],
+                ['name']
+            ],
+            raw: true
+        }),
+        Classroom.findByPk(idNum, {
+            attributes: [
+                [sequelize.fn("COUNT", sequelize.col("*")), "supplyCount"]
+            ],
+            include: [
+                {
+                    model: Supply
+                }
+            ],
+            raw: true
+        }),
+        StudentClassroom.findAll({
+            attributes: [
+                'Student.id',
+                'Student.firstName',
+                'Student.lastName',
+                'Student.leftHanded',
+            ],
+            include: [
+                {
+                    model: Student,
+                    attributes: [],
+                }
+            ],
+            where: {
+                classroomId: {
+                    [Op.eq]: idNum
+                }
+            },
+            order: [
+                [Student, 'firstName'],
+                [Student, 'lastName']
+            ],
+            raw: true
+        }),
+        Classroom.findByPk(idNum, {
+            attributes: [
+                [sequelize.fn("COUNT", sequelize.col("*")), "studentCount"]
+            ],
+            include: [
+                {
+                    model: Student
+                }
+            ],
+            raw: true
+        }),
+        StudentClassroom.findOne({
+            attributes: [
+                [sequelize.fn("AVG", sequelize.col("grade")), "avgGrade"]
+            ],
+            where: {
+                classroomId: {
+                    [Op.eq]: idNum
+                }
+            },
+            raw: true
+        }),
+    ]);
+    
+    const aggregationResult = {
+        ...classroom,
+        supplyCount: suppliesAggregation.supplyCount,
+        studentCount: studentsData.studentCount,
+        overloaded: studentsAggregation.studentCount > classroom.studentLimit,
+        avgGrade: averageData.avgGrade,
+        students:studentsData,
+        supplies: suppliesData
+    }
 
-    res.json(classroom);
+    res.json(aggregationResult);
 });
 
 // Export class - DO NOT MODIFY

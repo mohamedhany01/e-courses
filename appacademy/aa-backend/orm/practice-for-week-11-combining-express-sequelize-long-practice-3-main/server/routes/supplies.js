@@ -3,10 +3,14 @@ const express = require('express');
 const router = express.Router();
 
 // Import model(s)
-const { Supply } = require('../db/models');
+const { Supply, Classroom, Student, StudentClassroom, sequelize } = require('../db/models');
 
 // List of supplies by category
 router.get('/category/:categoryName', async (req, res, next) => {
+
+    const { categoryName } = req.params;
+    const query = {};
+
     // Phase 1C:
         // Find all supplies by category name
         // Order results by supply's name then handed
@@ -14,7 +18,31 @@ router.get('/category/:categoryName', async (req, res, next) => {
     // Phase 8A:
         // Include Classroom in the supplies query results
         // Order nested classroom results by name first then by supply name
-    // Your code here
+    const where = {};
+
+    if (categoryName) {
+        where.category = categoryName;
+    }
+
+    const order = [
+        [Classroom, 'name'],
+        ['name'],
+        // ['handed']
+    ];
+
+    query.attributes = ['id', 'name', 'handed'],
+    query.where = where;
+    query.order = order;
+    query.include = [
+        {
+            model: Classroom,
+            // where: {} // Filter null Classrooms
+        }
+    ];
+
+    const result = await Supply.findAll(query);
+
+    res.json(result);
 });
 
 
@@ -30,7 +58,17 @@ router.get('/scissors/calculate', async (req, res, next) => {
         // result.totalNumScissors should equal the total number of all
             // "Safety Scissors" currently in all classrooms, regardless of
             // handed-ness
-    // Your code here
+    const [categoriesStatistics] = await Supply.findAll({
+        attributes: [
+            [sequelize.fn("SUM", sequelize.literal("CASE WHEN handed = 'right' THEN 1 ELSE 0 END")), 'numRightyScissors'],
+            [sequelize.fn("SUM", sequelize.literal("CASE WHEN handed = 'left' THEN 1 ELSE 0 END")), 'numLeftyScissors'],
+            [sequelize.fn("COUNT", sequelize.col("*")), 'totalNumScissors']
+        ],
+        where: {
+            category: 'Cutting'
+        },
+        raw: true
+    });
 
     // Phase 10B: Total number of right-handed and left-handed students in all
         // classrooms
@@ -45,7 +83,19 @@ router.get('/scissors/calculate', async (req, res, next) => {
                 // right-handed students in all classrooms.
         // result.numLeftHandedStudents should equal the total number of
             // left-handed students in all classrooms
-    // Your code here
+    const [classStatistics] = await Student.findAll({
+        attributes: [
+            [sequelize.fn("SUM", sequelize.literal("CASE WHEN leftHanded = false THEN 1 ELSE 0 END")), 'numRightHandedStudents'],
+            [sequelize.fn("SUM", sequelize.literal("CASE WHEN leftHanded = true THEN 1 ELSE 0 END")), 'numLeftHandedStudents'],
+        ],
+        include: [
+            {
+                model: StudentClassroom,
+                attributes: [],
+            }
+        ],
+        raw: true
+    });
 
     // Phase 10C: Total number of scissors still needed for all classrooms
         // result.numRightyScissorsStillNeeded should equal the total number
@@ -57,7 +107,12 @@ router.get('/scissors/calculate', async (req, res, next) => {
         // result.numLeftyScissorsStillNeeded should equal the total number
             // of left-handed scissors still needed to be added to all the
             // classrooms
-    // Your code here
+    result = {
+        ...categoriesStatistics,
+        ...classStatistics,
+        numRightyScissorsStillNeeded: classStatistics.numRightHandedStudents - categoriesStatistics.numRightyScissors,
+        numLeftyScissorsStillNeeded: classStatistics.numLeftHandedStudents - categoriesStatistics.numLeftyScissors
+    };
 
     res.json(result);
 });
