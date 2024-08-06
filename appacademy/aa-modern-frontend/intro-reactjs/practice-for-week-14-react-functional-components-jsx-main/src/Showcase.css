@@ -1,0 +1,17 @@
+.pokInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.type {
+  background-color: green;
+  color: #fff;
+}
+
+.move {
+  background-color: #fff;
+  color: green;
+}
