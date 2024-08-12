@@ -1,0 +1,8 @@
+{
+  "short_name": "BH-useEffect-Rendering",
+  "name": "Basic Hooks useEffect Rendering",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
