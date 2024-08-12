@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import COLORS from './data/colors.json';
@@ -11,6 +11,66 @@ const Cat = () => {
   const [statusChange, setStatusChange] = useState('418');
   const [delay, setDelay] = useState('');
   const [status, setStatus] = useState('');
+
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      // console.log(colorIdx);
+      if (colorIdx === COLORS.length - 1) {
+        setColorIdx(0);
+      } else {
+        setColorIdx(prev => prev + 1);
+      }
+
+      console.log(delayChange);
+
+    }, delayChange);
+
+    return () => {
+      clearInterval(intervalID);
+    }
+
+  }, [colorIdx, delayChange]);
+
+  useEffect(() => {
+    const savedStatus = localStorage.getItem("STATUS");
+    if (savedStatus) {
+      setStatusChange(savedStatus);
+      setStatus(savedStatus);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("STATUS", statusChange);
+  }, [statusChange]);
+
+
+  // Update localStorage whenever statusChange is updated
+  useEffect(() => {
+    localStorage.setItem("STATUS", statusChange);
+  }, [statusChange]);
+
+  // Inactivity timer
+  useEffect(() => {
+    const resetTimeout = 10 * 60 * 1000; // 10 minutes
+    let timer;
+
+    const resetStatus = () => {
+      setStatusChange('418');
+      setStatus('');
+    };
+
+    const startTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(resetStatus, resetTimeout);
+    };
+
+    // Start timer on component mount and whenever statusChange is updated
+    startTimer();
+
+    // Clean up timer on component unmount
+    return () => clearTimeout(timer);
+  }, [statusChange]);
 
 
   const handleDelaySubmit = (e) => {
