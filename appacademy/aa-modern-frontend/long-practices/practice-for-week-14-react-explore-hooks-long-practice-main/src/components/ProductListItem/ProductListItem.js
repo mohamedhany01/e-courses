@@ -7,7 +7,7 @@ function ProductListItem({ product, isSelected, onClick }) {
            src={product.photo.filename}
            alt={`${product.name}`}
       />
-      <button onClick={onClick}>{product.name}</button>
+      <button onClick={(product)=> onClick(product)}>{product.name}</button>
     </div>
   )
 }

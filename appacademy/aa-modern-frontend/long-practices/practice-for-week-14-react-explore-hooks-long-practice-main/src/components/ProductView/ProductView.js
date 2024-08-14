@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductListItem from "../ProductListItem";
 import ProductDetails from "../ProductDetails";
 import './ProductView.css'
 
 function ProductView({ products }) {
 
-  // TODO: Replace with state variable
-  const sideOpen = true;
+  const [sideOpen, setSideOpen] = useState(true);
+  const [selectedProducts, setselectedProducts] = useState([]);
+  const [highlitedProducts, setHighlitedProducts] = useState(new Set());
+
+  useEffect(() => {
+
+    if (!sideOpen) {
+      setHighlitedProducts(new Set())
+    } else {
+      setHighlitedProducts(prevHighlightedProducts => {
+        const newHighlightedProducts = new Set(prevHighlightedProducts);
+        selectedProducts.forEach(p => newHighlightedProducts.add(p.id));
+        return newHighlightedProducts;
+      });
+    }
+
+  }, [sideOpen]);
 
   return (
     <div className="product-view">
@@ -17,7 +32,12 @@ function ProductView({ products }) {
             <ProductListItem
               key={item.id}
               product={item}
-              onClick={() => console.log('SELECT PRODUCT', item)}
+              isSelected={highlitedProducts.has(item.id)}
+              onClick={() => {
+                setselectedProducts([...selectedProducts, item]);
+                setHighlitedProducts(new Set([...highlitedProducts, item.id]));
+                setSideOpen(true);
+              }}
             />
           )}
         </div>
@@ -25,11 +45,11 @@ function ProductView({ products }) {
       <div className="product-side-panel">
         <div className="product-side-panel-toggle-wrapper">
           <div className="product-side-panel-toggle"
-               onClick={() => console.log('TOGGLE SIDE PANEL')}>
+            onClick={() => setSideOpen(!sideOpen)}>
             {sideOpen ? '>' : '<'}
           </div>
         </div>
-        <ProductDetails visible={sideOpen} />
+        <ProductDetails visible={sideOpen} products={selectedProducts} />
       </div>
     </div>
   );
