@@ -1,10 +1,10 @@
 import { createContext, useState, useContext } from 'react'
-import speedy from '../pups/speedy-pup.jpg';
+import defaultPuppy from '../pups/speedy-pup.jpg';
 
 export const PupContext = createContext();
 
 export function PupProvider(props) {
-  const [puppyType, setPuppyType] = useState(speedy);
+  const [puppyType, setPuppyType] = useState(defaultPuppy);
 
   return (
     <PupContext.Provider value={{ puppyType, setPuppyType }}>
