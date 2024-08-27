@@ -1,17 +1,12 @@
 import CartItem from './CartItem';
 import './Cart.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllCartItems, purchase } from '../../store/reducers/cart';
 
 function Cart() {
-  const cart = {};
-  const produce = {};
+  const cartItems = useSelector(getAllCartItems);
 
-  const cartItems = Object.values(cart)
-    .map(item => {
-      return {
-        ...item,
-        ...produce[item.id]
-      };
-    });
+  const dispatch = useDispatch();
 
   if (!cartItems || !cartItems.length) return (
     <div className="cart">
@@ -25,12 +20,14 @@ function Cart() {
       "Purchased the following:\n" +
       `${cartItems.map(item => `${item.count} of ${item.name}`).join('\n')}`
     );
+
+    dispatch(purchase());
   }
 
   return (
     <div className="cart">
       <ul>
-        {cartItems.map(item => <CartItem key={item.id} item={item}/>)}
+        {cartItems.map(item => <CartItem key={item.id} item={item} />)}
       </ul>
       <hr />
       <form onSubmit={onSubmit}>
