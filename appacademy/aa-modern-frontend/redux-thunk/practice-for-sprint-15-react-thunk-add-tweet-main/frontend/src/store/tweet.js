@@ -9,6 +9,32 @@ const loadTweets = (tweets) => {
   };
 };
 
+export const postTweet = (data) => async (dispatch) => {
+  const { content } = data;
+
+  if (content.trim() !== '') {
+    const res = await fetch('/api/tweets', {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify(data)
+    });
+
+    const { ok, statusText } = res;
+
+    if (ok) {
+      dispatch(getAllTweets());
+    } else {
+      console.log(res);
+      throw new Error("Something went wrong! " + statusText)
+    }
+  } else {
+    alert('Tweet cannot be empty!');
+  }
+
+}
+
 // thunk action creator
 export const getAllTweets = () => async (dispatch) => {
   const response = await fetch('/api/tweets');
