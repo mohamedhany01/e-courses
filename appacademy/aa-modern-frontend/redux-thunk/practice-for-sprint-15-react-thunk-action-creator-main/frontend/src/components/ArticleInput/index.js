@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
-import { addArticle } from '../../store/articleReducer';
+import { addArticle, writeArticle } from '../../store/articleReducer';
 import './ArticleInput.css';
 
 const ArticleInput = () => {
@@ -20,7 +20,8 @@ const ArticleInput = () => {
       imageUrl
     };
 
-    dispatch(addArticle(newArticle));
+    dispatch(writeArticle(newArticle));
+
     reset();
   };
 
