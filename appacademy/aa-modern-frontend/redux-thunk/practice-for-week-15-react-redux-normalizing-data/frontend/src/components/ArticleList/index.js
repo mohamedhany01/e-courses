@@ -6,8 +6,7 @@ import { fetchArticles } from '../../store/articleReducer';
 
 const ArticleList = () => {
   const dispatch = useDispatch();
-  const articles = useSelector(state=>state.articleState.entries);
-
+  const articles = useSelector(state => state.articleState.entries);
 
   useEffect(() => {
     dispatch(fetchArticles());
@@ -17,7 +16,7 @@ const ArticleList = () => {
     <div>
       <h1>Article List</h1>
       <ol>
-        {articles.map(({ id, title }) => (
+        {Object.values(articles).map(({ id, title }) => (
           <li key={id}><NavLink to={`/article/${id}`}>{title}</NavLink></li>
         ))}
       </ol>
