@@ -1,280 +1,79 @@
-# Pokedex Backend
 
-This is the backend for the Pokedex exercises.
+# Pokedex Thunk
 
-## Getting started
+In today's project you will configure an existing application to use thunk
+actions.
 
-1. Clone this repository
-2. Install dependencies with `npm install`
-3. Create a **.env** file based on the example with proper settings for your
-   local environment
-   * The server should be listening for requests on port 5000
-   * The database owner should have a username of "pokedex_app" and a password
-     of "password"
-   * The name of the database should be "pokedex_dev"
-   * The host of the database should be "localhost"
-4. Create a database user with the same name and password as found in your
-   **.env** file with CREATEDB privileges
-5. Run
-   * `npm run db:create`
-   * `npm run db:migrate`
-   * `npm run db:seed:all`
-   * `npm start`
+## Phase 0: Getting started
 
-## Images
+You'll need the backend for the Pokedex application. Take a moment to clone it
+from
+<https://github.com/appacademy/practice-for-week-15-pokedex-express-backend>.
+Follow the instructions in the backend repo's README to set up the backend
+server. Start the backend server by running `npm start`.
 
-Some of the API results have image URLs associated with them. You can get them
-from this service. For example, if the service is hosted at
-`http://localhost:5000`, then `http://localhost:5000/images/pokemon_snaps/5.svg`
-will show the image for the Pokemon with the image URL
-`/images/pokemon_snaps/5.svg`.
+The API for the backend is also documented in that repository's README.
 
-## The Pokemon API
+Once you have the backend up and running, clone the frontend starter from the
+`Download` link at the bottom of this page.
 
-This is all about listing and creating Pokemon.
+Run `npm start` in the frontend starter repo to start your frontend development
+server.
 
-### List Pokemon types: GET /api/pokemon/types
+### Explore the reference application
 
-Successful response:
+The current application comprises the following components:
 
-```json
-[
-  "fire",
-  "electric",
-  "normal",
-  "ghost",
-  "psychic",
-  "water",
-  "bug",
-  "dragon",
-  "grass",
-  "fighting",
-  "ice",
-  "flying",
-  "poison",
-  "ground",
-  "rock",
-  "steel"
-]
-```
+* `App`: Does the browser routing
+* `PokemonBrowser`: The browser that draws the list on the left and has a route
+  to the `PokemonDetail` when the route matches "/pokemon/:pokemonId"
+* `PokemonDetail`: Makes a fetch to the API on mount and update to load the
+  details of the selected Pokemon
+* `Fab`: The "+" button that prompts the `CreatePokemonForm` to show
+* `CreatePokemonForm`: Create Pokemon form rendered on `PokemonBrowser`
+* `EditPokemonForm`: Edit Pokemon form rendered on the `PokemonDetail` component
+  only if the Pokemon is captured
+* `PokemonItems`: Renders the list of items on the `PokemonDetail` component
+* `ItemForm`: Item form rendered on the `PokemonDetail` component when
+  editing an item
+* `ErrorMessage`: Displays an error message for a labeled form input
 
-### List Pokemon: GET /api/pokemon
+Take time to review the components to see how the component tree is structured
+(i.e., the parent-child relationships and where each component is being used).
 
-This route returns an array of Pokemon. Those that have been captured will
-have their image returned. Otherwise a question mark image will be sent for the
-ones that are not captured. The information on each Pokemon is not detailed.
+### Proxy
 
-Successful response looks like this with more entries:
+In this project, you will run two servers using these addresses:
 
-```json
-[
-  {
-    "id": 1,
-    "number": 1,
-    "name": "Bulbasaur",
-    "imageUrl": "/images/pokemon_snaps/1.svg",
-    "captured": true
-  },
-  // ...
-]
-```
+* `http://localhost:3000` for your frontend
+* `http://localhost:5000` for your backend
 
-### Pokemon details: GET /api/pokemon/:id
+In the `package.json` file on your frontend, notice the
+`"proxy": "http://localhost:5000"`. This line tells the development server to
+proxy any unknown requests to your backend server port. So **you must always
+ensure that the `PORT` variable in your backend __.env__ file has the same
+port number as the proxy setting in your frontend __package.json__**. Remember:
+this approach only works in development using `npm start`.
 
-This route returns detailed information about the Pokemon with the matching id
-in the route parameters.
+You will make API calls from your frontend to your backend server. When making
+API calls to your backend, don't write out your base URL for every call.
+Instead, write your fetch calls like this: `fetch('/api/pokemon')`.
 
-Successful response looks like this for the given id:
+## Phase 1: Dispatch thunk actions in `PokemonBrowser`
 
-```json
-{
-  "imageUrl": "/images/pokemon_snaps/1.svg",
-  "id": 1,
-  "number": 1,
-  "attack": 49,
-  "defense": 49,
-  "name": "Bulbasaur",
-  "type": "grass",
-  "moves": [
-    "tackle",
-    "vine whip"
-  ],
-  "captured": true,
-  "createdAt": "2020-12-16T01:17:24.119Z",
-  "updatedAt": "2020-12-16T01:17:24.119Z"
-}
-```
+As you're connecting your application's components, you'll most likely hit bugs
+and break your application. While you're connecting each component, make sure
+to test that your connected code is working before moving on to connect the
+next component.
 
-### Create a new Pokemon: POST /api/pokemon
+There is a thunk action creator made for you already in the
+__src/store/pokemon.js__ file called `getPokemon`. The thunk action it returns
+fetches all the Pokemon as a list from the `GET /api/pokemon` backend API route.
+Then it dispatches the action returned from the `load` action creator in the
+same file. The reducer normalizes the Pokemon data.
 
-This route accepts information to create a Pokemon.
+Dispatch the thunk action returned from the `getPokemon` thunk action creator
+after the `PokemonBrowser` component first renders.
 
-The payload that you must send looks like this:
-
-```json
-{
-  "number": 11,
-  "attack": 25,
-  "defense": 55,
-  "imageUrl": "/images/pokemon_snaps/11.svg",
-  "name": "Metapod",
-  "type": "bug",
-  "moves": [
-    "Tackle",
-    "Harden"
-  ]
-}
-```
-
-Successful response is the newly created Pokemon returned, which looks like
-this:
-
-```json
-{
-  "id": 126,
-  "number": 11,
-  "attack": 25,
-  "defense": 55,
-  "imageUrl": "/images/pokemon_snaps/11.svg",
-  "name": "Metapod",
-  "type": "bug",
-  "moves": [
-    "Tackle",
-    "Harden"
-  ]
-}
-```
-
-### Update a Pokemon: PUT /api/pokemon/:id
-
-This route updates a Pokemon with the matching id in the route parameters.
-
-The payload that you must send looks like this:
-
-```json
-{
-  "id": 126,
-  "number": 11,
-  "attack": 25,
-  "defense": 55,
-  "imageUrl": "/images/pokemon_snaps/11.svg",
-  "name": "Metapod",
-  "type": "bug",
-  "moves": [
-    "Tackle",
-    "Harden"
-  ]
-}
-```
-
-Successful response is the updated Pokemon returned and looks like this:
-
-```json
-{
-  "id": 126,
-  "number": 11,
-  "attack": 25,
-  "defense": 55,
-  "imageUrl": "/images/pokemon_snaps/11.svg",
-  "name": "Metapod",
-  "type": "bug",
-  "moves": [
-    "Tackle",
-    "Harden"
-  ]
-}
-```
-
-### Get a Pokemon's Items: GET /api/pokemon/:pokemonId/items
-
-This route returns all the items as an array for the Pokemon matching the id in
-the route parameter.
-
-Successful response looks like this:
-
-```json
-[
-  {
-    "id": 1,
-    "happiness": 86,
-    "imageUrl": "/images/pokemon_potion.svg",
-    "name": "Awesome Plastic Pizza",
-    "price": 27,
-    "pokemonId": 1
-  },
-  // ...
-]
-```
-
-### Edit an Item: PUT /api/items/:id
-
-This route updates the item matching the id in the route parameter.
-
-The payload that you must send looks like this:
-
-```json
-{
-  "id": 1,
-  "happiness": 86,
-  "imageUrl": "/images/pokemon_potion.svg",
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "pokemonId": 1
-}
-```
-
-Successful response is the updated item returned, which looks like this:
-
-```json
-{
-  "id": 1,
-  "happiness": 86,
-  "imageUrl": "/images/pokemon_potion.svg",
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "pokemonId": 1
-}
-```
-
-### Create an Item: POST /api/pokemon/:pokemonId/items
-
-This route accepts information to create a new item for the pokemon matching the
-pokemon id in the route parameter.
-
-The payload that you must send looks like this:
-
-```json
-{
-  "happiness": 86,
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "imageUrl": "/images/pokemon_potion.svg"
-}
-```
-
-The imageUrl is optional; if no url is provided, the server will generate a
-random image to associate with the item.
-
-Successful response is the newly created item returned, which looks like this:
-
-```json
-{
-  "id": 1,
-  "happiness": 86,
-  "imageUrl": "/images/pokemon_potion.svg",
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "pokemonId": 1
-}
-```
-
-### Delete an Item: DELETE /api/items/:id
-
-This route deletes the item matching the id in the route parameter.
-
-Successful response is the id of the deleted item, which looks like this:
-
-```json
-{
-  "id": 1
-}
+If done correctly, you should see the list of all the Pokemon in the side of the
+browser.
