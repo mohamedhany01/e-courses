@@ -3,9 +3,10 @@ import './SingleArticle.css';
 
 const SingleArticle = ({ articles }) => {
   const { id } = useParams();
-  const singleArticle = articles.find(article => article.id === id);
+  const singleArticle = articles.find(article => article.id === parseInt(id));
+
   return (
-    <div className='singleArticle'>
+    singleArticle ? (<div className='singleArticle'>
       <h1>{singleArticle.title}</h1>
       <img
         src={singleArticle.imageUrl}
@@ -14,7 +15,7 @@ const SingleArticle = ({ articles }) => {
       <p>
         {singleArticle.body}
       </p>
-    </div>
+    </div>) : "No Article Found!"
   );
 };
 
