@@ -1,0 +1,107 @@
+PH 0
+
+- docker container run -d --name webserver -p 80:80 nginx
+
+- docker container run -d --name extra-webserver -p 8091:80 httpd
+
+- docker container run -d --name db -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin mysql
+
+- docker container inspect webserver
+
+- docker container ls -a
+
+- docker container stop webserver extra-webserver db
+
+- docker container rm webserver extra-webserver db
+
+
+PH 1
+
+- docker exec -it webserver bash
+
+- docker container run --name ubuntu -d -t ubuntu
+
+- docker exec -it ubuntu bash
+
+PH 2
+
+- apt-get install -y wget
+
+- while :; do     wget -qO- https://swapi.dev/api/people/?search=r2;     printf '\n';     sleep 5s; done
+
+- docker container run -d --name os_extra alpine /bin/sh -c "while :; do wget -qO- https://swapi.dev/api/people/?search=r2; printf '\n'; sleep 5s; done"
+
+- docker container logs os_extra
+
+
+PH 3
+
+docker container run -d --name es01 --net fun --net-alias="es_service" -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.15.1
+
+docker container run -d --name es02 --net fun --net-alias="es_service" -p 9201:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.15.1
+
+docker run -it --rm --net fun alpine nslookup es_service
+
+docker container run  --name cen --net fun --rm -it centos curl -s es_service:9200
+
+
+docker logs es01
+docker logs es02
+
+docker rm -f $(docker ps -a -q)
+
+
+PH 4
+
+BINDING
+
+docker container run -d --name DogsRGood nginx
+docker container exec -it DogsRGood  bash
+
+mkdir rad
+touch rad/randomrad.txt
+echo "hello world" >> rad/randomrad.txt
+cat rad/randomrad.txt
+hello world
+
+docker container run -d -it --name DogsRGood --mount type=bind,source="$(pwd)"/rad,target=/rad nginx:latest
+
+docker container exec -it DogsRGood  bash
+ls
+cd rad
+cat randomrad.txt
+
+
+VOLUMES
+
+docker run -d --name db -e POSTGRES_PASSWORD=admin --mount source=psql-data,target=/var/lib/postgresql/data postgres:14
+
+docker container ls -a
+
+docker logs db
+
+docker container exec -it db psql -U postgres
+
+CREATE TABLE cats ( id SERIAL PRIMARY KEY, name VARCHAR (255) NOT NULL );INSERT INTO cats (name) VALUES ('Jet');
+
+\dt
+
+\q
+
+docker container rm -f db
+
+docker run -d --name db2 -e POSTGRES_PASSWORD=admin --mount source=psql-data,target=/var/lib/postgresql/data postgres:14
+
+docker container ls -a
+
+docker logs db2
+
+docker container exec -it db2 psql -U postgres
+
+\dt
+
+\q
+
+docker rm -f $(docker ps -a -q)
+
+docker volume rm -f psql-data
