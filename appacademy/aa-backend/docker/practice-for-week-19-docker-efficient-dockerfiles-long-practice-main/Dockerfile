@@ -1,11 +1,17 @@
-FROM ubuntu
+FROM node:18.20.4-alpine3.20
 
-ADD . /app
+EXPOSE 3000
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y npm nodejs
-RUN apt-get install -y openssh-server nginx
-RUN cd /app && npm install
+RUN apk add --update tini
 
-CMD sshd & cd /app && npm start
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install && npm cache clean --force
+
+COPY . .
+
+CMD ["/sbin/tini", "--", "node", "index.js"]
