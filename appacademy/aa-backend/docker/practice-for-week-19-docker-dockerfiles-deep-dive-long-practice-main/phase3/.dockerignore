@@ -1,0 +1,14 @@
+# for all code you usually don't want .git history in image, just the current commit you have checked out
+.git
+
+# you usually don't want dockerfile and compose files in the image either
+*Dockerfile*
+*docker-compose*
+.dockerignore
+
+# for Node.js apps, you want to build the node_modules in the image, and not copy from host
+node_modules
+
+# for Node.js app, you don't want to copy in files that are built on the local machine
+dist/
+build/
