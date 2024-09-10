@@ -1,0 +1,11 @@
+# version: "3" # obsolete in compose v2+
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: foo:latest
+    container_name: foo
+    ports:
+      - 80:80
