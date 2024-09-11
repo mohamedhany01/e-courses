@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: moh/flask.server
+    container_name: flaskWebServere
+    ports:
+      - 80:5000
+    environment:
+      - FLASK_ENV=development
+  redis:
+    image: redis:4.0.11-alpine
+    container_name: redisDB

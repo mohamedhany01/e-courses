@@ -1,0 +1,23 @@
+services:
+  drupal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: moh/custom-drupal
+    ports:
+      - 8080:80
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_PASSWORD:password
+  postgres:
+    image: postgres:10
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5433:5432
+    volumes:
+      - drupal-data:/var/lib/postgresql10/data
+
+volumes:
+  drupal-data:
