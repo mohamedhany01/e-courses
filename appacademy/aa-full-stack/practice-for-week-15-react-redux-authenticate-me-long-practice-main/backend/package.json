@@ -1,0 +1,43 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db:init": "npx dotenv sequelize db:create",
+    "db:migrate": "npx dotenv sequelize db:migrate",
+    "db:migrate:undo": "npx dotenv sequelize db:migrate:undo",
+    "db:seed:all": "npx dotenv sequelize db:seed:all",
+    "db:seed:undo": "npx dotenv sequelize db:seed:undo",
+    "db:seed:undo:all": "npx dotenv sequelize db:seed:undo:all",
+    "sequelize": "sequelize",
+    "sequelize-cli": "sequelize-cli",
+    "start": "per-env",
+    "start:development": "nodemon -r dotenv/config ./bin/www",
+    "start:production": "node ./bin/www"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-async-handler": "^1.2.0",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "per-env": "^1.0.2",
+    "pg": "^8.12.0",
+    "sequelize": "^5.22.5",
+    "sequelize-cli": "^5.5.1"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.2",
+    "nodemon": "^3.1.4"
+  }
+}
