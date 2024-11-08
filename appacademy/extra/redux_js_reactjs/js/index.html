@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Input Example</title>
+    <style>
+        /* Simple styling for better appearance */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Enter a Number</h1>
+    <form id="numberForm">
+        <label for="numberInput">Number:</label>
+        <input type="number" id="numberInput" name="number" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result">1000 - 0 = 1000</div>
+
+    <script type="module">
+        import { createStore } from "https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.1/redux.legacy-esm.js"
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const reducer = (state = 1000, { type, payload }) => {
+                debugger
+                switch (type) {
+                    case "SUB_100":
+                        return state - payload;
+                    default:
+                        return state;
+                }
+            }
+
+            const sub_100_act = (payload = 100) => {
+                return {
+                    type: "SUB_100",
+                    payload: payload
+                }
+            }
+
+            // Create the store with the reducer
+            const ourStore = createStore(reducer);
+
+            document.getElementById('numberForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                // Get the value from the input field
+                const numberInput = document.getElementById('numberInput').value;
+                ourStore.dispatch(sub_100_act(Number(numberInput)))
+                console.log(ourStore.getState());
+                const result = ourStore.getState();
+
+                // Display the number in the result div
+                document.getElementById('result').textContent = `1000 - ${numberInput} = ${result}`;
+            });
+
+        });
+    </script>
+</body>
+
+</html>

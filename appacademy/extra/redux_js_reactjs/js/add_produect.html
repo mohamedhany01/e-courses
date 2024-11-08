@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .product-list {
+            margin-top: 20px;
+        }
+
+        .product-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Add a Product</h1>
+        <form id="productForm">
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Product Price:</label>
+                <input type="number" id="productPrice" name="productPrice" step="0.01" required>
+            </div>
+            <button type="button" class="btn" id="addBtn">Add</button>
+            <button type="button" class="btn" id="checkoutBtn">Checkout</button>
+        </form>
+
+        <div class="product-list" id="productList">
+            <h2>Product List</h2>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createStore } from "https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.1/redux.legacy-esm.js"
+
+        const ACTIONS = {
+            ADD: "ADD_PRODUCT",
+            CHECKOUT: "CHECKOUT_PRODUCTS"
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const productReducer = (state = [], { type, payload }) => {
+                switch (type) {
+                    case ACTIONS.ADD:
+                        return [...state, payload];
+                    case ACTIONS.CHECKOUT:
+                        return [];
+                    default:
+                        return state;
+                }
+            };
+
+            const ourStore = createStore(productReducer);
+
+            ourStore.subscribe(() => {
+                const allProducts = ourStore.getState();
+
+                document.getElementById('productList').innerHTML = "";
+                allProducts.forEach(({ name, price }) => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    productItem.textContent = `Name: ${name}, Price: $${parseFloat(price).toFixed(2)}`;
+                    document.getElementById('productList').appendChild(productItem);
+                    document.getElementById('productForm').reset();
+
+                });
+
+            });
+
+            const addButton = document.querySelector("#addBtn");
+            const checkoutButton = document.querySelector("#checkoutBtn");
+
+            addButton.addEventListener("click", () => {
+                const name = document.getElementById('productName').value;
+                const price = document.getElementById('productPrice').value;
+
+                if (name && price) {
+                    ourStore.dispatch({
+                        type: ACTIONS.ADD,
+                        payload: {
+                            name: name,
+                            price: price
+                        }
+                    });
+                } else {
+                    alert('Please enter both product name and price.');
+                }
+            });
+
+            checkoutButton.addEventListener("click", () => {
+                ourStore.dispatch({
+                        type: ACTIONS.CHECKOUT,
+                    });
+            });
+
+        });
+    </script>
+    <script>
+        // function addProduct() {
+        //     // Get the product name and price from the form
+        //     const name = document.getElementById('productName').value;
+        //     const price = document.getElementById('productPrice').value;
+
+        //     // Ensure the fields are not empty
+        //     if (name && price) {
+        //         // Create a new product item
+        //         const productItem = document.createElement('div');
+        //         productItem.className = 'product-item';
+        //         productItem.textContent = `Name: ${name}, Price: $${parseFloat(price).toFixed(2)}`;
+
+        //         // Append the new product item to the product list
+        //         document.getElementById('productList').appendChild(productItem);
+
+        //         // Clear the form fields
+        //         document.getElementById('productForm').reset();
+        //     } else {
+        //         alert('Please enter both product name and price.');
+        //     }
+        // }
+    </script>
+</body>
+
+</html>
