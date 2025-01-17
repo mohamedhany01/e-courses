@@ -1,5 +1,5 @@
 /* This program translates words to Bork, a language that is very similar to English.
-   To translate a word to Bork, you take the English word and add an 'f' after every 
+   To translate a word to Bork, you take the English word and add an 'f' after every
    vowel in the word. */
 
 #include <stdio.h>
@@ -7,7 +7,10 @@
 #include <string.h>
 
 char *alloc_str(int len) {
-    return malloc(len*sizeof(char));
+    /* One byte for the char and another for \0 */
+    char *data = (char *)malloc((len + 1) * sizeof(char));
+    data[len] = '\0';
+    return data;
 }
 
 /* Str helper functions */
@@ -72,5 +75,8 @@ int main(int argc, char*argv[]) {
     printf("Input string: \"%s\"\n", src_str.data);
     printf("Length of translated string: %d\n", dest_str.len);
     printf("Translate to Bork: \"%s\"\n", dest_str.data);
+
+    free_Str(dest_str);
+
     return 0;
 }
