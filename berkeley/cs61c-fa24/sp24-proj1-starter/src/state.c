@@ -22,15 +22,107 @@ static void update_tail(game_state_t *state, unsigned int snum);
 static void update_head(game_state_t *state, unsigned int snum);
 
 /* Task 1 */
-game_state_t *create_default_state() {
-  // TODO: Implement this function.
-  return NULL;
+game_state_t *create_default_state()
+{
+  const unsigned int COLS_COUNT = 20;
+  const unsigned int ROWS_COUNT = 18;
+  const char WALL = '#';
+  const char FLOOR = ' ';
+
+  game_state_t *gs = (game_state_t *)malloc(sizeof(game_state_t));
+
+  if (gs == NULL)
+  {
+    perror("Error allocating game state");
+    exit(1);
+  }
+
+  gs->num_snakes = 1;
+  gs->snakes = (snake_t *)malloc(gs->num_snakes * sizeof(snake_t));
+
+  if (gs->snakes == NULL)
+  {
+    perror("Error allocating a snake");
+    exit(1);
+  }
+
+  gs->num_rows = ROWS_COUNT;
+
+  gs->board = (char **)malloc(gs->num_rows * sizeof(char *));
+
+  if (gs->board == NULL)
+  {
+    perror("Error allocating game state");
+    exit(1);
+  }
+
+  for (size_t i = 0; i < gs->num_rows; i++)
+  {
+    gs->board[i] = (char *)malloc((COLS_COUNT + 1) * sizeof(char));
+
+    if (gs->board[i] == NULL)
+    {
+      perror("Error allocating row");
+
+      for (size_t j = 0; j < i; j++)
+      {
+        free(gs->board[j]);
+      }
+
+      free(gs->board);
+      free(gs->snakes);
+      free(gs);
+
+      exit(1);
+    }
+
+    for (size_t j = 0; j < COLS_COUNT; j++)
+    {
+      bool isWall = (((i >= 1 && i <= COLS_COUNT - 2) && (j == 0 || j == COLS_COUNT - 1)) ||
+                     i == 0 ||
+                     i == gs->num_rows - 1);
+      if (isWall)
+      {
+        gs->board[i][j] = WALL;
+      }
+      else
+      {
+        gs->board[i][j] = FLOOR;
+      }
+    }
+
+    gs->board[i][COLS_COUNT] = '\0';
+  }
+
+  // Hardcoded snake
+  gs->board[2][2] = 'd';
+  gs->board[2][3] = '>';
+  gs->board[2][4] = 'D';
+  gs->board[2][9] = '*';
+
+  gs->snakes[0].head_row = 2;
+  gs->snakes[0].head_col = 4;
+
+  gs->snakes[0].tail_row = 2;
+  gs->snakes[0].tail_col = 2;
+
+  gs->snakes[0].live = true;
+
+  return gs;
 }
 
 /* Task 2 */
-void free_state(game_state_t *state) {
-  // TODO: Implement this function.
-  return;
+void free_state(game_state_t *state)
+{
+  if (state == NULL)
+    return;
+
+  for (size_t i = 0; i < state->num_rows; i++)
+  {
+    free(state->board[i]);
+  }
+  free(state->snakes);
+  free(state);
 }
 
 /* Task 3 */
