@@ -1,7 +1,9 @@
 # CS61C
 
 ## Checkpoint
-[[CS61C FA20] Lecture 06.6 - Floating Point: Other Floating Point Representations](https://www.youtube.com/watch?v=DkGTIhH_s7g&list=PL0j-r-omG7i0-mnsxN5T4UcVS1Di0isqf&index=29)
+- [[CS61C FA20] Lecture 06.6 - Floating Point: Other Floating Point Representations](https://www.youtube.com/watch?v=DkGTIhH_s7g&list=PL0j-r-omG7i0-mnsxN5T4UcVS1Di0isqf&index=29)
+- https://web.archive.org/web/20240301041327/https://cs61c.org/sp24/projects/proj1/
+
 
 ## Extra resources
 
